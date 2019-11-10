@@ -1,0 +1,48 @@
+\begin{thebibliography}{10}
+
+\bibitem{Okabe}
+M.~Okabe, ``Where does philippine education go? the "k to 12" program and
+  reform of philippine basic education [abstract],'' {\em Institute of
+  Developing Economics, IDE Discussion Paper No. 425}, vol.~2, 2013.
+
+\bibitem{Gazette}
+O.~Gazette, ``What is k to 12 program?.''
+  http://www.officialgazette.gov.ph/k-12/.
+\newblock Accessed on 2019-05-03.
+
+\bibitem{depEd}
+D.~of~Education, ``E-class record templates.''
+  http://www.deped.gov.ph/resources/downloads/e-class-record-templates/.
+\newblock Accessed on 2019-05-03.
+
+\bibitem{Dellosa}
+D.~RM, ``Design and evaluation of the electronic class record for lpu-laguna
+  international school.''
+  http://www.academia.edu/8002516/Design\_and\_Evaluation\_of\_the\_Electronic\_Cla
+  ss\_Record\_for\_LPU-Laguna\_International\_School, 2014.
+\newblock Accessed on 2019-05-03.
+
+\bibitem{Shah}
+H.~Shah and T.~Soomro, ``Node.js challenges in implementation,'' 05 2017.
+
+\bibitem{Joyent}
+Joyent, ``Home page of node.js.'' https://nodejs.org/en/, 2016.
+\newblock Accessed on 2019-05-03.
+
+\bibitem{Mardan}
+A.~Mardan, {\em Building Node.js REST API Servers with Express.js and Hapi:
+  Building Real-World Scalable Web Apps}, pp.~277--305.
+\newblock 01 2018.
+
+\bibitem{Nahar}
+W.~Nahar, ``Dynamic view rendering using reactjs and jquery,'' 08 2016.
+
+\bibitem{DBEngines}
+solid IT, ``Knowledge base of relational and nosql database management
+  systems.'' https://db-engines.com/en/, 2019.
+\newblock Accessed on 2019-05-03.
+
+\bibitem{mySQL}
+Charzon, ``What is mysql, history and functions,'' 12 2018.
+
+\end{thebibliography}
