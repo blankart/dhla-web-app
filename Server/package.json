@@ -1,7 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Dee Hwa Liong Academy Server",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -23,5 +23,9 @@
     "passport-jwt": "^4.0.0",
     "sequelize": "^5.19.8",
     "validator": "^11.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/npm/npm.git"
   }
 }

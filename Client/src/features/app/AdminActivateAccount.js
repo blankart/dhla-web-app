@@ -21,48 +21,7 @@ export class AdminActivateAccount extends Component {
       page: 1,
       pageSize: 5,
       numOfPages: 1,
-      data: [
-        {
-          key: 1,
-          name: '',
-          imageUrl: '',
-          email: '',
-          position: '',
-          isActive: '',
-        },
-        {
-          key: 2,
-          name: '',
-          imageUrl: '',
-          email: '',
-          position: '',
-          isActive: '',
-        },
-        {
-          key: 3,
-          name: '',
-          imageUrl: '',
-          email: '',
-          position: '',
-          isActive: '',
-        },
-        {
-          key: 4,
-          name: '',
-          imageUrl: '',
-          email: '',
-          position: '',
-          isActive: '',
-        },
-        {
-          key: 5,
-          name: '',
-          imageUrl: '',
-          email: '',
-          position: '',
-          isActive: '',
-        },
-      ],
+      data: [],
     };
     this.onChange = this.onChange.bind(this);
   }
@@ -173,7 +132,7 @@ export class AdminActivateAccount extends Component {
               >
                 Activate
               </Button>
-            ) : (
+            ) : value.isActive == 1 ? (
               <Button
                 icon="trash"
                 size="sm"
@@ -184,6 +143,8 @@ export class AdminActivateAccount extends Component {
               >
                 Deactivate
               </Button>
+            ) : (
+              <React.Fragment></React.Fragment>
             )}
           </Table.Col>
         </Table.Row>,
