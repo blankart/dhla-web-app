@@ -1,7 +1,7 @@
-PWD D:/Code/DeeHwaLiongAcademy Web App/SP
+PWD c:/Users/NicoMendoza/Documents/dwla-web-app/SP
 INPUT C:/Users/NicoMendoza/AppData/Local/MiKTeX/2.9/miktex/data/le/pdftex/pdflatex.fmt
-INPUT Proposal - Nico C. Mendoza.tex
-OUTPUT Proposal - Nico C. Mendoza.log
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.tex
+OUTPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.log
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/article.cls
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/article.cls
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/size11.clo
@@ -76,9 +76,9 @@ INPUT C:/Program Files/MiKTeX 2.9/tex/latex/hyperref/hpdftex.def
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/hyperref/hpdftex.def
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/oberdiek/rerunfilecheck.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/oberdiek/rerunfilecheck.sty
-INPUT Proposal - Nico C. Mendoza.aux
-INPUT Proposal - Nico C. Mendoza.aux
-OUTPUT Proposal - Nico C. Mendoza.aux
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.aux
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.aux
+OUTPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.aux
 INPUT C:/Program Files/MiKTeX 2.9/tex/context/base/supp-pdf.mkii
 INPUT C:/Program Files/MiKTeX 2.9/tex/context/base/supp-pdf.mkii
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/oberdiek/epstopdf-base.sty
@@ -89,14 +89,14 @@ INPUT C:/Program Files/MiKTeX 2.9/tex/latex/hyperref/nameref.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/hyperref/nameref.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/gettitlestring.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/gettitlestring.sty
-INPUT Proposal - Nico C. Mendoza.out
-INPUT Proposal - Nico C. Mendoza.out
-INPUT Proposal - Nico C. Mendoza.out
-INPUT Proposal - Nico C. Mendoza.out
-OUTPUT Proposal - Nico C. Mendoza.pdf
-INPUT ./Proposal - Nico C. Mendoza.out
-INPUT ./Proposal - Nico C. Mendoza.out
-OUTPUT Proposal - Nico C. Mendoza.out
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
+OUTPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.pdf
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
+OUTPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
 INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmr17.tfm
 INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmr12.tfm
 INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmr8.tfm
@@ -111,68 +111,68 @@ INPUT C:/Users/NicoMendoza/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map
 INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmbx10.tfm
 INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmr12.tfm
 INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmbx12.tfm
-INPUT Proposal - Nico C. Mendoza.toc
-INPUT Proposal - Nico C. Mendoza.toc
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.toc
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.toc
 INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmmi10.tfm
 INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmsy10.tfm
-OUTPUT Proposal - Nico C. Mendoza.toc
+OUTPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.toc
 INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmbx12.tfm
 INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmti10.tfm
-INPUT Context-Diagram.png
-INPUT ./Context-Diagram.png
-INPUT ./Context-Diagram.png
-INPUT ./Context-Diagram.png
-INPUT ./Context-Diagram.png
-INPUT Activity-Diagram-1.png
-INPUT ./Activity-Diagram-1.png
-INPUT ./Activity-Diagram-1.png
-INPUT ./Activity-Diagram-1.png
-INPUT ./Activity-Diagram-1.png
-INPUT User.png
-INPUT ./User.png
-INPUT ./User.png
-INPUT ./User.png
-INPUT ./User.png
-INPUT Grade-Sheet.png
-INPUT ./Grade-Sheet.png
-INPUT ./Grade-Sheet.png
-INPUT ./Grade-Sheet.png
-INPUT ./Grade-Sheet.png
-INPUT Grade.png
-INPUT ./Grade.png
-INPUT ./Grade.png
-INPUT ./Grade.png
-INPUT ./Grade.png
-INPUT Attendance-Log.png
-INPUT ./Attendance-Log.png
-INPUT ./Attendance-Log.png
-INPUT ./Attendance-Log.png
-INPUT ./Attendance-Log.png
-INPUT Advisory-Table.png
-INPUT ./Advisory-Table.png
-INPUT ./Advisory-Table.png
-INPUT ./Advisory-Table.png
-INPUT ./Advisory-Table.png
-INPUT Formula.png
-INPUT ./Formula.png
-INPUT ./Formula.png
-INPUT ./Formula.png
-INPUT ./Formula.png
-INPUT Teacher-Load.png
-INPUT ./Teacher-Load.png
-INPUT ./Teacher-Load.png
-INPUT ./Teacher-Load.png
-INPUT ./Teacher-Load.png
-INPUT Submission-Deadline.png
-INPUT ./Submission-Deadline.png
-INPUT ./Submission-Deadline.png
-INPUT ./Submission-Deadline.png
-INPUT ./Submission-Deadline.png
-INPUT Proposal - Nico C. Mendoza.bbl
-INPUT Proposal - Nico C. Mendoza.bbl
-INPUT Proposal - Nico C. Mendoza.aux
-INPUT ./Proposal - Nico C. Mendoza.out
-INPUT ./Proposal - Nico C. Mendoza.out
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Context-Diagram.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Context-Diagram.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Context-Diagram.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Context-Diagram.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Context-Diagram.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Activity-Diagram-1.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Activity-Diagram-1.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Activity-Diagram-1.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Activity-Diagram-1.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Activity-Diagram-1.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/User.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/User.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/User.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/User.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/User.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade-Sheet.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade-Sheet.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade-Sheet.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade-Sheet.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade-Sheet.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Attendance-Log.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Attendance-Log.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Attendance-Log.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Attendance-Log.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Attendance-Log.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Advisory-Table.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Advisory-Table.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Advisory-Table.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Advisory-Table.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Advisory-Table.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Formula.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Formula.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Formula.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Formula.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Formula.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Teacher-Load.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Teacher-Load.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Teacher-Load.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Teacher-Load.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Teacher-Load.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Submission-Deadline.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Submission-Deadline.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Submission-Deadline.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Submission-Deadline.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Submission-Deadline.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.bbl
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.bbl
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.aux
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
 INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb

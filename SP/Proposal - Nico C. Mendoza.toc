@@ -1,4 +1,4 @@
-\contentsline {section}{Abstract}{iii}{Doc-Start}
+\contentsline {section}{Abstract}{2}{Doc-Start}
 \contentsline {section}{\numberline {I.}Introduction}{1}{section.1}
 \contentsline {subsection}{\numberline {A.}Background of the Study}{1}{subsection.1.1}
 \contentsline {subsection}{\numberline {B.}Statement of the Problem}{2}{subsection.1.2}
