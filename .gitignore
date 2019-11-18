@@ -1,0 +1,6 @@
+Client/node_modules
+Server/node_modules
+Client/package-lock.json
+Server/package-lock.json
+Server/config/db/database.js
+Server/public
