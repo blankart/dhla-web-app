@@ -1,14 +1,14 @@
 # Fdb version 3
-["bibtex Proposal - Nico C. Mendoza"] 1574079480 "Proposal - Nico C. Mendoza.aux" "Proposal - Nico C. Mendoza.bbl" "Proposal - Nico C. Mendoza" 1574079521
+["bibtex Proposal - Nico C. Mendoza"] 1574435473 "Proposal - Nico C. Mendoza.aux" "Proposal - Nico C. Mendoza.bbl" "Proposal - Nico C. Mendoza" 1574435818
   "/usr/local/texlive/2019/texmf-dist/bibtex/bst/base/ieeetr.bst" 1292289607 18361 1a00e58565e7f19bf2b3e1bfb82254ae ""
-  "Proposal - Nico C. Mendoza.aux" 1574079521 9223 1b13fc902c7a5f9dbb6932e00bc6c2de "pdflatex"
+  "Proposal - Nico C. Mendoza.aux" 1574435817 9223 b0ba291e88c1634de423070183ffdaf8 "pdflatex"
   "biblio.bib" 1573394045 2561 d8db35ba6e47191b8d4eff75b41a618b ""
   (generated)
   "Proposal - Nico C. Mendoza.bbl"
   "Proposal - Nico C. Mendoza.blg"
-["pdflatex"] 1574079520 "/Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.tex" "/Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.pdf" "Proposal - Nico C. Mendoza" 1574079521
-  "/Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.aux" 1574079521 9223 1b13fc902c7a5f9dbb6932e00bc6c2de ""
-  "/Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.tex" 1574079519 49008 d8c72d6820ef13a56fda2e573c563d73 ""
+["pdflatex"] 1574435816 "/Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.tex" "/Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.pdf" "Proposal - Nico C. Mendoza" 1574435818
+  "/Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.aux" 1574435817 9223 b0ba291e88c1634de423070183ffdaf8 ""
+  "/Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.tex" 1574435815 50980 2f04325e9d63dad7b86f632de564dd14 ""
   "/usr/local/texlive/2019/texmf-dist/fonts/map/fontname/texfonts.map" 1511824771 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm" 1136768653 1328 c834bbb027764024c09d3d2bf908b5f0 ""
   "/usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm" 1136768653 1324 c910af8c371558dc20f2d7822f66fe64 ""
@@ -83,19 +83,19 @@
   "Formula.png" 1573394045 14568 a29c73b38841416a986125f56dbeda4d ""
   "Grade-Sheet.png" 1573394045 60085 d0bfdf185f5bf79fc5a3f236b25f20b7 ""
   "Grade.png" 1573394045 16901 25d129879484d0b7b977a29e54ae8db7 ""
-  "Proposal - Nico C. Mendoza.aux" 1574079521 9223 1b13fc902c7a5f9dbb6932e00bc6c2de "pdflatex"
-  "Proposal - Nico C. Mendoza.bbl" 1574079480 1605 8fd2843d181362ee9aa5650403736a26 "bibtex Proposal - Nico C. Mendoza"
-  "Proposal - Nico C. Mendoza.out" 1574079521 3187 4feef849b1de237dd22bfe2073f82593 "pdflatex"
-  "Proposal - Nico C. Mendoza.tex" 1574079519 49008 d8c72d6820ef13a56fda2e573c563d73 ""
-  "Proposal - Nico C. Mendoza.toc" 1574079521 3978 ce5e9649fa6b97b26e0f7faf4d0af06b "pdflatex"
+  "Proposal - Nico C. Mendoza.aux" 1574435817 9223 b0ba291e88c1634de423070183ffdaf8 "pdflatex"
+  "Proposal - Nico C. Mendoza.bbl" 1574435473 1605 8fd2843d181362ee9aa5650403736a26 "bibtex Proposal - Nico C. Mendoza"
+  "Proposal - Nico C. Mendoza.out" 1574435817 3187 4feef849b1de237dd22bfe2073f82593 "pdflatex"
+  "Proposal - Nico C. Mendoza.tex" 1574435815 50980 2f04325e9d63dad7b86f632de564dd14 ""
+  "Proposal - Nico C. Mendoza.toc" 1574435817 3978 4723e36a9b2408062695c3f4de1a74f5 "pdflatex"
   "Submission-Deadline.png" 1573394045 11831 e842e0233b4ee9f9a7edffdffcb57b7c ""
   "Teacher-Load.png" 1573394045 22265 8394ad99e863d5bbb90d9a9dfa0480ca ""
   "User.png" 1573394045 67576 6c884f728a63c8620d3506f92416d061 ""
   (generated)
-  "Proposal - Nico C. Mendoza.pdf"
-  "Proposal - Nico C. Mendoza.log"
-  "/Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.log"
   "/Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.pdf"
   "Proposal - Nico C. Mendoza.aux"
-  "Proposal - Nico C. Mendoza.out"
+  "/Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.log"
   "Proposal - Nico C. Mendoza.toc"
+  "Proposal - Nico C. Mendoza.out"
+  "Proposal - Nico C. Mendoza.pdf"
+  "Proposal - Nico C. Mendoza.log"
