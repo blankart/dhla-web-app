@@ -758,8 +758,10 @@ This will hold the record of attendance of each student.
     date   & DATETIME   & & School date\\ \hline
     schoolYear   & VARCHAR(9)   & & School year of the attendance log\\ \hline
     academicTerm   & ENUM('SEMESTER\_1', 'SEMESTER\_2', 'QUARTER\_1', 'QUARTER\_2', 'QUARTER\_3', 'QUARTER\_4') &  & Academic term of the attendance log\\ \hline
-    isPresent   & BIT(1)   & &Denotes if a student is present (1) or absent (0)\\ \hline
-    isTardy   & BIT(1)   & & Denotes if a student is tardy (1) or not (0)\\ \hline
+    month   & INT(2)   & Month of the attendance record\\ \hline
+    daysPresent   & INT(2)   & Number of days the student is present\\ \hline
+    daysTardy   & INT(2)   & Number of days the student is tardy\\ \hline
+    totalDays   & INT(2)   & Total number of school days in that month\\ \hline
     teacherID   & INT(10)   & FOREIGN & Unique identifier of a teacher\\ \hline
     studentID   & INT(10)   & FOREIGN & Unique identifier of a student\\ \hline
 \end{longtable}
