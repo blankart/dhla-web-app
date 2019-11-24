@@ -21,88 +21,7 @@ export class AdminViewUpdateLog extends Component {
       page: 1,
       pageSize: 5,
       numOfPages: 1,
-      data: [
-        {
-          gradeSheetID: '',
-          schoolYear: '',
-          academicTerm: '',
-          teacherName: '',
-          gradeLevel: '',
-          subjectName: '',
-          sectionName: '',
-          dateUpdated: '',
-          studentName: '',
-          entryNum: '',
-          category: '',
-          total: '',
-          oldGrade: {},
-          newGrade: {},
-        },
-        {
-          gradeSheetID: '',
-          schoolYear: '',
-          academicTerm: '',
-          teacherName: '',
-          gradeLevel: '',
-          subjectName: '',
-          sectionName: '',
-          dateUpdated: '',
-          studentName: '',
-          entryNum: '',
-          category: '',
-          total: '',
-          oldGrade: {},
-          newGrade: {},
-        },
-        {
-          gradeSheetID: '',
-          schoolYear: '',
-          academicTerm: '',
-          teacherName: '',
-          gradeLevel: '',
-          subjectName: '',
-          sectionName: '',
-          dateUpdated: '',
-          studentName: '',
-          entryNum: '',
-          category: '',
-          total: '',
-          oldGrade: {},
-          newGrade: {},
-        },
-        {
-          gradeSheetID: '',
-          schoolYear: '',
-          academicTerm: '',
-          teacherName: '',
-          gradeLevel: '',
-          subjectName: '',
-          sectionName: '',
-          dateUpdated: '',
-          studentName: '',
-          entryNum: '',
-          category: '',
-          total: '',
-          oldGrade: {},
-          newGrade: {},
-        },
-        {
-          gradeSheetID: '',
-          schoolYear: '',
-          academicTerm: '',
-          teacherName: '',
-          gradeLevel: '',
-          subjectName: '',
-          sectionName: '',
-          dateUpdated: '',
-          studentName: '',
-          entryNum: '',
-          category: '',
-          total: '',
-          oldGrade: {},
-          newGrade: {},
-        },
-      ],
+      data: [],
     };
   }
 
@@ -152,9 +71,11 @@ export class AdminViewUpdateLog extends Component {
           <Table.Col>{value.sectionName}</Table.Col>
           <Table.Col>{value.subjectName}</Table.Col>
           <Table.Col>
-            <Button icon="info" size="sm" pill color="info">
-              Details
-            </Button>
+            {value.teacherName != '' && (
+              <Button icon="info" size="sm" pill color="info">
+                Details
+              </Button>
+            )}
           </Table.Col>
         </Table.Row>,
       );
