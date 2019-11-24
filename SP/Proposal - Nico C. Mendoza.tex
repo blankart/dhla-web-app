@@ -76,11 +76,21 @@ ECR templates are MS Excel based. It has three (3) components for grades: Writte
 Class records are one of the most important things kept by teachers. This holds all the class performance of the students a teacher handles \cite{Dellosa}. At present creating an online or web-based class record system is possible. Teachers and school administrators are also updated with technology \cite{Dellosa}. They can use laptops, computers and even phones easily. Keeping class records or records, in general, is commonly done with the use of spreadsheet applications \cite{Dellosa}. Even though spreadsheets have proven to be a useful tool for keeping records, creating an application with better management capabilities is possible.
 
 \subsection{Statement of the Problem}
-Dee Hwa Liong Academy is an educational institution that implements the K-to-12 program. This academy also uses spreadsheets to keep student records and faces several difficulties in doing so, which include lack of security and long preparation time.
+% Dee Hwa Liong Academy is an educational institution that implements the K-to-12 program. This academy also uses spreadsheets to keep student records and faces several difficulties in doing so, which include lack of security and long preparation time.
 
-Teachers and registrars experience difficulties in using spreadsheet applications for keeping student records. These difficulties include the submission of grades, done through flash drive or via messenger application, and monitoring submission, no submission, late submission, and latest submissions (occurs when there are multiple submissions due to revisions). These records are also prone to data corruption. Moreover, securing such files is difficult since there is no way to know when and who edited the file without permission from certain authorities.
+% Teachers and registrars experience difficulties in using spreadsheet applications for keeping student records. These difficulties include the submission of grades, done through flash drive or via messenger application, and monitoring submission, no submission, late submission, and latest submissions (occurs when there are multiple submissions due to revisions). These records are also prone to data corruption. Moreover, securing such files is difficult since there is no way to know when and who edited the file without permission from certain authorities.
 
-The academy also suffers long preparation time for each spreadsheet file since each file is edited by the IT head, changing the formula for grade computation of each cell using the excel syntax, according to grade level and subjects. The said preparation is repeated four times a year. Furthermore, merging individual grade sheets from different subjects, printing report cards and making summary reports are also a difficulty for the IT head since these grades and data come from different files. Lastly, keeping track of SHS students with failed subjects is difficult since each student has their own set of currently taking subjects. Students who failed in a subject in a semester is required to take the remedial class the next semester. An error or missed information may lead to an overflow of subjects to be taken next semester.
+% The academy also suffers long preparation time for each spreadsheet file since each file is edited by the IT head, changing the formula for grade computation of each cell using the excel syntax, according to grade level and subjects. The said preparation is repeated four times a year. Furthermore, merging individual grade sheets from different subjects, printing report cards and making summary reports are also a difficulty for the IT head since these grades and data come from different files. Lastly, keeping track of SHS students with failed subjects is difficult since each student has their own set of currently taking subjects. Students who failed in a subject in a semester is required to take the remedial class the next semester. An error or missed information may lead to an overflow of subjects to be taken next semester.
+
+% Revision for SOP
+
+Dee Hwa Liong Academy is an educational institution that implements the K-to-12 program. This academy also uses spreadsheet to keep student records and faces several difficulties in doing so, which include lack of security and long preparation time.
+
+After a five-day examination period, a two-week time window was given to teachers for filling up the Electronic Class Record (ECR) provided by DepEd. It is an excel file which includes all the student's grades in each component (Written Work, Performance Tasks, and Quarterly Assessment). One of the difficulties that teachers and registrars encounter is the lack of security in the student records. One example includes the submission of grades done through flash drive or via messenger application. In effect, these excel files can easily be duplicated and a possible modification can be done without the permission of certain authorities. Moreover, these records are also prone to data corruption.
+
+The academy also suffers long preparation time for each spreadsheet file since each file is edited by the IT head, changing the formula for grade computation of each cell using the excel syntax, according to grade level and subjects. The said preparation is repeated multiple times a year (twice a year for SHS students and four times a year for non-SHS). Furthermore, merging individual grade sheets from different subjects, printing report cards and making summary reports are also a difficulty for the IT head since these grades and data come from different files. These files have to be manually linked to another file for generating report cards. Lastly, keeping track of SHS students with failed subjects is difficult since each student has their own set of currently taking subjects. Students who failed in a subject in a semester is required to take the remedial class the next semester. An error or missed information may lead to an overflow of subjects to be taken next semester.
+
+
 
 \subsection{Objectives of the Study}
 The main goal of the study is to develop a web-based application for record keeping of students' grades with the following functionalities:
@@ -748,8 +758,10 @@ This will hold the record of attendance of each student.
     date   & DATETIME   & & School date\\ \hline
     schoolYear   & VARCHAR(9)   & & School year of the attendance log\\ \hline
     academicTerm   & ENUM('SEMESTER\_1', 'SEMESTER\_2', 'QUARTER\_1', 'QUARTER\_2', 'QUARTER\_3', 'QUARTER\_4') &  & Academic term of the attendance log\\ \hline
-    isPresent   & BIT(1)   & &Denotes if a student is present (1) or absent (0)\\ \hline
-    isTardy   & BIT(1)   & & Denotes if a student is tardy (1) or not (0)\\ \hline
+    month   & INT(2)   & Month of the attendance record\\ \hline
+    daysPresent   & INT(2)   & Number of days the student is present\\ \hline
+    daysTardy   & INT(2)   & Number of days the student is tardy\\ \hline
+    totalDays   & INT(2)   & Total number of school days in that month\\ \hline
     teacherID   & INT(10)   & FOREIGN & Unique identifier of a teacher\\ \hline
     studentID   & INT(10)   & FOREIGN & Unique identifier of a student\\ \hline
 \end{longtable}
