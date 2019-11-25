@@ -5,42 +5,42 @@
 \BOOKMARK [2][-]{subsection.1.3}{Objectives of the Study}{section.1}% 5
 \BOOKMARK [2][-]{subsection.1.4}{Significance of the Project}{section.1}% 6
 \BOOKMARK [2][-]{subsection.1.5}{Scope and Limitations}{section.1}% 7
-\BOOKMARK [2][-]{subsection.1.6}{Assumptions}{section.1}% 8
-\BOOKMARK [1][-]{section.2}{Review of Related Literature}{}% 9
-\BOOKMARK [1][-]{section.3}{Theoretical Framework}{}% 10
-\BOOKMARK [2][-]{subsection.3.1}{Assessment of Students}{section.3}% 11
-\BOOKMARK [3][-]{subsubsection.3.1.1}{Nursery and Kinder1}{subsection.3.1}% 12
-\BOOKMARK [3][-]{subsubsection.3.1.2}{Kinder2, Grades 1 to 10}{subsection.3.1}% 13
-\BOOKMARK [3][-]{subsubsection.3.1.3}{Grades 11 to 12}{subsection.3.1}% 14
-\BOOKMARK [2][-]{subsection.3.2}{Grade Submission}{section.3}% 15
-\BOOKMARK [2][-]{subsection.3.3}{Deliberation of Grades}{section.3}% 16
-\BOOKMARK [2][-]{subsection.3.4}{Printing of Report Cards}{section.3}% 17
-\BOOKMARK [2][-]{subsection.3.5}{Node.js}{section.3}% 18
-\BOOKMARK [2][-]{subsection.3.6}{Express.js}{section.3}% 19
-\BOOKMARK [2][-]{subsection.3.7}{React.js}{section.3}% 20
-\BOOKMARK [2][-]{subsection.3.8}{MySQL}{section.3}% 21
-\BOOKMARK [1][-]{section.4}{Design and Implementation}{}% 22
-\BOOKMARK [2][-]{subsection.4.1}{Context Diagram}{section.4}% 23
-\BOOKMARK [2][-]{subsection.4.2}{Activity Diagrams}{section.4}% 24
-\BOOKMARK [2][-]{subsection.4.3}{Database Design}{section.4}% 25
-\BOOKMARK [3][-]{subsubsection.4.3.1}{Entity Relationship Diagram \(ERD\)}{subsection.4.3}% 26
-\BOOKMARK [2][-]{subsection.4.4}{Data Dictionary}{section.4}% 27
-\BOOKMARK [3][-]{subsubsection.4.4.1}{User Account}{subsection.4.4}% 28
-\BOOKMARK [3][-]{subsubsection.4.4.2}{Student}{subsection.4.4}% 29
-\BOOKMARK [3][-]{subsubsection.4.4.3}{Parent/Guardian}{subsection.4.4}% 30
-\BOOKMARK [3][-]{subsubsection.4.4.4}{Teacher}{subsection.4.4}% 31
-\BOOKMARK [3][-]{subsubsection.4.4.5}{Nonacademic}{subsection.4.4}% 32
-\BOOKMARK [3][-]{subsubsection.4.4.6}{Section}{subsection.4.4}% 33
-\BOOKMARK [3][-]{subsubsection.4.4.7}{Subject}{subsection.4.4}% 34
-\BOOKMARK [3][-]{subsubsection.4.4.8}{Grade Level}{subsection.4.4}% 35
-\BOOKMARK [3][-]{subsubsection.4.4.9}{Category}{subsection.4.4}% 36
-\BOOKMARK [3][-]{subsubsection.4.4.10}{Grade Sheet}{subsection.4.4}% 37
-\BOOKMARK [3][-]{subsubsection.4.4.11}{Grade}{subsection.4.4}% 38
-\BOOKMARK [3][-]{subsubsection.4.4.12}{Attendance Log}{subsection.4.4}% 39
-\BOOKMARK [3][-]{subsubsection.4.4.13}{Advisory Table}{subsection.4.4}% 40
-\BOOKMARK [3][-]{subsubsection.4.4.14}{Teacher's Load}{subsection.4.4}% 41
-\BOOKMARK [3][-]{subsubsection.4.4.15}{Submission Deadline}{subsection.4.4}% 42
-\BOOKMARK [3][-]{subsubsection.4.4.16}{Formula}{subsection.4.4}% 43
+\BOOKMARK [1][-]{section.2}{Review of Related Literature}{}% 8
+\BOOKMARK [1][-]{section.3}{Theoretical Framework}{}% 9
+\BOOKMARK [2][-]{subsection.3.1}{Assessment of Students}{section.3}% 10
+\BOOKMARK [3][-]{subsubsection.3.1.1}{Nursery and Kinder1}{subsection.3.1}% 11
+\BOOKMARK [3][-]{subsubsection.3.1.2}{Kinder2, Grades 1 to 10}{subsection.3.1}% 12
+\BOOKMARK [3][-]{subsubsection.3.1.3}{Grades 11 to 12}{subsection.3.1}% 13
+\BOOKMARK [2][-]{subsection.3.2}{Grade Submission}{section.3}% 14
+\BOOKMARK [2][-]{subsection.3.3}{Deliberation of Grades}{section.3}% 15
+\BOOKMARK [2][-]{subsection.3.4}{Printing of Report Cards}{section.3}% 16
+\BOOKMARK [2][-]{subsection.3.5}{Node.js}{section.3}% 17
+\BOOKMARK [2][-]{subsection.3.6}{Express.js}{section.3}% 18
+\BOOKMARK [2][-]{subsection.3.7}{React.js}{section.3}% 19
+\BOOKMARK [2][-]{subsection.3.8}{MySQL}{section.3}% 20
+\BOOKMARK [1][-]{section.4}{Design and Implementation}{}% 21
+\BOOKMARK [2][-]{subsection.4.1}{Context Diagram}{section.4}% 22
+\BOOKMARK [2][-]{subsection.4.2}{Activity Diagrams}{section.4}% 23
+\BOOKMARK [2][-]{subsection.4.3}{Database Design}{section.4}% 24
+\BOOKMARK [3][-]{subsubsection.4.3.1}{Entity Relationship Diagram \(ERD\)}{subsection.4.3}% 25
+\BOOKMARK [2][-]{subsection.4.4}{Data Dictionary}{section.4}% 26
+\BOOKMARK [3][-]{subsubsection.4.4.1}{User Account}{subsection.4.4}% 27
+\BOOKMARK [3][-]{subsubsection.4.4.2}{Student}{subsection.4.4}% 28
+\BOOKMARK [3][-]{subsubsection.4.4.3}{Parent/Guardian}{subsection.4.4}% 29
+\BOOKMARK [3][-]{subsubsection.4.4.4}{Teacher}{subsection.4.4}% 30
+\BOOKMARK [3][-]{subsubsection.4.4.5}{Nonacademic}{subsection.4.4}% 31
+\BOOKMARK [3][-]{subsubsection.4.4.6}{Section}{subsection.4.4}% 32
+\BOOKMARK [3][-]{subsubsection.4.4.7}{Subject}{subsection.4.4}% 33
+\BOOKMARK [3][-]{subsubsection.4.4.8}{Grade Level}{subsection.4.4}% 34
+\BOOKMARK [3][-]{subsubsection.4.4.9}{Category}{subsection.4.4}% 35
+\BOOKMARK [3][-]{subsubsection.4.4.10}{Subcategory}{subsection.4.4}% 36
+\BOOKMARK [3][-]{subsubsection.4.4.11}{Grade Sheet}{subsection.4.4}% 37
+\BOOKMARK [3][-]{subsubsection.4.4.12}{Grade}{subsection.4.4}% 38
+\BOOKMARK [3][-]{subsubsection.4.4.13}{Attendance Log}{subsection.4.4}% 39
+\BOOKMARK [3][-]{subsubsection.4.4.14}{Advisory Table}{subsection.4.4}% 40
+\BOOKMARK [3][-]{subsubsection.4.4.15}{Teacher's Load}{subsection.4.4}% 41
+\BOOKMARK [3][-]{subsubsection.4.4.16}{Submission Deadline}{subsection.4.4}% 42
+\BOOKMARK [3][-]{subsubsection.4.4.17}{Formula}{subsection.4.4}% 43
 \BOOKMARK [2][-]{subsection.4.5}{System Architecture}{section.4}% 44
 \BOOKMARK [2][-]{subsection.4.6}{Technical Architecture}{section.4}% 45
 \BOOKMARK [1][-]{section.5}{Expected Output/Timeline}{}% 46

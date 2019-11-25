@@ -1,7 +1,7 @@
 \documentclass[11pt,a4paper,titlepage]{article}
 
-\title {Dee Hwa Liong Academy Web Application}
-\author {Nico C. Mendoza \\ Department of Physical Sciences and Mathematics \\ University of the Philippines Manila \\ \\
+\title {Dee Hwa Liong Academy Grade Management System}
+\author {Nico C. Mendoza \\ Department of Physical Sciences and Mathematics \\ University of the Philippines Manila \\ \\ Adviser: Gregorio B. Baes, Ph.D.
 }
 \date{}
 
@@ -52,6 +52,8 @@
 \addcontentsline{toc}{section}{Abstract}
 \thispagestyle{plain}
 \setcounter{page}{2}
+Dee Hwa Liong Academy currently uses spreadsheet files to keep student records. In result, the academy faces several difficulties, which include tedious process for storing student records, long preparation time, and lack of security. With the help of this web-based application, it will lessen the time needed for grade submissions and deliberation, and it will also provide security for files. The application will also provide security for students’ records since grades will not be easily edited and an edit log will also be available. In addition, this application will also keep parents up to date with their child’s performance.
+\Keywords{information system, web-based application, k-to-12, grade management system}
 \end{abstract}
 
 \pagenumbering{roman}
@@ -214,12 +216,6 @@ In addition, this application will also keep parents up to date with their child
 	\item The system will be created to solve bottle neck problems of the grade management system of Dee Hwa Liong Academy. These bottle neck problems include the preparation and distribution of grade sheets per subject teacher, produce a condensed grade sheet per grade level, and formatting of grades for printing.
 	\item The system will be fully online, no offline counterpart, and accounts cannot be requested through the system. Accounts will be created by the system administrator.
 	\item React.js and Express.js will be used for developing the web application therefore the server to be used, by the client, must support a node.js server environment.
-\end{enumerate}
-
-\subsection{Assumptions}
-Listed below are the assumptions made for the Dee Hwa Liong Academy Web Application:
-\begin{enumerate}
-	\item 
 \end{enumerate}
 
 \section{Review of Related Literature}
@@ -419,7 +415,7 @@ Figure 8 shows the relationship among submission deadline and teacher. The submi
 
 \vspace{1cm}
 \begin{center}
-    \includegraphics[height=6.0cm]{Formula.png}
+    \includegraphics[height=8.0cm]{Formula.png}
 \end{center}
 \vspace{1cm}
 \begin{center}
@@ -694,6 +690,28 @@ Category table will tell us what type of activity (formative assessment-seatwork
 
 \newpage
 
+\subsubsection{Subcategory}
+
+Subcategory table is a subcomponent of a specific component (formative assessment-seatwork, formative assessment-assignments, written work-quizzes, written work-others, performance task-oral participation, etc.) being recorded in the grade sheet.
+
+\vspace{1cm}
+\begin{longtable}{ |p{2.5cm}|p{4.5cm}|p{2.5cm}|p{3cm}|  }
+    \hline
+    \multicolumn{4}{|c|}{\textbf{category}} \\
+    \hline
+    \textbf{FIELD}&\textbf{TYPE}&\textbf{KEY TYPE}&\textbf{DESCRIPTION}\\
+    \hline
+    \textbf{subCategID}  & \textbf{INT(10), AUTO\_INCREMENT} & \textbf{PRIMARY} & \textbf{Unique identifier of a subcategory}\\ \hline
+    categoryName & VARCHAR(20) & & Name of subcategory \\ \hline
+\end{longtable}
+
+\vspace{.5cm}
+\begin{center}
+    Table 10: Data dictionary for \textbf{subcategory} table
+\end{center}
+
+\newpage
+
 \subsubsection{Grade Sheet}
 
 This will consist of the grades of the students from every activity to condensed grades.
@@ -719,7 +737,7 @@ This will consist of the grades of the students from every activity to condensed
     
 \vspace{.5cm}
 \begin{center}
-    Table 10: Data dictionary for \textbf{grade sheet} table
+    Table 11: Data dictionary for \textbf{grade sheet} table
 \end{center}
 
 \newpage
@@ -739,6 +757,7 @@ This represents a grade entry in a grade sheet.
     score   & DOUBLE   & & Student's score \\ \hline
     total   & INT(3)   & & The total number of items \\ \hline
     categoryID   & INT(10)   & FOREIGN & Unique identifier of a category \\ \hline
+    subCategID   & INT(10)   & FOREIGN & Unique identifier of a subcategory \\ \hline
     date   & DATETIME   & & Date when the grade was created \\ \hline
     gradeSheetID   & INT(10)   & & Unique identifier of a grade sheet \\ \hline
     entryNum   & INT(1)   & & Denotes the entry number of the grade in the grade sheet \\ \hline
@@ -749,7 +768,7 @@ This represents a grade entry in a grade sheet.
     
 \vspace{.5cm}
 \begin{center}
-    Table 11: Data dictionary for \textbf{grade} table
+    Table 12: Data dictionary for \textbf{grade} table
 \end{center}
 
 \newpage
@@ -769,17 +788,17 @@ This will hold the record of attendance of each student.
     date   & DATETIME   & & School date\\ \hline
     schoolYear   & VARCHAR(9)   & & School year of the attendance log\\ \hline
     academicTerm   & ENUM('SEMESTER\_1', 'SEMESTER\_2', 'QUARTER\_1', 'QUARTER\_2', 'QUARTER\_3', 'QUARTER\_4') &  & Academic term of the attendance log\\ \hline
-    month   & INT(2)   & Month of the attendance record\\ \hline
-    daysPresent   & INT(2)   & Number of days the student is present\\ \hline
-    daysTardy   & INT(2)   & Number of days the student is tardy\\ \hline
-    totalDays   & INT(2)   & Total number of school days in that month\\ \hline
+    month   & INT(2) &  & Month of the attendance record\\ \hline
+    daysPresent   & INT(2) &  & Number of days the student is present\\ \hline
+    daysTardy   & INT(2) &  & Number of days the student is tardy\\ \hline
+    totalDays   & INT(2) &  & Total number of school days in that month\\ \hline
     teacherID   & INT(10)   & FOREIGN & Unique identifier of a teacher\\ \hline
     studentID   & INT(10)   & FOREIGN & Unique identifier of a student\\ \hline
 \end{longtable}
 
 \vspace{.5cm}
 \begin{center}
-    Table 12: Data dictionary for \textbf{attendance log} table
+    Table 13: Data dictionary for \textbf{attendance log} table
 \end{center}
 
 \newpage
@@ -805,7 +824,7 @@ This table will show the section being handled by the adviser.
 
 \vspace{.5cm}
 \begin{center}
-    Table 13: Data dictionary for \textbf{advisory table} table
+    Table 14: Data dictionary for \textbf{advisory table} table
 \end{center}
 
 \newpage
@@ -831,7 +850,7 @@ This table shows the subjects handled by different teachers.
 
 \vspace{.5cm}
 \begin{center}
-    Table 14: Data dictionary for \textbf{teacher load} table
+    Table 15: Data dictionary for \textbf{teacher load} table
 \end{center}
 
 \newpage
@@ -856,7 +875,7 @@ This table will contain the deadlines set by the registrar.
 
 \vspace{.5cm}
 \begin{center}
-    Table 14: Data dictionary for \textbf{submission deadline} table
+    Table 16: Data dictionary for \textbf{submission deadline} table
 \end{center}
 
 \newpage
@@ -873,16 +892,18 @@ This table will contain the computation formula for each grade level approved by
     \textbf{FIELD}&\textbf{TYPE}&\textbf{KEY TYPE}&\textbf{DESCRIPTION}\\
     \hline
     \textbf{formulaID}  & \textbf{INT(10), AUTO\_INCREMENT} & \textbf{PRIMARY} & \textbf{Unique identifier of the formula}\\ \hline
-    subjectCat & ENUM(`LANGUAGES', `AP', `ESP', `SCIENCE', `MATH', `MAPEH', `EPP/TLE') & & The subject category of the formula\\ \hline
+    sectionID & INT(10) & FOREIGN & Unique identifier of a section\\ \hline
+    subjectID & INT(10) & FOREIGN & Unique identifier of a subject\\ \hline
+    teacherID & INT(10) & FOREIGN & Unique identifier of a teacher\\ \hline
+    subCategID & INT(10) & FOREIGN & Unique identifier of a subcategory\\ \hline
     categoryID & INT(10) & FOREIGN & Unique identifier of a category\\ \hline
-    compPercen- tage & INT(2) & & The percentage of the component per subject category\\ \hline
-    isShs & BIT(1) &  & Denotes of the grade formula is for SHS (1) or Grade 1-10 (0)\\ \hline
+    compWeight & INT(2) & & The weight of the component per subject category\\ \hline
 
 \end{longtable}
 
 \vspace{.5cm}
 \begin{center}
-    Table 15: Data dictionary for \textbf{formula} table
+    Table 17: Data dictionary for \textbf{formula} table
 \end{center}
 
 \newpage
