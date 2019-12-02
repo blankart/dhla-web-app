@@ -52,7 +52,7 @@
 \addcontentsline{toc}{section}{Abstract}
 \thispagestyle{plain}
 \setcounter{page}{2}
-Dee Hwa Liong Academy currently uses spreadsheet files to keep student records. In result, the academy faces several difficulties, which include tedious process for storing student records, long preparation time, and lack of security. With the help of this web-based application, it will lessen the time needed for grade submissions and deliberation, and it will also provide security for files. The application will also provide security for students’ records since grades will not be easily edited and an edit log will also be available. In addition, this application will also keep parents up to date with their child’s performance.
+Dee Hwa Liong Academy currently uses spreadsheet files to keep student records. In result, the academy faces several difficulties, which include tedious process for storing student records, long preparation time, and lack of security. With the help of this web-based information system will lessen the time needed for grade submission and deliberation, and it will also provide security features for the grade sheets. The system will also eradicate the need of using flash drives and facebook messenger for submission of grades. Tracking late submissions of grades will also be easier since there will be deadline feature which will be set for each teacher in the system. The application will also provide security for students' records since grades will not be easily modified and an edit log will also be available. In addition, this application will also keep parents up to date with their child’s performance.
 \Keywords{information system, web-based application, k-to-12, grade management system}
 \end{abstract}
 
@@ -78,29 +78,34 @@ ECR templates are MS Excel based. It has three (3) components for grades: Writte
 Class records are one of the most important things kept by teachers. This holds all the class performance of the students a teacher handles \cite{Dellosa}. At present creating an online or web-based class record system is possible. Teachers and school administrators are also updated with technology \cite{Dellosa}. They can use laptops, computers and even phones easily. Keeping class records or records, in general, is commonly done with the use of spreadsheet applications \cite{Dellosa}. Even though spreadsheets have proven to be a useful tool for keeping records, creating an application with better management capabilities is possible.
 
 \subsection{Statement of the Problem}
-% Dee Hwa Liong Academy is an educational institution that implements the K-to-12 program. This academy also uses spreadsheets to keep student records and faces several difficulties in doing so, which include lack of security and long preparation time.
+% Dee Hwa Liong Academy is an educational institution that implements the K-to-12 program. This academy uses spreadsheet to keep student records. In result, the academy faces several difficulties, which include tedious process for storing student records, long preparation time, and lack of security.
 
-% Teachers and registrars experience difficulties in using spreadsheet applications for keeping student records. These difficulties include the submission of grades, done through flash drive or via messenger application, and monitoring submission, no submission, late submission, and latest submissions (occurs when there are multiple submissions due to revisions). These records are also prone to data corruption. Moreover, securing such files is difficult since there is no way to know when and who edited the file without permission from certain authorities.
+% The academy suffers long preparation time for creating spreadsheet files for each teacher. These excel files are called Electronic Class Record (ECR), an excel file provided by DepEd which includes lists of student's grades in each component (Written Work, Performance Task, and Quarterly Assessment) per subject. Before the classes start, the Information Technology (IT) head manually generates spreadsheet file for each teacher, adding the teacher's current load with corresponding students enrolled in that subject. The said preparation will be repeated twice a year for Senior Highschool teachers (once a year for non-SHS subject teachers). Furthermore, generating report cards can be a tedious process for the school. The process involves compiling all the spreadsheet file, scanning through all the condensed grades of each student per subject, and manually writing it on a report card. It could take up to a day or two to complete.
 
-% The academy also suffers long preparation time for each spreadsheet file since each file is edited by the IT head, changing the formula for grade computation of each cell using the excel syntax, according to grade level and subjects. The said preparation is repeated four times a year. Furthermore, merging individual grade sheets from different subjects, printing report cards and making summary reports are also a difficulty for the IT head since these grades and data come from different files. Lastly, keeping track of SHS students with failed subjects is difficult since each student has their own set of currently taking subjects. Students who failed in a subject in a semester is required to take the remedial class the next semester. An error or missed information may lead to an overflow of subjects to be taken next semester.
+% One of the difficulties that the IT head and registrar encounter is the lack of security in the spreadsheet files. The submission of grades is usually done through flash drive or via facebook messenger. In effect, these excel files can easily be duplicated (losing track of the most updated file) and a possible modification can be done without the permission of certain authorities. Moreover, these records are also prone to data corruption.
 
-% Revision for SOP ver1
+% Lastly, the condensed grades of each student are manually scanned to find those who failed a subject. This inefficient process of keeping track of students with failed subjects usually takes couple of hours to complete. The same process is also used for creating a list of honor students per grade level. 
 
-% Dee Hwa Liong Academy is an educational institution that implements the K-to-12 program. This academy also uses spreadsheet to keep student records and faces several difficulties in doing so, which include lack of security and long preparation time.
+% Statement of the Problem revision
 
-% After a five-day examination period, a two-week time window was given to teachers for filling up the Electronic Class Record (ECR) provided by DepEd. It is an excel file which includes all the student's grades in each component (Written Work, Performance Tasks, and Quarterly Assessment). One of the difficulties that teachers and registrars encounter is the lack of security in the student records. One example includes the submission of grades done through flash drive or via messenger application. In effect, these excel files can easily be duplicated and a possible modification can be done without the permission of certain authorities. Moreover, these records are also prone to data corruption.
+Dee Hwa Liong Academy is an eduational institution that implements the K-to-12 program. This academy uses spreadsheet to keep student records. In result, the academy faces several difficulties, which include tedious process for storing student records, long preparation time, and lack of security.
 
-% The academy also suffers long preparation time for each spreadsheet file since each file is edited by the IT head, changing the formula for grade computation of each cell using the excel syntax, according to grade level and subjects. The said preparation is repeated multiple times a year (twice a year for SHS students and four times a year for non-SHS). Furthermore, merging individual grade sheets from different subjects, printing report cards and making summary reports are also a difficulty for the IT head since these grades and data come from different files. These files have to be manually linked to another file for generating report cards. Lastly, keeping track of SHS students with failed subjects is difficult since each student has their own set of currently taking subjects. Students who failed in a subject in a semester is required to take the remedial class the next semester. An error or missed information may lead to an overflow of subjects to be taken next semester.
+The academy suffers long preparation time for creating spreadsheet files for each teacher. These excel files are called Electronic Class Record (ECR), an excel file provided by DepEd which includes lists of student's grades in each component (Written Work, Performance Task, and Quarterly Assessment) per subject. Before the classes start, the Information Technology (IT) head gets all enrolled students, their corresponding section, and the subject load of each teacher from the registrar's office. The IT head manually generates a teacher-centric spreadsheet file from these data for each teacher, adding the student's current load with corresponding students enrolled in that subject. The weight of each component is also manually changed depending on the guidelines that was given by DepEd. The load of each teacher can vary, thus spreadsheet files contain multiple grade sheets. The said preparation will be repeated twice a year for Senior Highschool teachers (once a year for non-SHS subject teachers).
 
-Dee Hwa Liong Academy is an educational institution that implements the K-to-12 program. This academy uses spreadsheet to keep student records. In result, the academy faces several difficulties, which include tedious process for storing student records, long preparation time, and lack of security.
+% indiv delibration
+After a five-day examination period, the teachers are given a two-week time window to fill up the scores of their handling students for each subject. After making sure that a teacher has already submitted all their completed grade sheets, an individual delibration is taken place. This delibration process includes a face-to-face meeting with the IT head and registrar, running down all the student scores, and checking for possible incorrect or missing fields. Late submission of grades can cause a delay of the group deliberation.   
 
-The academy suffers long preparation time for creating spreadsheet files for each teacher. These excel files are called Electronic Class Record (ECR), an excel file provided by DepEd which includes lists of student's grades in each component (Written Work, Performance Task, and Quarterly Assessment) per subject. Before the classes start, the Information System (IT) head manually generates spreadsheet file for each teacher, adding the teacher's current load with corresponding students enrolled in that subject. The said preparation will be repeated twice a year for Senior Highschool teachers (once a year for non-SHS subject teachers). Furthermore, merging individual grade sheets from different subjects, printing report cards, and making summary reports are also a difficulty for the IT head since these grades and data come from different files.
+% data integrity
+One of the difficulties that the IT head and registrar also encounter is the lack of security in the spreadsheet files. The submission of grades is usually done through flash drive or via facebook messenger. In effect, these excel files can easily be duplicated (losing track of the most updated file) and a possible modification can be done without the permission of certain authorities. Moreover, these records are also prone to data corruption.
 
-One of the difficulties that the IT head and registrar encounter is the lack of security in the spreadsheet files. The submission of grades are usually done through flash drive or via facebook messenger. In effect, these excel files can easily be duplicated (losing track of the most updated file) and a possible modification can be done without the permission of certain authorities. Moreover, these records are also prone to data corruption.
+% group deliberation
+ After checking all grade sheets of each teacher, the IT head then manually generates a section-centric spreadsheet files which contains a list of students under a given subject. It also includes the condensed grade of each student as well as their grade for each corresponding subjects. This process involves linking multiple teacher-centric grade sheets to a single spreadsheet file. 
 
-Lastly, the condensed grades of each student are manually scanned to find those who failed a subject. This inefficient process of keeping track of students with failed subjects usually takes couple of hours to complete. The same process is also used for creating a list of honor students per grade level. 
+% creating student-centric report card
+Generating student-centric report cards can be a tedious process most especially for SHS students. The problem arose when the academy's population started to increase, thus also increases the number of students with backlog subjects. The IT head has to personalize the report cards for irregular students, since they have a different set of currently taking subjects.  
 
 
+% Draft
 
 
 
@@ -169,8 +174,8 @@ The main goal of the study is to develop a web-based application for record keep
         \item Login and logout
         \item View and update profile
         \item Change his/her password
-        \item Input and update grades in their respective class record
-        \item View grades/class record
+        \item Input and update grades in their respective grade sheet
+        \item View grades/grade sheet
         \item Submit grades
     \end{enumerate}
 
@@ -187,7 +192,7 @@ The main goal of the study is to develop a web-based application for record keep
         \item Login and logout
         \item View and update profile
         \item Change his/her password
-        \item View class record from past grade levels to present
+        \item View grade sheet from past grade levels to present
     \end{enumerate}
     \item \textbf{Parent/Guardian} accounts can do the following activities:
     \begin{enumerate}
@@ -201,15 +206,16 @@ The main goal of the study is to develop a web-based application for record keep
 \end{enumerate}
 
 \subsection{Significance of the Project}
-Using spreadsheets have proven to be a useful tool for keeping student records but this is only useful for individual subjects. Difficulties in merging records or grades from different teachers and subjects arise. It also has security problems; the registrar can edit the file without consent.
+Using spreadsheets have proven to be a useful tool for keeping student records but has disadvantages such as possible data corruption. Difficulties in merging records or grades from different teachers and subjects arise. It also has security problems; the file can be manipulated and modified by anyone without any permission.
 
-The web-based application will lessen the time needed for grade submission and deliberation, and it will also provide security for files. Submission will not require flash drives and messenger application. Tracking late submissions of grades will also be easier and accurate since every submission will be recorded in the log. The application will also provide security for students' records since grades will not be easily edited and an edit log will also be available.
+The web-based information system will lessen the time needed for post-enrollment processes, grade submission and deliberation. The system will also eradicate the need of using flash drives and facebook messenger for submission of grades. Tracking late submissions of grades will also be easier since there will be deadline feature which will be set for each teacher in the system. The application will also provide security for students' records since grades will not be easily modified and an update log will also be available.
 
-In addition, this application will also keep parents up to date with their child's performance and help SHS lessen their load for the next semester when a failed subject is needed.
+In addition, this application will also keep parents up to date with their child's performance and will provide a more efficient way of keeping track of students with backlog subjects.
 
 \subsection{Scope and Limitations}
 \begin{enumerate}
 	\item The system will be created based on the process followed by Dee Hwa Liong Academy.
+	\item The system will only cover the Kinder2 to Grade 12 students.
 	\item The grading system is provided by the academy and follows the K-to-12 program grading system.
 	\item The deliberation of grades will still be done personally by the registrar, subject teachers, advisers, and possibly, by the director and principal.
 	\item Character traits of students will also be included in the system.
@@ -235,12 +241,6 @@ The electronic class record which was developed for the faculty members of the L
 
 The University of Calabar had faced challenges which were indentified in the students' data processing in the Department. They include the long preparation time in preparation and the release of final grades to students to check their performance. There were also excessive paperworks, poor management of student records, and poor data and security features of student records and files. It was also stated that there is also the problem of lack of information to properly guide students during the admission process of students which could possibly result to presumptions in offering and dropping courses. Uzede et. al. stated that developing an Information System (IS) such as Students' Record Management Information System (SRMIS) provides data in the form of prebuilt documents that helps the decision-making processes of the users. It can also lessen the processing time which includes result generation, that is, Cumulative Grade Point Average (CGPA) computation in the University of Calabar. This allows efficient and convenient access to students' information such as grades and student records. It also can enable the implementation of layers of security by allocating access privileges and monitoring of mischievous acts of altering scores in the result sheet.\cite{Ude}
 
-
-
-
-
- 
-
 \section{Theoretical Framework}
 
 \subsection{Assessment of Students}
@@ -250,7 +250,7 @@ Dee Hwa Liong Academy handles students from Nursery, Kinder1, Kinder2, and Grade
 Nursery and Kinder1 use a progressive curriculum, and the basis for assessing a student is a checklist. Checklists are called Developmental Assessment Scale. This scale is divided into four development skills - Physical Development, Self-help Skills, Socio-emotional Development, and Pre-academic Development. Physical development is further divided into gross motor development and fine motor development. On the other hand, pre-academic development is divided into reading readiness, language development, computer literacy, number readiness, music, art and P.E. (MAPE), and Chinese. Each skill under these development skills are graded according to a scale. All traits are observed by the students' adviser. The legends for this checklist are excellent (E) - excellent knowledge, very good (VG) - notable knowledge, good (G) - satisfactory knowledge, average (A) - fair knowledge, present (P) - observed, and not observed (OB) - not yet observed. Grades of nursery and kinder1 pupils are combined and deliberated quarterly.
 
 \subsubsection{Kinder2, Grades 1 to 10}
-Kinder2 and Grades 1 to 10 use the K-to-12 curriculum. Teachers are given grade sheets to record a student's grade. The basis for assessments are written work, performance tasks, and exams. The grade sheet has columns for formative tasks. Formative tasks are used to check if students are ready for graded seatwork and activities. Usually, formative tasks are not part of a student's grade but are recorded in the grade sheet. Written work is divided into two, quizzes and others, while performance tasks comprise of oral participation, individual work, group work, individual project, group project and other output by students. In addition to these classroom activities, a quarterly exam is also used and recorded to check a student's performance. Similar to nursery and kinder1 students, grades are combined and delibarated quarterly.
+Kinder2 and Grades 1 to 10 use the K-to-12 curriculum. Teachers are given ECRs to input students' scores for each component. The basis for assessments are written work, performance tasks, and exams. The spreadsheet file has columns for formative tasks. Formative tasks are used to check if students are ready for graded seatwork and activities. Usually, formative tasks are not part of a student's grade but are recorded in the grade sheet. Written work is divided into two, quizzes and others, while performance tasks comprise of oral participation, individual work, group work, individual project, group project and other output by students. In addition to these classroom activities, a quarterly exam is also used and recorded to check a student's performance. Similar to nursery and kinder1 students, grades are combined and delibarated quarterly.
 
 \subsubsection{Grades 11 to 12}
 Grade sheets for grades 11 to 12 are similar to kinder2 and grades 1 to 10. The only difference is instead of combining the grades quarterly, it is done per semester. Each semester, two exams are taken by students: midterm and final exam.
@@ -259,25 +259,39 @@ Character traits are also graded by teachers. 50\% of the character trait grades
 
 Sometimes, attendance is included in a student's grade. Student's attendance and tardiness are recorded daily by teachers.
 
+\subsection{Teacher-centric Grade Sheet}
+A teacher-centric grade sheet is a spreadsheet file which contains lists of students currently handled by the teacher. The spreadsheet contains multiple tabs. Each tab represents the subject currently handled by the teacher. It contains a list of students taking that subject and their corresponding scores for each component. The final grade is automatically computed for every addition or adjustment of scores.
+
+\subsection{Condensed Grade}
+Condensed grade is a term used to descibe the average grade of the student. It is obtained from the section-centric grade sheet. 
+
+\subsection{Section-centric Grade Sheet}
+A section-centric grade sheet is a spreadsheet file which contains a list of students under a given subject. The first column has the student names. The remaining columns are populated by the grades of each student from a given subject. The last column contains the condensed grade.
+
+\subsection{Student-centric Grade Sheet}
+A student-centric grade sheet is used for the printing of report cards. It is a spreadsheet file which contains a list of subjects the student is currently taking. The list of subjects is then followed by their corresponding grades.
+
 \subsection{Grade Submission}
 
-Grades are submitted quarterly. Submission of grades is done through messenger or passing a flash drive to the registrar.
+Submission of grades are done per semester for SHS students, and quarterly for kinder2 to grade 10. Submission of grades is done through messenger or passing a flash drive to the registrar.
 
-The registrar will also keep track of the submission date of the teachers. This is done manually by writing down the date the teacher submitted his/her grade sheet(s).
+The registrar also keeps track of the submission date of the teachers. This is done manually by writing down the date the teacher submitted his/her grade sheet(s).
 
 Character traits and attendance sheets will also be checked by the registrar.
 
-\subsection{Deliberation of Grades}
+\subsection{Individual Deliberation of Grades}
+Deliberation of grades is done after the teacher has submitted his/her grade sheets. It is always done personally with the registrar and the IT head. This is to ensure that all grades are correctly collected and final adjustments have been made before the creation of the condensed grades. 
 
-Deliberation of grades will always be done personally with the subject teachers, adviser, and registrar. This is to ensure that all grades are correctly collected and final adjustments have been made before the creation of the condensed grades.
+The registrar will talk and review the students' grades with the subject teacher. If no issues were raised during the talk, the registrar will accept the grade sheet to be added to the condensed grades according to the sections, generating section-centric records. Adding students to the grade sheet will also be done during the discussion with the subject teacher. 
 
-The registrar will talk and review the students' grades with the subject teacher. If no issues were raised during the talk, the registrar will accept the grade sheet to be added to the condensed grades according to the section. Adding students to the grade sheet will also be done during the discussion with the subject teacher.
+\subsection{Group Deliberation of Grades}
+Group deliberation is done for the section-centric grade sheets. In this deliberation, the subject teachers, adviser, and registrar will sit down together to talk about a section's grade sheet. Grade clarifications and student's behaviors are also discussed during the deliberation
 
-The deliberation is also done for the condensed grade sheets. In this deliberation, the subject teachers, adviser, and registrar will sit down together to talk about a section's grade sheet. Grade adjustments and student's behaviors are also discussed during the deliberation.
+Grade adjustments are still possible in this process. The teacher can readjust the student scores, component weights, and the transmuted grade from the teacher-centric grade sheet.
 
 \subsection{Printing of Report Cards}
 
-Report cards are reviewed by each adviser to check if there are any errors in the input. Report cards include the grades for both academic and character traits. It will also include the student's attendance and tardiness record.
+Report card is a teacher-centric record which is reviewed by each adviser to check if there are any errors in the input. It includes the grades for both academic and character traits. It will also include the student's attendance and tardiness record.
 
 Report cards are created based on the condensed grade file. These cards are printed on a normal sheet of paper for the first three quarters. For the final quarter, it is printed on a card. These cards are distributed to parents quarterly.
 
@@ -287,7 +301,7 @@ Node.js is an open source run-time environment. This was built in Chrome's V8 Ja
 
 \subsection{Express.js}
 
- Express.js covers the core Node.js \textit{http} module (http://nodejs.org/api/http.html) to provide extensive functionalities and features \cite{Mardan}. This framework consists of many plugin modules called \textit{middleware} \cite{Mardan}. Express acts as a foundation for a custom-built framework which fits the web application project.
+Express.js covers the core Node.js \textit{http} module (http://nodejs.org/api/http.html) to provide extensive functionalities and features \cite{Mardan}. This framework consists of many plugin modules called \textit{middleware} \cite{Mardan}. Express acts as a foundation for a custom-built framework which fits the web application project.
 
 \subsection{React.js}
 
@@ -948,13 +962,6 @@ The students' grade management system will be accessed online. It follows a clie
     \item Microsoft Edge (42.17134.1.0 or higher)
     \item Internet Connection
 \end{enumerate}
-
-
-
-
-
-
-\section{Expected Output/Timeline}
 
 \clearpage
 \bibliographystyle{ieeetr}
