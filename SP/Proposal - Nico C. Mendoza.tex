@@ -52,7 +52,7 @@
 \addcontentsline{toc}{section}{Abstract}
 \thispagestyle{plain}
 \setcounter{page}{2}
-Dee Hwa Liong Academy currently uses spreadsheet files to keep student records. In result, the academy faces several difficulties, which include tedious process for storing student records, long preparation time, and lack of security. With the help of this web-based information system will lessen the time needed for grade submission and deliberation, and it will also provide security features for the grade sheets. The system will also eradicate the need of using flash drives and facebook messenger for submission of grades. Tracking late submissions of grades will also be easier since there will be deadline feature which will be set for each teacher in the system. The application will also provide security for students' records since grades will not be easily modified and an edit log will also be available. In addition, this application will also keep parents up to date with their child’s performance.
+Dee Hwa Liong Academy currently uses spreadsheet files to keep student records. In result, the academy faces several difficulties, which include tedious process for storing student records, long preparation time, and lack of security. Dee Hwa Liong Grade Management System will lessen the time needed for grade submission and deliberation, and it will also provide security features for the grade sheets. The system will also eradicate the need of using flash drives and facebook messenger for submission of grades. Tracking late submissions of grades will also be easier since there will be deadline feature which will be set for each teacher in the system. The application will also provide security for students' records since grades will not be easily modified and an edit log will also be available. In addition, this application will also keep parents up to date with their child’s performance.
 \Keywords{information system, web-based application, k-to-12, grade management system}
 \end{abstract}
 
@@ -144,7 +144,7 @@ The main goal of the study is to develop a web-based application for record keep
 		\item Approve updates of grade computation formula
 		\item View grades from each subjects
         \begin{enumerate}
-            \item These grade sheets will also provide student information, name, student number, and section. The name of the handling the subject will also be included.
+            \item These grade sheets will also provide student information, name, student number, and section. The name of the handling the subject will also be included. The administator has also the option to view the records as teacher-centric, section-centric, and student-centric
         \end{enumerate}
         \item View condensed grades of each section
         \begin{enumerate}
@@ -162,8 +162,11 @@ The main goal of the study is to develop a web-based application for record keep
         \begin{enumerate}
             \item Deadline for submission of grades will be set to be able to see who submitted late since a fine is to be collected for every day, after the due date, without submission. Deadline alerts will be automatically sent by the system, during 5 days and 3 days before the deadline and during the deadline day. Different deadline for teachers is possible especially if one teacher has more load compared to others.
         \end{enumerate}
-        \item View previous student records
-        \item View and produce Transcript of Records (TOR)
+        \item View student records
+        \begin{enumerate}
+            \item THe student record can be teacher-centric, section-centric, and student-centric
+        \end{enumerate}
+        \item View and produce report cards
         \item View school information, Elementary Learners Data, Elementary Learners Age Profile, Junior High School Learners Data, JHS Learners Age Profile, Senior High School Repeaters Age Profile, SHS Learners Data by Track, SHS Learners Data in Technical-Vocational-Livelihood Track Specializations, Total Number of Enrollees, Number of Enrollees by Sex, Age, Grade Level, and etc., needed by DepEd and Private Educational Assistance Committee (PEAC).
         \item Update the names of sections
         \item Add students to a section
@@ -325,10 +328,29 @@ The web application will have five access levels such as the system administrato
 \end{center}
 \vspace{2cm}
 \begin{center}
-    Figure 1 - Context Diagram, Students' Grade Management System
+    Figure 1 - Context Diagram, DHLA Grade Management System
 \end{center}
 
 \newpage
+
+\subsection{Data Flow Diagram}
+\vspace{2cm}
+\begin{center}
+\includegraphics[height=7.5cm]{Data-Flow-Diagram-1.png}
+\end{center}
+\vspace{2cm}
+\begin{center}
+    Figure 2 - Top Level Data Flow Diagram, DHLA Grade Management System
+\end{center}
+\vspace{2cm}
+\begin{center}
+\includegraphics[height=20.5cm]{Data-Flow-Diagram-2.png}
+\end{center}
+\vspace{2cm}
+\begin{center}
+    Figure 3 - Level 1 Data Flow Diagram, DHLA Grade Management System
+\end{center}
+
 \subsection{Activity Diagrams}
 
 All accounts will have a login and logout function. Each user account can also change the account's password. The password change is done within the system. No external links will be provided for password change. Profiles for each account will be available and can be updated.
@@ -377,7 +399,7 @@ Finally, the student, this user can only do simple things such as view grades fr
 \end{center}
 \vspace{2cm}
 \begin{center}
-    Figure 2 - Use Case Diagram, Students' Grade Management System
+    Figure 4 - Use Case Diagram, Students' Grade Management System
 \end{center}
 
 \newpage
@@ -527,7 +549,6 @@ This table will provide the information needed to login.
 \begin{center}
 Table 1: Data dictionary for \textbf{user account} table
 \end{center}
-\newpage
 \subsubsection{Student}
 
 The table will contain information about the student. The gathered information fields came from Dee Hwa Liong Academy's Student Application form.
@@ -562,7 +583,6 @@ The table will contain information about the student. The gathered information f
     Table 2: Data dictionary for \textbf{student} table
 \end{center}
 
-\newpage
 
 \subsubsection{Parent/Guardian}
 
@@ -585,7 +605,6 @@ The table will contain information about the parent/guardian.
     Table 3: Data dictionary for \textbf{parent guardian} table
 \end{center}
 
-\newpage
 
 \subsubsection{Teacher}
 
@@ -608,7 +627,6 @@ The table will contain basic information about the teacher.
     Table 4: Data dictionary for \textbf{teacher} table
 \end{center}
 
-\newpage
 
 \subsubsection{Nonacademic}
 
@@ -630,7 +648,6 @@ The table will contain basic information about the system administrator, directo
     Table 5: Data dictionary for \textbf{nonacademic} table
 \end{center}
 
-\newpage
 
 \subsubsection{Section}
 
@@ -654,7 +671,6 @@ This table will contain all the names of sections.
     Table 6: Data dictionary for \textbf{section} table
 \end{center}
 
-\newpage
 
 \subsubsection{Subject}
 
@@ -678,7 +694,6 @@ This table will contain all the subjects offered by Dee Hwa Liong Academy.
     Table 7: Data dictionary for \textbf{subject} table
 \end{center}
 
-\newpage
 
 \subsubsection{Grade Level}
 
@@ -700,7 +715,6 @@ Grade Level table will contain the grade levels under Dee Hwa Liong Academy.
     Table 8: Data dictionary for \textbf{grade level} table
 \end{center}
 
-\newpage
 
 \subsubsection{Category}
 
@@ -722,7 +736,6 @@ Category table will tell us what type of activity (formative assessment-seatwork
     Table 9: Data dictionary for \textbf{category} table
 \end{center}
 
-\newpage
 
 \subsubsection{Subcategory}
 
@@ -744,7 +757,6 @@ Subcategory table is a subcomponent of a specific component (formative assessmen
     Table 10: Data dictionary for \textbf{subcategory} table
 \end{center}
 
-\newpage
 
 \subsubsection{Grade Sheet}
 
@@ -774,7 +786,6 @@ This will consist of the grades of the students from every activity to condensed
     Table 11: Data dictionary for \textbf{grade sheet} table
 \end{center}
 
-\newpage
 
 \subsubsection{Grade}
 
@@ -805,7 +816,6 @@ This represents a grade entry in a grade sheet.
     Table 12: Data dictionary for \textbf{grade} table
 \end{center}
 
-\newpage
 
 \subsubsection{Attendance Log}
 
@@ -835,7 +845,6 @@ This will hold the record of attendance of each student.
     Table 13: Data dictionary for \textbf{attendance log} table
 \end{center}
 
-\newpage
 
 \subsubsection{Advisory Table}
 
@@ -861,7 +870,6 @@ This table will show the section being handled by the adviser.
     Table 14: Data dictionary for \textbf{advisory table} table
 \end{center}
 
-\newpage
 
 \subsubsection{Teacher's Load}
 
@@ -887,7 +895,6 @@ This table shows the subjects handled by different teachers.
     Table 15: Data dictionary for \textbf{teacher load} table
 \end{center}
 
-\newpage
 
 \subsubsection{Submission Deadline}
 
@@ -912,7 +919,6 @@ This table will contain the deadlines set by the registrar.
     Table 16: Data dictionary for \textbf{submission deadline} table
 \end{center}
 
-\newpage
 
 \subsubsection{Formula}
 
