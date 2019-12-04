@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6840 64-bit) (preloaded format=pdflatex 2018.10.28)  3 DEC 2019 19:36
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6840 64-bit) (preloaded format=pdflatex 2018.10.28)  4 DEC 2019 20:09
 entering extended mode
 **"c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.tex"
 ("c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.tex"
@@ -437,730 +437,672 @@ l.79
                    \relax 
 l.99 
       [2] [3] [4]
-Overfull \hbox (12.71779pt too wide) in paragraph at lines 166--167
+Overfull \hbox (12.71779pt too wide) in paragraph at lines 162--163
 []\OT1/cmr/m/n/10.95 The stu-dent record view can be teacher-centric, section-centric, and student-
  []
 
 [5] [6] [7] [8] [9] [10] [11] [12] [13] [14] [15] [16]
-<Context-Diagram.png, id=517, 653.44125pt x 482.80376pt>
+<Context-Diagram.png, id=516, 653.44125pt x 482.80376pt>
 File: Context-Diagram.png Graphic file (type png)
 <use Context-Diagram.png>
-Package pdftex.def Info: Context-Diagram.png  used on input line 334.
+Package pdftex.def Info: Context-Diagram.png  used on input line 331.
 (pdftex.def)             Requested size: 404.35167pt x 298.75394pt.
  [17 <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Context-Diagram.png>]
-<Data-Flow-Diagram-1.png, id=524, 633.36626pt x 343.2825pt>
+<Data-Flow-Diagram-1.png, id=523, 633.36626pt x 343.2825pt>
 File: Data-Flow-Diagram-1.png Graphic file (type png)
 <use Data-Flow-Diagram-1.png>
-Package pdftex.def Info: Data-Flow-Diagram-1.png  used on input line 346.
+Package pdftex.def Info: Data-Flow-Diagram-1.png  used on input line 343.
 (pdftex.def)             Requested size: 393.71712pt x 213.39566pt.
-<Data-Flow-Diagram-2.png, id=525, 507.8975pt x 899.36pt>
+<Data-Flow-Diagram-2.png, id=524, 528.47438pt x 807.015pt>
 File: Data-Flow-Diagram-2.png Graphic file (type png)
 <use Data-Flow-Diagram-2.png>
-Package pdftex.def Info: Data-Flow-Diagram-2.png  used on input line 354.
-(pdftex.def)             Requested size: 329.40872pt x 583.2815pt.
- [18 <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Data-Flow-Diagram-1.png>] [19 <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Data-Flow-Diagram-2.png>] [20]
-<Activity-Diagram-1.png, id=540, 926.46124pt x 895.345pt>
+Package pdftex.def Info: Data-Flow-Diagram-2.png  used on input line 351.
+(pdftex.def)             Requested size: 381.96082pt x 583.2815pt.
+ [18 <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Data-Flow-Diagram-1.png>] [19 <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Data-Flow-Diagram-2.png>]
+<Subexplotion-1.png, id=535, 467.7475pt x 272.01625pt>
+File: Subexplotion-1.png Graphic file (type png)
+<use Subexplotion-1.png>
+Package pdftex.def Info: Subexplotion-1.png  used on input line 359.
+(pdftex.def)             Requested size: 269.10258pt x 156.49014pt.
+<Subexplotion-3.png, id=536, 638.385pt x 283.0575pt>
+File: Subexplotion-3.png Graphic file (type png)
+<use Subexplotion-3.png>
+Package pdftex.def Info: Subexplotion-3.png  used on input line 366.
+(pdftex.def)             Requested size: 352.94412pt x 156.49014pt.
+<Subexplotion-5.png, id=537, 483.8075pt x 303.1325pt>
+File: Subexplotion-5.png Graphic file (type png)
+<use Subexplotion-5.png>
+Package pdftex.def Info: Subexplotion-5.png  used on input line 373.
+(pdftex.def)             Requested size: 295.17381pt x 184.9429pt.
+ [20 <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subexplotion-1.png> <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subexplotion-3.png>] [21 <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subexplotion-5.png>] [22]
+<Activity-Diagram-1.png, id=554, 926.46124pt x 895.345pt>
 File: Activity-Diagram-1.png Graphic file (type png)
 <use Activity-Diagram-1.png>
-Package pdftex.def Info: Activity-Diagram-1.png  used on input line 405.
+Package pdftex.def Info: Activity-Diagram-1.png  used on input line 423.
 (pdftex.def)             Requested size: 426.91245pt x 412.56496pt.
 
-Overfull \hbox (10.07956pt too wide) in paragraph at lines 405--406
+Overfull \hbox (10.07956pt too wide) in paragraph at lines 423--424
  [] 
  []
 
-[21] [22 <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Activity-Diagram-1.png>] [23] [24]
-<User.png, id=559, 492.84125pt x 994.71625pt>
+[23 <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Activity-Diagram-1.png>] [24] [25]
+<User.png, id=568, 492.84125pt x 994.71625pt>
 File: User.png Graphic file (type png)
 <use User.png>
-Package pdftex.def Info: User.png  used on input line 436.
+Package pdftex.def Info: User.png  used on input line 456.
 (pdftex.def)             Requested size: 274.89879pt x 554.82874pt.
-<Grade-Sheet.png, id=560, 698.61pt x 653.44125pt>
+<Grade-Sheet.png, id=569, 698.61pt x 653.44125pt>
 File: Grade-Sheet.png Graphic file (type png)
 <use Grade-Sheet.png>
-Package pdftex.def Info: Grade-Sheet.png  used on input line 445.
+Package pdftex.def Info: Grade-Sheet.png  used on input line 465.
 (pdftex.def)             Requested size: 410.66261pt x 384.1122pt.
- [25 <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/User.png>]
-<Grade.png, id=566, 303.1325pt x 372.39125pt>
+ [26 <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/User.png>]
+<Grade.png, id=575, 303.1325pt x 372.39125pt>
 File: Grade.png Graphic file (type png)
 <use Grade.png>
-Package pdftex.def Info: Grade.png  used on input line 454.
+Package pdftex.def Info: Grade.png  used on input line 474.
 (pdftex.def)             Requested size: 196.87653pt x 241.84842pt.
- [26 <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade-Sheet.png>]
-<Attendance-Log.png, id=572, 362.35374pt x 404.51125pt>
+ [27 <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade-Sheet.png>]
+<Attendance-Log.png, id=582, 362.35374pt x 404.51125pt>
 File: Attendance-Log.png Graphic file (type png)
 <use Attendance-Log.png>
-Package pdftex.def Info: Attendance-Log.png  used on input line 463.
+Package pdftex.def Info: Attendance-Log.png  used on input line 483.
 (pdftex.def)             Requested size: 216.64539pt x 241.84842pt.
-<Advisory-Table.png, id=573, 382.42876pt x 524.96124pt>
+<Advisory-Table.png, id=583, 382.42876pt x 524.96124pt>
 File: Advisory-Table.png Graphic file (type png)
 <use Advisory-Table.png>
-Package pdftex.def Info: Advisory-Table.png  used on input line 472.
+Package pdftex.def Info: Advisory-Table.png  used on input line 492.
 (pdftex.def)             Requested size: 217.6482pt x 298.75394pt.
- [27 <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade.png> <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Attendance-Log.png>]
-<Formula.png, id=581, 512.91624pt x 452.69125pt>
-File: Formula.png Graphic file (type png)
-<use Formula.png>
-Package pdftex.def Info: Formula.png  used on input line 481.
+ [28 <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade.png> <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Attendance-Log.png>]
+<Component-Weight.png, id=590, 502.87875pt x 226.8475pt>
+File: Component-Weight.png Graphic file (type png)
+<use Component-Weight.png>
+Package pdftex.def Info: Component-Weight.png  used on input line 501.
+(pdftex.def)             Requested size: 283.83543pt x 128.0374pt.
+<Subcomponent-Weight.png, id=591, 512.91624pt x 452.69125pt>
+File: Subcomponent-Weight.png Graphic file (type png)
+<use Subcomponent-Weight.png>
+Package pdftex.def Info: Subcomponent-Weight.png  used on input line 511.
 (pdftex.def)             Requested size: 257.90538pt x 227.62204pt.
- [28 <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Advisory-Table.png> <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Formula.png>]
-<Teacher-Load.png, id=588, 442.65375pt x 344.28625pt>
+ [29 <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Advisory-Table.png> <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Component-Weight.png>]
+<Teacher-Load.png, id=598, 442.65375pt x 344.28625pt>
 File: Teacher-Load.png Graphic file (type png)
 <use Teacher-Load.png>
-Package pdftex.def Info: Teacher-Load.png  used on input line 490.
+Package pdftex.def Info: Teacher-Load.png  used on input line 520.
 (pdftex.def)             Requested size: 237.77989pt x 184.9429pt.
-<Submission-Deadline.png, id=589, 221.82875pt x 294.09875pt>
+<Submission-Deadline.png, id=599, 221.82875pt x 294.09875pt>
 File: Submission-Deadline.png Graphic file (type png)
 <use Submission-Deadline.png>
-Package pdftex.def Info: Submission-Deadline.png  used on input line 499.
+Package pdftex.def Info: Submission-Deadline.png  used on input line 529.
 (pdftex.def)             Requested size: 139.49559pt x 184.9429pt.
- [29 <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Teacher-Load.png> <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Submission-Deadline.png>]
-Overfull \hbox (4.33992pt too wide) in paragraph at lines 522--523
+ [30 <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subcomponent-Weight.png> <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Teacher-Load.png>] [31 <c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Submission-Deadline.png>]
+Overfull \hbox (4.33992pt too wide) in paragraph at lines 552--553
 []|\OT1/cmr/bx/n/10.95 DESCRIPTION| 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 524--524
+Underfull \hbox (badness 10000) in paragraph at lines 554--554
 []|\OT1/cmr/bx/n/10.95 INT(10),
  []
 
 
-Underfull \hbox (badness 2401) in paragraph at lines 524--524
+Underfull \hbox (badness 2401) in paragraph at lines 554--554
 []|\OT1/cmr/bx/n/10.95 Unique iden-ti-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 528--528
+Underfull \hbox (badness 10000) in paragraph at lines 558--558
 []|\OT1/cmr/m/n/10.95 Denotes the
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 528--528
+Underfull \hbox (badness 10000) in paragraph at lines 558--558
 \OT1/cmr/m/n/10.95 ac-count type:
  []
 
 
-Underfull \hbox (badness 2401) in paragraph at lines 531--531
+Underfull \hbox (badness 2401) in paragraph at lines 561--561
 []|\OT1/cmr/m/n/10.95 Middle name of
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 535--535
+Underfull \hbox (badness 10000) in paragraph at lines 565--565
 []|\OT1/cmr/m/n/10.95 User's con-tact
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 541--541
+Underfull \hbox (badness 10000) in paragraph at lines 571--571
 \OT1/cmr/m/n/10.95 RIED', `WID-OWED',
  []
 
 
-Underfull \vbox (badness 10000) detected at line 541
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 543--543
-[]|\OT1/cmr/m/n/10.95 User's cit-i-zen-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 547--547
-[]|\OT1/cmr/m/n/10.95 emergency-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 547--547
-\OT1/cmr/m/n/10.95 the stu-dent in
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 548--548
-[]|\OT1/cmr/m/n/10.95 emergency-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 548--548
-[]|\OT1/cmr/m/n/10.95 Contact ad-dress
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 549--549
-[]|\OT1/cmr/m/n/10.95 emergency-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 549--549
-[]|\OT1/cmr/m/n/10.95 Telephone num-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 550--550
-[]|\OT1/cmr/m/n/10.95 emergency-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 550--550
-[]|\OT1/cmr/m/n/10.95 Cellphone num-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 551--551
-[]|\OT1/cmr/m/n/10.95 emergency-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 551--551
-\OT1/cmr/m/n/10.95 the stu-dent in
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 552--552
-[]|\OT1/cmr/m/n/10.95 emergency-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 552--552
-[]|\OT1/cmr/m/n/10.95 Relationship of
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 552--552
-\OT1/cmr/m/n/10.95 the stu-dent in
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 552--552
-\OT1/cmr/m/n/10.95 the emer-gency
- []
-
-[30] [31] [32]
-Overfull \hbox (4.33992pt too wide) in paragraph at lines 568--569
-[]|\OT1/cmr/bx/n/10.95 DESCRIPTION| 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 570--570
-[]|\OT1/cmr/bx/n/10.95 INT(10),
- []
-
-
-Underfull \hbox (badness 2401) in paragraph at lines 570--570
-[]|\OT1/cmr/bx/n/10.95 Unique iden-ti-
- []
-
-
-Underfull \hbox (badness 2486) in paragraph at lines 571--571
-[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
+Underfull \vbox (badness 10000) detected at line 571
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 573--573
-[]|\OT1/cmr/m/n/10.95 fatherAdd-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 575--575
-[]|\OT1/cmr/m/n/10.95 fatherOccu-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 576--576
-[]|\OT1/cmr/m/n/10.95 fatherEmplo-
+[]|\OT1/cmr/m/n/10.95 User's cit-i-zen-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 577--577
-[]|\OT1/cmr/m/n/10.95 fatherBusi
+[]|\OT1/cmr/m/n/10.95 emergency-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 577--577
+\OT1/cmr/m/n/10.95 the stu-dent in
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 578--578
-[]|\OT1/cmr/m/n/10.95 fatherOffice
+[]|\OT1/cmr/m/n/10.95 emergency-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 578--578
+[]|\OT1/cmr/m/n/10.95 Contact ad-dress
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 579--579
-[]|\OT1/cmr/m/n/10.95 Student's
+[]|\OT1/cmr/m/n/10.95 emergency-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 579--579
+[]|\OT1/cmr/m/n/10.95 Telephone num-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 580--580
-[]|\OT1/cmr/m/n/10.95 motherAdd
+[]|\OT1/cmr/m/n/10.95 emergency-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 580--580
-[]|\OT1/cmr/m/n/10.95 Student's
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 580--580
-\OT1/cmr/m/n/10.95 mother's ad-
+[]|\OT1/cmr/m/n/10.95 Cellphone num-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 581--581
-[]|\OT1/cmr/m/n/10.95 Student's
+[]|\OT1/cmr/m/n/10.95 emergency-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 581--581
+\OT1/cmr/m/n/10.95 the stu-dent in
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 582--582
-[]|\OT1/cmr/m/n/10.95 motherOccu-
+[]|\OT1/cmr/m/n/10.95 emergency-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 582--582
-[]|\OT1/cmr/m/n/10.95 Student's
+[]|\OT1/cmr/m/n/10.95 Relationship of
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 582--582
-\OT1/cmr/m/n/10.95 mother's oc-
+\OT1/cmr/m/n/10.95 the stu-dent in
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 583--583
-[]|\OT1/cmr/m/n/10.95 motherEmplo-
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/cmr/m/n/10.95 the emer-gency
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 583--583
-[]|\OT1/cmr/m/n/10.95 Student's
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 583--583
-\OT1/cmr/m/n/10.95 mother's em-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 584--584
-[]|\OT1/cmr/m/n/10.95 motherBusi
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 584--584
-[]|\OT1/cmr/m/n/10.95 Student's
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 585--585
-[]|\OT1/cmr/m/n/10.95 Student's
- []
-
-
-Underfull \vbox (badness 10000) detected at line 586
- []
-
-[33]
-Overfull \hbox (4.33992pt too wide) in paragraph at lines 603--604
+[32] [33] [34]
+Overfull \hbox (4.33992pt too wide) in paragraph at lines 598--599
 []|\OT1/cmr/bx/n/10.95 DESCRIPTION| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 600--600
+[]|\OT1/cmr/bx/n/10.95 INT(10),
+ []
+
+
+Underfull \hbox (badness 2401) in paragraph at lines 600--600
+[]|\OT1/cmr/bx/n/10.95 Unique iden-ti-
+ []
+
+
+Underfull \hbox (badness 2486) in paragraph at lines 601--601
+[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 603--603
+[]|\OT1/cmr/m/n/10.95 fatherAdd-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 605--605
+[]|\OT1/cmr/m/n/10.95 fatherOccu-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 606--606
+[]|\OT1/cmr/m/n/10.95 fatherEmplo-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 607--607
+[]|\OT1/cmr/m/n/10.95 fatherBusi
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 608--608
+[]|\OT1/cmr/m/n/10.95 fatherOffice
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 609--609
+[]|\OT1/cmr/m/n/10.95 Student's
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 610--610
+[]|\OT1/cmr/m/n/10.95 motherAdd
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 610--610
+[]|\OT1/cmr/m/n/10.95 Student's
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 610--610
+\OT1/cmr/m/n/10.95 mother's ad-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 611--611
+[]|\OT1/cmr/m/n/10.95 Student's
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 612--612
+[]|\OT1/cmr/m/n/10.95 motherOccu-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 612--612
+[]|\OT1/cmr/m/n/10.95 Student's
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 612--612
+\OT1/cmr/m/n/10.95 mother's oc-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 613--613
+[]|\OT1/cmr/m/n/10.95 motherEmplo-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 613--613
+[]|\OT1/cmr/m/n/10.95 Student's
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 613--613
+\OT1/cmr/m/n/10.95 mother's em-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 614--614
+[]|\OT1/cmr/m/n/10.95 motherBusi
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 614--614
+[]|\OT1/cmr/m/n/10.95 Student's
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 615--615
+[]|\OT1/cmr/m/n/10.95 Student's
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 616
+ []
+
+[35]
+Overfull \hbox (4.33992pt too wide) in paragraph at lines 633--634
+[]|\OT1/cmr/bx/n/10.95 DESCRIPTION| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 635--635
 []|\OT1/cmr/bx/n/10.95 INT(10),
  []
 
 
-Underfull \hbox (badness 2401) in paragraph at lines 605--605
+Underfull \hbox (badness 2401) in paragraph at lines 635--635
 []|\OT1/cmr/bx/n/10.95 Unique iden-ti-
  []
 
 
-Underfull \hbox (badness 2486) in paragraph at lines 606--606
+Underfull \hbox (badness 2486) in paragraph at lines 636--636
 []|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
  []
 
 
-Underfull \hbox (badness 2486) in paragraph at lines 607--607
+Underfull \hbox (badness 2486) in paragraph at lines 637--637
 []|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
  []
 
 
-Underfull \hbox (badness 5817) in paragraph at lines 607--607
+Underfull \hbox (badness 5817) in paragraph at lines 637--637
 \OT1/cmr/m/n/10.95 of the par-en-t/-
  []
 
 
-Underfull \vbox (badness 10000) detected at line 608
+Underfull \vbox (badness 10000) detected at line 638
  []
 
-[34]
-Overfull \hbox (4.33992pt too wide) in paragraph at lines 625--626
+[36]
+Overfull \hbox (4.33992pt too wide) in paragraph at lines 655--656
 []|\OT1/cmr/bx/n/10.95 DESCRIPTION| 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 627--627
+Underfull \hbox (badness 10000) in paragraph at lines 657--657
 []|\OT1/cmr/bx/n/10.95 INT(10),
  []
 
 
-Underfull \hbox (badness 2401) in paragraph at lines 627--627
+Underfull \hbox (badness 2401) in paragraph at lines 657--657
 []|\OT1/cmr/bx/n/10.95 Unique iden-ti-
  []
 
 
-Underfull \hbox (badness 2486) in paragraph at lines 628--628
+Underfull \hbox (badness 2486) in paragraph at lines 658--658
 []|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 629--629
+Underfull \hbox (badness 10000) in paragraph at lines 659--659
 []|\OT1/cmr/m/n/10.95 Denotes if the
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 629--629
+Underfull \hbox (badness 10000) in paragraph at lines 659--659
 \OT1/cmr/m/n/10.95 teacher has an
  []
 
 
-Underfull \vbox (badness 10000) detected at line 630
+Underfull \vbox (badness 10000) detected at line 660
  []
 
-[35]
-Overfull \hbox (4.33992pt too wide) in paragraph at lines 647--648
+[37]
+Overfull \hbox (4.33992pt too wide) in paragraph at lines 677--678
 []|\OT1/cmr/bx/n/10.95 DESCRIPTION| 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 649--649
+Underfull \hbox (badness 10000) in paragraph at lines 679--679
 []|\OT1/cmr/bx/n/10.95 INT(10),
  []
 
 
-Underfull \hbox (badness 2401) in paragraph at lines 649--649
+Underfull \hbox (badness 2401) in paragraph at lines 679--679
 []|\OT1/cmr/bx/n/10.95 Unique iden-ti-
  []
 
 
-Underfull \hbox (badness 2486) in paragraph at lines 650--650
+Underfull \hbox (badness 2486) in paragraph at lines 680--680
 []|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
  []
 
 
-Underfull \vbox (badness 10000) detected at line 651
+Underfull \vbox (badness 10000) detected at line 681
  []
 
 
-Overfull \hbox (4.33992pt too wide) in paragraph at lines 668--669
+Overfull \hbox (4.33992pt too wide) in paragraph at lines 698--699
 []|\OT1/cmr/bx/n/10.95 DESCRIPTION| 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 670--670
+Underfull \hbox (badness 10000) in paragraph at lines 700--700
 []|\OT1/cmr/bx/n/10.95 INT(10),
  []
 
 
-Underfull \hbox (badness 2401) in paragraph at lines 670--670
+Underfull \hbox (badness 2401) in paragraph at lines 700--700
 []|\OT1/cmr/bx/n/10.95 Unique iden-ti-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 671--671
+Underfull \hbox (badness 10000) in paragraph at lines 701--701
 []|\OT1/cmr/m/n/10.95 Unique iden-ti-fer
  []
 
 
-Underfull \hbox (badness 1629) in paragraph at lines 671--671
+Underfull \hbox (badness 1629) in paragraph at lines 701--701
 \OT1/cmr/m/n/10.95 and de-notes the
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 671--671
+Underfull \hbox (badness 10000) in paragraph at lines 701--701
 \OT1/cmr/m/n/10.95 ad-viser of the
  []
 
 
-Underfull \hbox (badness 2486) in paragraph at lines 673--673
+Underfull \hbox (badness 2486) in paragraph at lines 703--703
 []|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
  []
 
 
-Underfull \vbox (badness 10000) detected at line 674
+Underfull \vbox (badness 10000) detected at line 704
  []
 
-[36]
-Overfull \hbox (4.33992pt too wide) in paragraph at lines 691--692
+[38]
+Overfull \hbox (4.33992pt too wide) in paragraph at lines 721--722
 []|\OT1/cmr/bx/n/10.95 DESCRIPTION| 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 693--693
+Underfull \hbox (badness 10000) in paragraph at lines 723--723
 []|\OT1/cmr/bx/n/10.95 INT(10),
  []
 
 
-Underfull \hbox (badness 2401) in paragraph at lines 693--693
+Underfull \hbox (badness 2401) in paragraph at lines 723--723
 []|\OT1/cmr/bx/n/10.95 Unique iden-ti-
  []
 
 
-Underfull \hbox (badness 3078) in paragraph at lines 694--694
+Underfull \hbox (badness 3078) in paragraph at lines 724--724
 []|\OT1/cmr/m/n/10.95 Subject code of
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 696--696
+Underfull \hbox (badness 10000) in paragraph at lines 726--726
 []|\OT1/cmr/m/n/10.95 subjectDes-
  []
 
 
-Underfull \vbox (badness 10000) detected at line 697
+Underfull \vbox (badness 10000) detected at line 727
  []
 
-[37]
-Overfull \hbox (4.33992pt too wide) in paragraph at lines 714--715
+[39]
+Overfull \hbox (4.33992pt too wide) in paragraph at lines 744--745
 []|\OT1/cmr/bx/n/10.95 DESCRIPTION| 
  []
 
 
-Overfull \hbox (2.58244pt too wide) in paragraph at lines 716--716
+Overfull \hbox (2.58244pt too wide) in paragraph at lines 746--746
 []|\OT1/cmr/bx/n/10.95 gradeLevelID| 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 716--716
+Underfull \hbox (badness 10000) in paragraph at lines 746--746
 []|\OT1/cmr/bx/n/10.95 INT(10),
  []
 
 
-Underfull \hbox (badness 2401) in paragraph at lines 716--716
+Underfull \hbox (badness 2401) in paragraph at lines 746--746
 []|\OT1/cmr/bx/n/10.95 Unique iden-ti-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 717--717
+Underfull \hbox (badness 10000) in paragraph at lines 747--747
 []|\OT1/cmr/m/n/10.95 ENUM('NURSERY',
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 717--717
+Underfull \hbox (badness 10000) in paragraph at lines 747--747
 \OT1/cmr/m/n/10.95 'KINDER[]1',
  []
 
 
-Underfull \hbox (badness 1762) in paragraph at lines 717--717
+Underfull \hbox (badness 1762) in paragraph at lines 747--747
 \OT1/cmr/m/n/10.95 'GRADE[]2', 'GRADE[]3',
  []
 
 
-Underfull \hbox (badness 1762) in paragraph at lines 717--717
+Underfull \hbox (badness 1762) in paragraph at lines 747--747
 \OT1/cmr/m/n/10.95 'GRADE[]4', 'GRADE[]5',
  []
 
 
-Underfull \hbox (badness 1762) in paragraph at lines 717--717
+Underfull \hbox (badness 1762) in paragraph at lines 747--747
 \OT1/cmr/m/n/10.95 'GRADE[]6', 'GRADE[]7',
  []
 
 
-Underfull \hbox (badness 1762) in paragraph at lines 717--717
+Underfull \hbox (badness 1762) in paragraph at lines 747--747
 \OT1/cmr/m/n/10.95 'GRADE[]8', 'GRADE[]9',
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 717--717
+Underfull \hbox (badness 10000) in paragraph at lines 747--747
 \OT1/cmr/m/n/10.95 'GRADE[]10',
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 717--717
+Underfull \hbox (badness 10000) in paragraph at lines 747--747
 \OT1/cmr/m/n/10.95 'GRADE[]11',
  []
 
 
-Underfull \vbox (badness 10000) detected at line 718
+Underfull \vbox (badness 10000) detected at line 748
  []
 
 
-Overfull \hbox (4.33992pt too wide) in paragraph at lines 735--736
+Overfull \hbox (4.33992pt too wide) in paragraph at lines 765--766
 []|\OT1/cmr/bx/n/10.95 DESCRIPTION| 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 737--737
+Underfull \hbox (badness 10000) in paragraph at lines 767--767
 []|\OT1/cmr/bx/n/10.95 INT(10),
  []
 
 
-Underfull \hbox (badness 2401) in paragraph at lines 737--737
+Underfull \hbox (badness 2401) in paragraph at lines 767--767
 []|\OT1/cmr/bx/n/10.95 Unique iden-ti-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 738--738
+Underfull \hbox (badness 10000) in paragraph at lines 768--768
 []|\OT1/cmr/m/n/10.95 ENUM('FORMATIVE',
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 738--738
+Underfull \hbox (badness 10000) in paragraph at lines 768--768
 \OT1/cmr/m/n/10.95 'WRIT-TEN', 'PT',
  []
 
 
-Underfull \vbox (badness 10000) detected at line 739
+Underfull \vbox (badness 10000) detected at line 769
  []
 
-[38]
-Overfull \hbox (4.33992pt too wide) in paragraph at lines 756--757
+[40]
+Overfull \hbox (4.33992pt too wide) in paragraph at lines 786--787
 []|\OT1/cmr/bx/n/10.95 DESCRIPTION| 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 758--758
+Underfull \hbox (badness 10000) in paragraph at lines 788--788
 []|\OT1/cmr/bx/n/10.95 INT(10),
  []
 
 
-Underfull \hbox (badness 2401) in paragraph at lines 758--758
+Underfull \hbox (badness 2401) in paragraph at lines 788--788
 []|\OT1/cmr/bx/n/10.95 Unique iden-ti-
  []
 
 
-Underfull \vbox (badness 10000) detected at line 760
+Underfull \vbox (badness 10000) detected at line 790
  []
 
-[39]
-Overfull \hbox (4.33992pt too wide) in paragraph at lines 777--778
+[41]
+Overfull \hbox (4.33992pt too wide) in paragraph at lines 807--808
 []|\OT1/cmr/bx/n/10.95 DESCRIPTION| 
  []
 
 
-Overfull \hbox (4.10327pt too wide) in paragraph at lines 779--779
+Overfull \hbox (4.10327pt too wide) in paragraph at lines 809--809
 []|\OT1/cmr/bx/n/10.95 gradeSheetID| 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 779--779
+Underfull \hbox (badness 10000) in paragraph at lines 809--809
 []|\OT1/cmr/bx/n/10.95 INT(10),
  []
 
 
-Underfull \hbox (badness 2401) in paragraph at lines 779--779
+Underfull \hbox (badness 2401) in paragraph at lines 809--809
 []|\OT1/cmr/bx/n/10.95 Unique iden-ti-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 780--780
+Underfull \hbox (badness 10000) in paragraph at lines 810--810
 []|\OT1/cmr/m/n/10.95 Academic year
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 780--780
+Underfull \hbox (badness 10000) in paragraph at lines 810--810
 \OT1/cmr/m/n/10.95 the stu-dent is
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 781--781
+Underfull \hbox (badness 10000) in paragraph at lines 811--811
 []|\OT1/cmr/m/n/10.95 ENUM('SEMESTER[]1',
  []
 
 
-Underfull \hbox (badness 1490) in paragraph at lines 781--781
+Underfull \hbox (badness 1490) in paragraph at lines 811--811
 \OT1/cmr/m/n/10.95 'SEMESTER[]2', 'QUAR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 781--781
+Underfull \hbox (badness 10000) in paragraph at lines 811--811
 \OT1/cmr/m/n/10.95 TER[]1', 'QUAR-TER[]2',
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 781--781
+Underfull \hbox (badness 10000) in paragraph at lines 811--811
 \OT1/cmr/m/n/10.95 'QUAR-TER[]3', 'QUAR-
  []
 
 
-Underfull \hbox (badness 6842) in paragraph at lines 782--782
+Underfull \hbox (badness 6842) in paragraph at lines 812--812
 []|\OT1/cmr/m/n/10.95 Date when the
  []
 
 
-Underfull \hbox (badness 2096) in paragraph at lines 782--782
+Underfull \hbox (badness 2096) in paragraph at lines 812--812
 \OT1/cmr/m/n/10.95 grade sheet was
- []
-
-
-Underfull \hbox (badness 6842) in paragraph at lines 783--783
-[]|\OT1/cmr/m/n/10.95 Date when the
- []
-
-
-Underfull \hbox (badness 2096) in paragraph at lines 783--783
-\OT1/cmr/m/n/10.95 grade sheet was
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 784--784
-[]|\OT1/cmr/m/n/10.95 Denotes if the
- []
-
-
-Underfull \hbox (badness 5374) in paragraph at lines 784--784
-\OT1/cmr/m/n/10.95 grade has been
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 784--784
-\OT1/cmr/m/n/10.95 sub-mit-ted for
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 784--784
-\OT1/cmr/m/n/10.95 de-lib-er-a-tion (1)
- []
-
-
-Underfull \hbox (badness 2486) in paragraph at lines 785--785
-[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
- []
-
-
-Underfull \hbox (badness 2486) in paragraph at lines 786--786
-[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
- []
-
-
-Underfull \hbox (badness 2486) in paragraph at lines 787--787
-[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
- []
-
-
-Underfull \hbox (badness 2486) in paragraph at lines 788--788
-[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
- []
-
-
-Underfull \vbox (badness 10000) detected at line 789
- []
-
-[40]
-Overfull \hbox (4.33992pt too wide) in paragraph at lines 806--807
-[]|\OT1/cmr/bx/n/10.95 DESCRIPTION| 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 808--808
-[]|\OT1/cmr/bx/n/10.95 INT(10),
- []
-
-
-Underfull \hbox (badness 2401) in paragraph at lines 808--808
-[]|\OT1/cmr/bx/n/10.95 Unique iden-ti-
- []
-
-
-Underfull \hbox (badness 2486) in paragraph at lines 811--811
-[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
- []
-
-
-Underfull \hbox (badness 2486) in paragraph at lines 812--812
-[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
  []
 
 
@@ -1169,13 +1111,33 @@ Underfull \hbox (badness 6842) in paragraph at lines 813--813
  []
 
 
-Underfull \hbox (badness 2486) in paragraph at lines 814--814
-[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
+Underfull \hbox (badness 2096) in paragraph at lines 813--813
+\OT1/cmr/m/n/10.95 grade sheet was
  []
 
 
-Underfull \hbox (badness 2065) in paragraph at lines 815--815
-[]|\OT1/cmr/m/n/10.95 Denotes the en-
+Underfull \hbox (badness 10000) in paragraph at lines 814--814
+[]|\OT1/cmr/m/n/10.95 Denotes if the
+ []
+
+
+Underfull \hbox (badness 5374) in paragraph at lines 814--814
+\OT1/cmr/m/n/10.95 grade has been
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 814--814
+\OT1/cmr/m/n/10.95 sub-mit-ted for
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 814--814
+\OT1/cmr/m/n/10.95 de-lib-er-a-tion (1)
+ []
+
+
+Underfull \hbox (badness 2486) in paragraph at lines 815--815
+[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
  []
 
 
@@ -1184,32 +1146,22 @@ Underfull \hbox (badness 2486) in paragraph at lines 816--816
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 817--817
-[]|\OT1/cmr/m/n/10.95 Denotes if the
+Underfull \hbox (badness 2486) in paragraph at lines 817--817
+[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
  []
 
 
-Underfull \hbox (badness 2197) in paragraph at lines 817--817
-\OT1/cmr/m/n/10.95 be show in the
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 818--818
-[]|\OT1/cmr/m/n/10.95 Denotes if the
+Underfull \hbox (badness 2486) in paragraph at lines 818--818
+[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
  []
 
 
 Underfull \vbox (badness 10000) detected at line 819
  []
 
-[41] [42]
+[42]
 Overfull \hbox (4.33992pt too wide) in paragraph at lines 836--837
 []|\OT1/cmr/bx/n/10.95 DESCRIPTION| 
- []
-
-
-Overfull \hbox (3.46451pt too wide) in paragraph at lines 838--838
-[]|\OT1/cmr/bx/n/10.95 attendanceID| 
  []
 
 
@@ -1223,53 +1175,28 @@ Underfull \hbox (badness 2401) in paragraph at lines 838--838
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 841--841
-[]|\OT1/cmr/m/n/10.95 ENUM('SEMESTER[]1',
+Underfull \hbox (badness 2486) in paragraph at lines 841--841
+[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
  []
 
 
-Underfull \hbox (badness 1490) in paragraph at lines 841--841
-\OT1/cmr/m/n/10.95 'SEMESTER[]2', 'QUAR-
+Underfull \hbox (badness 2486) in paragraph at lines 842--842
+[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 841--841
-\OT1/cmr/m/n/10.95 TER[]1', 'QUAR-TER[]2',
+Underfull \hbox (badness 6842) in paragraph at lines 843--843
+[]|\OT1/cmr/m/n/10.95 Date when the
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 841--841
-\OT1/cmr/m/n/10.95 'QUAR-TER[]3', 'QUAR-
+Underfull \hbox (badness 2486) in paragraph at lines 844--844
+[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 841--841
-[]|\OT1/cmr/m/n/10.95 Academic term
- []
-
-
-Underfull \hbox (badness 1609) in paragraph at lines 843--843
-[]|\OT1/cmr/m/n/10.95 Number of days
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 843--843
-\OT1/cmr/m/n/10.95 the stu-dent is
- []
-
-
-Underfull \hbox (badness 1609) in paragraph at lines 844--844
-[]|\OT1/cmr/m/n/10.95 Number of days
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 844--844
-\OT1/cmr/m/n/10.95 the stu-dent is
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 845--845
-\OT1/cmr/m/n/10.95 school days in
+Underfull \hbox (badness 2065) in paragraph at lines 845--845
+[]|\OT1/cmr/m/n/10.95 Denotes the en-
  []
 
 
@@ -1278,32 +1205,42 @@ Underfull \hbox (badness 2486) in paragraph at lines 846--846
  []
 
 
-Underfull \hbox (badness 2486) in paragraph at lines 847--847
-[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
+Underfull \hbox (badness 10000) in paragraph at lines 847--847
+[]|\OT1/cmr/m/n/10.95 Denotes if the
  []
 
 
-Underfull \vbox (badness 10000) detected at line 848
+Underfull \hbox (badness 2197) in paragraph at lines 847--847
+\OT1/cmr/m/n/10.95 be show in the
  []
 
-[43]
-Overfull \hbox (4.33992pt too wide) in paragraph at lines 865--866
+
+Underfull \hbox (badness 10000) in paragraph at lines 848--848
+[]|\OT1/cmr/m/n/10.95 Denotes if the
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 849
+ []
+
+[43] [44]
+Overfull \hbox (4.33992pt too wide) in paragraph at lines 866--867
 []|\OT1/cmr/bx/n/10.95 DESCRIPTION| 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 867--867
+Overfull \hbox (3.46451pt too wide) in paragraph at lines 868--868
+[]|\OT1/cmr/bx/n/10.95 attendanceID| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 868--868
 []|\OT1/cmr/bx/n/10.95 INT(10),
  []
 
 
-Underfull \hbox (badness 2401) in paragraph at lines 867--867
+Underfull \hbox (badness 2401) in paragraph at lines 868--868
 []|\OT1/cmr/bx/n/10.95 Unique iden-ti-
- []
-
-
-Underfull \hbox (badness 2486) in paragraph at lines 868--868
-[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
  []
 
 
@@ -1327,167 +1264,251 @@ Underfull \hbox (badness 10000) in paragraph at lines 871--871
  []
 
 
-Underfull \hbox (badness 2486) in paragraph at lines 872--872
+Underfull \hbox (badness 10000) in paragraph at lines 871--871
+[]|\OT1/cmr/m/n/10.95 Academic term
+ []
+
+
+Underfull \hbox (badness 1609) in paragraph at lines 873--873
+[]|\OT1/cmr/m/n/10.95 Number of days
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 873--873
+\OT1/cmr/m/n/10.95 the stu-dent is
+ []
+
+
+Underfull \hbox (badness 1609) in paragraph at lines 874--874
+[]|\OT1/cmr/m/n/10.95 Number of days
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 874--874
+\OT1/cmr/m/n/10.95 the stu-dent is
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 875--875
+\OT1/cmr/m/n/10.95 school days in
+ []
+
+
+Underfull \hbox (badness 2486) in paragraph at lines 876--876
 []|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
  []
 
 
-Underfull \vbox (badness 10000) detected at line 873
- []
-
-[44]
-Overfull \hbox (4.33992pt too wide) in paragraph at lines 890--891
-[]|\OT1/cmr/bx/n/10.95 DESCRIPTION| 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 892--892
-[]|\OT1/cmr/bx/n/10.95 INT(10),
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 892--892
-[]|\OT1/cmr/bx/n/10.95 Unique iden-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 892--892
-\OT1/cmr/bx/n/10.95 ti-fier of the
- []
-
-
-Underfull \hbox (badness 2486) in paragraph at lines 893--893
+Underfull \hbox (badness 2486) in paragraph at lines 877--877
 []|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
  []
 
 
-Underfull \hbox (badness 2486) in paragraph at lines 894--894
-[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
- []
-
-
-Underfull \hbox (badness 2486) in paragraph at lines 895--895
-[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 897--897
-[]|\OT1/cmr/m/n/10.95 ENUM('SEMESTER[]1',
- []
-
-
-Underfull \hbox (badness 1490) in paragraph at lines 897--897
-\OT1/cmr/m/n/10.95 'SEMESTER[]2', 'QUAR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 897--897
-\OT1/cmr/m/n/10.95 TER[]1', 'QUAR-TER[]2',
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 897--897
-\OT1/cmr/m/n/10.95 'QUAR-TER[]3', 'QUAR-
- []
-
-
-Underfull \vbox (badness 10000) detected at line 898
+Underfull \vbox (badness 10000) detected at line 878
  []
 
 [45]
-Overfull \hbox (4.33992pt too wide) in paragraph at lines 915--916
+Overfull \hbox (4.33992pt too wide) in paragraph at lines 895--896
 []|\OT1/cmr/bx/n/10.95 DESCRIPTION| 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 917--917
+Underfull \hbox (badness 10000) in paragraph at lines 897--897
 []|\OT1/cmr/bx/n/10.95 INT(10),
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 917--917
-[]|\OT1/cmr/bx/n/10.95 Unique iden-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 917--917
-\OT1/cmr/bx/n/10.95 ti-fier of the
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 917--917
-\OT1/cmr/bx/n/10.95 sub-mis-sion
- []
-
-
-Underfull \hbox (badness 2486) in paragraph at lines 918--918
-[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
- []
-
-
-Underfull \hbox (badness 1215) in paragraph at lines 919--919
-[]|\OT1/cmr/m/n/10.95 When the dead-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 921--921
-[]|\OT1/cmr/m/n/10.95 Denotes if the
- []
-
-
-Underfull \vbox (badness 10000) detected at line 922
- []
-
-[46]
-Overfull \hbox (4.33992pt too wide) in paragraph at lines 939--940
-[]|\OT1/cmr/bx/n/10.95 DESCRIPTION| 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 941--941
-[]|\OT1/cmr/bx/n/10.95 INT(10),
- []
-
-
-Underfull \hbox (badness 2401) in paragraph at lines 941--941
+Underfull \hbox (badness 2401) in paragraph at lines 897--897
 []|\OT1/cmr/bx/n/10.95 Unique iden-ti-
  []
 
 
-Underfull \hbox (badness 2486) in paragraph at lines 942--942
+Underfull \hbox (badness 2486) in paragraph at lines 898--898
 []|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
  []
 
 
-Underfull \hbox (badness 2486) in paragraph at lines 943--943
+Underfull \hbox (badness 10000) in paragraph at lines 901--901
+[]|\OT1/cmr/m/n/10.95 ENUM('SEMESTER[]1',
+ []
+
+
+Underfull \hbox (badness 1490) in paragraph at lines 901--901
+\OT1/cmr/m/n/10.95 'SEMESTER[]2', 'QUAR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 901--901
+\OT1/cmr/m/n/10.95 TER[]1', 'QUAR-TER[]2',
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 901--901
+\OT1/cmr/m/n/10.95 'QUAR-TER[]3', 'QUAR-
+ []
+
+
+Underfull \hbox (badness 2486) in paragraph at lines 902--902
 []|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
  []
 
 
-Underfull \hbox (badness 2486) in paragraph at lines 944--944
+Underfull \vbox (badness 10000) detected at line 903
+ []
+
+[46]
+Overfull \hbox (4.33992pt too wide) in paragraph at lines 920--921
+[]|\OT1/cmr/bx/n/10.95 DESCRIPTION| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 922--922
+[]|\OT1/cmr/bx/n/10.95 INT(10),
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 922--922
+[]|\OT1/cmr/bx/n/10.95 Unique iden-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 922--922
+\OT1/cmr/bx/n/10.95 ti-fier of the
+ []
+
+
+Underfull \hbox (badness 2486) in paragraph at lines 923--923
 []|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
  []
 
 
-Underfull \hbox (badness 2486) in paragraph at lines 945--945
+Underfull \hbox (badness 2486) in paragraph at lines 924--924
 []|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
  []
 
 
-Underfull \hbox (badness 2486) in paragraph at lines 946--946
+Underfull \hbox (badness 2486) in paragraph at lines 925--925
 []|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 927--927
+[]|\OT1/cmr/m/n/10.95 ENUM('SEMESTER[]1',
+ []
+
+
+Underfull \hbox (badness 1490) in paragraph at lines 927--927
+\OT1/cmr/m/n/10.95 'SEMESTER[]2', 'QUAR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 927--927
+\OT1/cmr/m/n/10.95 TER[]1', 'QUAR-TER[]2',
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 927--927
+\OT1/cmr/m/n/10.95 'QUAR-TER[]3', 'QUAR-
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 928
+ []
+
+[47]
+Overfull \hbox (4.33992pt too wide) in paragraph at lines 945--946
+[]|\OT1/cmr/bx/n/10.95 DESCRIPTION| 
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 947--947
+[]|\OT1/cmr/bx/n/10.95 INT(10),
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 947--947
+[]|\OT1/cmr/bx/n/10.95 Unique iden-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 947--947
+\OT1/cmr/bx/n/10.95 ti-fier of the
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 947--947
+\OT1/cmr/bx/n/10.95 sub-mis-sion
+ []
+
+
+Underfull \hbox (badness 2486) in paragraph at lines 948--948
+[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
+ []
+
+
+Underfull \hbox (badness 1215) in paragraph at lines 949--949
+[]|\OT1/cmr/m/n/10.95 When the dead-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 951--951
+[]|\OT1/cmr/m/n/10.95 Denotes if the
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 952
+ []
+
+[48]
+Overfull \hbox (4.33992pt too wide) in paragraph at lines 969--970
+[]|\OT1/cmr/bx/n/10.95 DESCRIPTION| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 971--971
+[]|\OT1/cmr/bx/n/10.95 INT(10),
+ []
+
+
+Underfull \hbox (badness 2401) in paragraph at lines 971--971
+[]|\OT1/cmr/bx/n/10.95 Unique iden-ti-
+ []
+
+
+Underfull \hbox (badness 2486) in paragraph at lines 972--972
+[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
+ []
+
+
+Underfull \hbox (badness 2486) in paragraph at lines 973--973
+[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
+ []
+
+
+Underfull \hbox (badness 2486) in paragraph at lines 974--974
+[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
+ []
+
+
+Underfull \hbox (badness 2486) in paragraph at lines 975--975
+[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
+ []
+
+
+Underfull \hbox (badness 2486) in paragraph at lines 976--976
+[]|\OT1/cmr/m/n/10.95 Unique iden-ti-fier
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 977--977
 \OT1/cmr/m/n/10.95 com-po-nent per
  []
 
 
-Underfull \vbox (badness 10000) detected at line 949
+Underfull \vbox (badness 10000) detected at line 979
  []
 
-[47] [48] [49] ("c:/Users\NicoMendoza\Documents\dwla-web-app\SP\Proposal - Nico C. Mendoza.bbl"
+[49] [50] [51] ("c:/Users\NicoMendoza\Documents\dwla-web-app\SP\Proposal - Nico C. Mendoza.bbl"
 Underfull \hbox (badness 10000) in paragraph at lines 14--17
 []\OT1/cmr/m/n/10.95 D. of Ed-u-ca-tion, ``E-class record tem-plates.''
  []
@@ -1512,31 +1533,31 @@ Underfull \hbox (badness 10000) in paragraph at lines 19--24
 \OT1/cmr/m/n/10.95 http://www.academia.edu/8002516/Design[]and[]Evaluation[]of[]the[]Electronic[]Cla
  []
 
-[50
+[52
 
 ])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 983.
- [51]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 983.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1013.
+ [53]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1013.
  ("c:/Users\NicoMendoza\Documents\dwla-web-app\SP\Proposal - Nico C. Mendoza.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 983.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 983.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1013.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1013.
 Package rerunfilecheck Info: File `"Proposal - Nico C. Mendoza".out' has not changed.
-(rerunfilecheck)             Checksum: 961C3CEDB537CC45BC7C5363B574513E;3708.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 983.
+(rerunfilecheck)             Checksum: 6DE2A233D6575E68437E0CB253D02729;3720.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1013.
  ) 
 Here is how much of TeX's memory you used:
- 8246 strings out of 492970
- 119846 string characters out of 3135831
+ 8267 strings out of 492970
+ 120359 string characters out of 3135831
  247164 words of memory out of 3000000
- 11821 multiletter control sequences out of 15000+200000
+ 11837 multiletter control sequences out of 15000+200000
  9503 words of font info for 33 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  41i,7n,35p,1366b,574s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on "c:/Users\NicoMendoza\Documents\dwla-web-app\SP\Proposal - Nico C. Mendoza.pdf" (55 pages, 609661 bytes).
+Output written on "c:/Users\NicoMendoza\Documents\dwla-web-app\SP\Proposal - Nico C. Mendoza.pdf" (57 pages, 711836 bytes).
 PDF statistics:
- 778 PDF objects out of 1000 (max. 8388607)
- 212 named destinations out of 1000 (max. 500000)
- 485 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 793 PDF objects out of 1000 (max. 8388607)
+ 213 named destinations out of 1000 (max. 500000)
+ 505 words of extra memory for PDF output out of 10000 (max. 10000000)
 
