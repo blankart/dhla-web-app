@@ -1,28 +1,28 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../config/db/database");
 
-const Formula = sequelize.define(
-  "formula",
+const SubComponentWeight = sequelize.define(
+  "subcomponent weight",
   {
-    formulaID: {
+    subcompweightID: {
       type: Sequelize.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
-    subjectID: {
+    gradeSheetID: {
+      type: Sequelize.INTEGER
+    },
+    subCategID: {
       type: Sequelize.INTEGER
     },
     categoryID: {
       type: Sequelize.INTEGER
     },
-    compPercentage: {
+    compWeight: {
       type: Sequelize.INTEGER(2)
-    },
-    isShs: {
-      type: Sequelize.INTEGER(1)
     }
   },
   { freezeTableName: true }
 );
 
-module.exports = Formula;
+module.exports = SubComponentWeight;

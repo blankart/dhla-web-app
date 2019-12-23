@@ -11,7 +11,6 @@ const Category = require("../../models/Category");
 const GradeLevel = require("../../models/GradeLevel");
 const Subject = require("../../models/Subject");
 const Section = require("../../models/Section");
-const Formula = require("../../models/Formula");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
 const Sequelize = require("sequelize");
@@ -465,66 +464,6 @@ router.post(
     } else {
       res.status(404).json({ msg: "Not found" });
     }
-  }
-);
-
-// @route POST api/admin/setformula
-// @desc Set the computation formula for Grades 1-10
-// @access Private
-
-router.post(
-  "/setformula",
-  passport.authenticate("admin", { session: false }),
-  (req, res) => {
-    Formula.findAll({
-      where: {
-        isShs: 0
-      }
-    }).then(formulas => {
-      formulas.forEach(async formula => {
-        //
-      });
-    });
-  }
-);
-
-// @route POST api/admin/getformula
-// @desc Get the computation formula
-// @access Private
-
-router.get(
-  "/getformula",
-  passport.authenticate("admin", { session: false }),
-  (req, res) => {
-    let formulaData = [];
-    Subject.findAll().then(subjects => {
-      subjects.forEach(async (subject, key, arr) => {
-        let data = await Formula.findOne({
-          where: { subjectID: subject.subjectID, categoryID: 2 }
-        }).then(formula1 => {
-          return Formula.findOne({
-            where: { subjectID: subject.subjectID, categoryID: 3 }
-          }).then(formula2 => {
-            return Formula.findOne({
-              where: { subjectID: subject.subjectID, categoryID: 4 }
-            }).then(formula3 => {
-              let data = {
-                subjectID: subject.subjectID,
-                writtenWork: formula1.compPercentage,
-                performanceTask: formula2.compPercentage,
-                quarterlyAssessment: formula3.compPercentage
-              };
-              return data;
-            });
-          });
-        });
-        formulaData.push(data);
-        if (key === arr.length - 1) {
-          formulaData.sort((a, b) => (a.subjectID > b.subjectID ? 1 : -1));
-          res.json({ formulaList: formulaData });
-        }
-      });
-    });
   }
 );
 

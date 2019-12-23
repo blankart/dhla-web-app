@@ -16,7 +16,13 @@ const GradeLevel = require("./models/GradeLevel");
 const GradeSheet = require("./models/GradeSheet");
 const Section = require("./models/Section");
 const Subject = require("./models/Subject");
-const Formula = require("./models/Formula");
+const SubCategory = require("./models/SubCategory");
+const SubComponentWeight = require("./models/SubComponentWeight");
+const ComponentWeight = require("./models/ComponentWeight");
+const AdvisoryTable = require("./models/AdvisoryTable");
+const AttendanceLog = require("./models/AttendanceLog");
+const TeacherLoad = require("./models/TeacherLoad");
+const SubmissionDeadline = require("./models/SubmissionDeadline");
 
 const app = express();
 
@@ -62,6 +68,24 @@ UserAccount.sync({ force: false }).then(() => {
   });
 });
 
+// subcomponent weight ERD
+Category.hasMany(SubComponentWeight, { foreignKey: "categoryID" });
+SubCategory.hasMany(SubComponentWeight, { foreignKey: "subCategID" });
+GradeSheet.hasMany(SubComponentWeight, { foreignKey: "gradeSheetID" });
+SubCategory.sync({ force: false }).then(() => {
+  SubComponentWeight.sync({ force: false }).then(() => {
+    console.log("subcomponent weight table created/synced");
+  });
+});
+
+// component weight ERD
+
+Category.hasMany(ComponentWeight, { foreignKey: "categoryID" });
+Subject.hasMany(ComponentWeight, { foreignKey: "subjectID" });
+ComponentWeight.sync({ force: false }).then(() => {
+  console.log("component weight table created/synced");
+});
+
 // grade sheet ERD
 
 Category.sync({ force: false }).then(() => {
@@ -75,7 +99,7 @@ Category.sync({ force: false }).then(() => {
       Section.hasMany(GradeSheet, { foreignKey: "sectionID" });
       Section.sync({ force: false }).then(() => {
         console.log("section table created/synced");
-        Subject.hasOne(GradeSheet, { foreignKey: "subjectID" });
+        Subject.hasMany(GradeSheet, { foreignKey: "subjectID" });
         Teacher.hasMany(GradeSheet, { foreignKey: "teacherID" });
         GradeSheet.sync({ force: false }).then(() => {
           console.log("grade sheet table created/synced");
@@ -91,12 +115,37 @@ Category.sync({ force: false }).then(() => {
   });
 });
 
-// formula ERD
+// advisory table ERD
 
-Category.hasMany(Formula, { foreignKey: "categoryID" });
-Subject.hasMany(Formula, { foreignKey: "subjectID" });
-Formula.sync({ force: false }).then(() => {
-  console.log("formula table created/synced");
+GradeLevel.hasMany(AdvisoryTable, { foreignKey: "gradeLevelID" });
+Section.hasMany(AdvisoryTable, { foreignKey: "sectionID" });
+Teacher.hasMany(AdvisoryTable, { foreignKey: "teacherID" });
+AdvisoryTable.sync({ force: false }).then(() => {
+  console.log("advisory table created/synced");
+});
+
+// attendance log ERD
+
+Student.hasMany(AttendanceLog, { foreignKey: "studentID" });
+Teacher.hasMany(AttendanceLog, { foreignKey: "teacherID" });
+AttendanceLog.sync({ force: false }).then(() => {
+  console.log("attendance log table created/synced");
+});
+
+// teacher load ERD
+
+Subject.hasMany(TeacherLoad, { foreignKey: "subjectID" });
+Teacher.hasMany(TeacherLoad, { foreignKey: "teacherID" });
+Section.hasMany(TeacherLoad, { foreignKey: "sectionID" });
+TeacherLoad.sync({ force: false }).then(() => {
+  console.log("teacher load table created/synced");
+});
+
+// submission deadline ERD
+
+Teacher.hasMany(SubmissionDeadline, { foreignKey: "teacherID" });
+SubmissionDeadline.sync({ force: false }).then(() => {
+  console.log("submission deadline table created/synced");
 });
 
 // Passport middleware initialization
