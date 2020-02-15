@@ -52,7 +52,7 @@
 \addcontentsline{toc}{section}{Abstract}
 \thispagestyle{plain}
 \setcounter{page}{2}
-Dee Hwa Liong Academy currently uses spreadsheet files to keep student records. In result, the academy faces several difficulties, which include tedious process for storing student records, long preparation time, and lack of security. Dee Hwa Liong Grade Management System will lessen the time needed for grade submission and deliberation, and it will also provide security features for the grade sheets. The system will also eradicate the need of using flash drives and facebook messenger for submission of grades. Tracking late submissions of grades will also be easier since there will be deadline feature which will be set for each teacher in the system. The application will also provide security for students' records since grades will not be easily modified and an edit log will also be available. In addition, this application will also keep parents up to date with their child’s performance.
+Dee Hwa Liong Academy currently uses spreadsheet files to keep student records. In result, the academy faces several difficulties, which include tedious process for storing student records, long preparation time, and lack of security. Dee Hwa Liong Grade Management System will lessen the time needed for grade submission and deliberation, and it will also provide security features for the class records. The system will also eradicate the need of using flash drives and facebook messenger for submission of grades. Tracking late submissions of grades will also be easier since there will be deadline feature which will be set for each teacher in the system. The application will also provide security for students' records since grades will not be easily modified and an edit log will also be available. In addition, this application will also keep parents up to date with their child’s performance.
 \Keywords{information system, web-based application, k to 12, grade management system}
 \end{abstract}
 
@@ -90,15 +90,15 @@ Class records are one of the most important things kept by teachers. This holds 
 
 Dee Hwa Liong Academy is an eduational institution that implements the K to 12 program. This academy uses spreadsheet to keep student records. In result, the academy faces several difficulties, which include tedious process for storing student records, long preparation time, and lack of security.
 
-The academy suffers long preparation time for creating spreadsheet files for each teacher. These excel files are called Electronic Class Record (ECR), an excel file provided by DepEd which includes lists of student's grades in each component (Written Work, Performance Task, and Quarterly Assessment) per subject. Before the classes start, the Information Technology (IT) head gets all enrolled students, their corresponding section, and the subject load of each teacher from the registrar's office. The IT head manually generates a teacher-centric spreadsheet file from these data for each teacher, adding the teacher's current load with corresponding students enrolled in that subject. The weight of each component is also manually changed depending on the guidelines that was given by DepEd. The load of each teacher can vary, thus spreadsheet files contain multiple grade sheets. The said preparation will be repeated twice a year for Senior Highschool teachers and once a year for non-SHS subject teachers.
+The academy suffers long preparation time for creating spreadsheet files for each teacher. These excel files are called Electronic Class Record (ECR), an excel file provided by DepEd which includes lists of student's grades in each component (Written Work, Performance Task, and Quarterly Assessment) per subject. Before the classes start, the Information Technology (IT) head gets all enrolled students, their corresponding section, and the subject load of each teacher from the registrar's office. The IT head manually generates a teacher-centric spreadsheet file from these data for each teacher, adding the teacher's current load with corresponding students enrolled in that subject. The weight of each component is also manually changed depending on the guidelines that was given by DepEd. The load of each teacher can vary, thus spreadsheet files contain multiple class records. The said preparation will be repeated twice a year for Senior Highschool teachers and once a year for non-SHS subject teachers.
 
 % indiv delibration
-After a five-day examination period, the teachers are given a two-week time window to fill up the scores of their handling students for each subject. After making sure that a teacher has already submitted all their completed grade sheets, an individual delibration is taken place. This delibration process includes a face-to-face meeting with the IT head and registrar, running down all the student scores, and checking for possible incorrect or missing fields. Late submission of grades can cause a delay of the group deliberation.   
+After a five-day examination period, the teachers are given a two-week time window to fill up the scores of their handling students for each subject. After making sure that a teacher has already submitted all their completed class records, an individual delibration is taken place. This delibration process includes a face-to-face meeting with the IT head and registrar, running down all the student scores, and checking for possible incorrect or missing fields. Late submission of grades can cause a delay of the group deliberation.   
 % data integrity
 One of the difficulties that the IT head and registrar also encounter is the lack of security in the spreadsheet files. The submission of grades is usually done through flash drive or via facebook messenger. In effect, these excel files can easily be duplicated (losing track of the most updated file) and a possible modification can be done without the permission of certain authorities. Moreover, these records are also prone to data corruption.
 
 % group deliberation
- After checking every grade sheets of all teachers, the IT head then manually generates section-centric spreadsheet files which contain  lists of students under a given subject. Each file also includes the condensed grade of each student as well as their grade for each corresponding subjects. This process involves linking multiple teacher-centric grade sheets to a single spreadsheet file. 
+ After checking every class records of all teachers, the IT head then manually generates section-centric spreadsheet files which contain  lists of students under a given subject. Each file also includes the condensed grade of each student as well as their grade for each corresponding subjects. This process involves linking multiple teacher-centric class records to a single spreadsheet file. 
 
 % creating student-centric report card
 Generating student-centric report cards can be a tedious process most especially for SHS students. The problem arose when the academy's population started to increase, thus also increases the number of students with backlog subjects. The IT head has to personalize the report cards for irregular students, since they have a different set of currently taking subjects.  
@@ -118,15 +118,14 @@ The main goal of the study is to develop a web-based application for record keep
 		\item Login and logout
 		\item Change administrator password
 		\item View and update profile
-		\item Create teachers' and other (Director and Registrar) user accounts
-		\item Create student accounts
-        \item Activate and deactivate an account 
+		\item Create user accounts
+        \item Delete an account
         \begin{enumerate}
-            \item Account deactivation will only happen if the owner of the account is no longer affiliated with the school or is suspended from work and other reasons for deactivation.
+            \item Account deletion will only happen if the owner of the account is no longer affiliated with the school or is suspended from work and other reasons for deactivation.
         \end{enumerate}
-		\item View the edit/update log of the grade sheets
+		\item View the edit/update log of the class records
 		\begin{enumerate}
-            \item This is a read-only log. Its sole purpose is to keep track of all the changes happening in the grade sheets submitted.
+            \item This is a read-only log. Its sole purpose is to keep track of all the changes happening in the class records submitted.
         \end{enumerate}
 
 	\end{enumerate}
@@ -138,7 +137,7 @@ The main goal of the study is to develop a web-based application for record keep
 		\item Change his/her password
 		\item View grades from each subjects
         \begin{enumerate}
-            \item These grade sheets will also provide student information, name, student number, and section. The name of the teacher will also be included. The administator has also the option to view the records in teacher-centric, section-centric, or student-centric
+            \item These class records will also provide student information, name, student number, and section. The name of the teacher will also be included. The administator has also the option to view the records in teacher-centric, section-centric, or student-centric
         \end{enumerate}
         \item View condensed grades of each section
         \begin{enumerate}
@@ -147,6 +146,7 @@ The main goal of the study is to develop a web-based application for record keep
         \item View list and number of students who passed/failed
         \item View list and number of honor students
     \end{enumerate}
+
     \item A \textbf{Registrar}'s account will be able to do the following functionalities:
     \begin{enumerate}
         \item Login and logout
@@ -167,13 +167,26 @@ The main goal of the study is to develop a web-based application for record keep
         \item Add subject load to teachers
         \item View grade submission logs of teachers
     \end{enumerate}
+
+    \item A \textbf{Cashier}'s account will be able to do the following functionalities:
+    \begin{enumerate}
+        \item Login and logout
+        \item View and update profile
+        \item Change his/her password
+        \item View students currently enrolled
+        \item Disable a student account
+        \begin{enumerate}
+            \item Holding a student account account will only happen if the student has unpaid balance.
+        \end{enumerate}
+    \end{enumerate}
+
     \item \textbf{Teacher}'s account will be able to do the following functionalities: 
     \begin{enumerate}
         \item Login and logout
         \item View and update profile
         \item Change his/her password
-        \item Input and update grade sheets
-        \item View grade sheets
+        \item Input and update class records
+        \item View class records
         \item Submit grades
     \end{enumerate}
 
@@ -216,7 +229,7 @@ In addition, this application will also keep parents up to date with their child
 	\item The system will only cover the Kinder2 to Grade 12 students.
 	\item The deliberation of grades will still be done personally by the registrar, subject teachers, advisers, and possibly, by the director and principal.
 	\item Character traits of students will also be included in the system.
-	\item The system will be created to solve bottle neck problems of the grade management system of Dee Hwa Liong Academy. These bottle neck problems include the preparation and distribution of grade sheets per subject teacher, produce a condensed grade sheet per section, and formatting of grades for printing.
+	\item The system will be created to solve bottle neck problems of the grade management system of Dee Hwa Liong Academy. These bottle neck problems include the preparation and distribution of class records per subject teacher, produce a condensed class record per section, and formatting of grades for printing.
 	\item The system will be fully online, no offline counterpart, and accounts cannot be requested through the system. Accounts will be created by the system administrator.
 \end{enumerate}
 
@@ -256,44 +269,44 @@ Dee Hwa Liong Academy handles students from Nursery, Kinder1, Kinder2, and Grade
 Nursery and Kinder1 use a progressive curriculum, and the basis for assessing a student is a checklist. Checklists are called Developmental Assessment Scale. This scale is divided into four development skills - Physical Development, Self-help Skills, Socio-emotional Development, and Pre-academic Development. Physical development is further divided into gross motor development and fine motor development. On the other hand, pre-academic development is divided into reading readiness, language development, computer literacy, number readiness, music, art and P.E. (MAPE), and Chinese. Each skill under these development skills are graded according to a scale. All traits are observed by the students' adviser. The legends for this checklist are excellent (E) - excellent knowledge, very good (VG) - notable knowledge, good (G) - satisfactory knowledge, average (A) - fair knowledge, present (P) - observed, and not observed (OB) - not yet observed. Grades of nursery and kinder1 pupils are combined and deliberated quarterly.
 
 \subsubsection{Kinder2, Grades 1 to 10}
-Kinder2 and Grades 1 to 10 use the K to 12 curriculum. Teachers are given ECRs to input students' scores for each component. The basis for assessments are written work, performance tasks, and exams. The spreadsheet file has columns for formative tasks. Formative tasks are used to check if students are ready for graded seatwork and activities. Usually, formative tasks are not part of a student's grade but are recorded in the grade sheet. Written work is divided into two, quizzes and others, while performance tasks comprise of oral participation, individual work, group work, individual project, group project and other output by students. In addition to these classroom activities, a quarterly exam is also used and recorded to check a student's performance. Similar to nursery and kinder1 students, grades are combined and delibarated quarterly.
+Kinder2 and Grades 1 to 10 use the K to 12 curriculum. Teachers are given ECRs to input students' scores for each component. The basis for assessments are written work, performance tasks, and exams. The spreadsheet file has columns for formative tasks. Formative tasks are used to check if students are ready for graded seatwork and activities. Usually, formative tasks are not part of a student's grade but are recorded in the class record. Written work is divided into two, quizzes and others, while performance tasks comprise of oral participation, individual work, group work, individual project, group project and other output by students. In addition to these classroom activities, a quarterly exam is also used and recorded to check a student's performance. Similar to nursery and kinder1 students, grades are combined and delibarated quarterly.
 
 \subsubsection{Grades 11 to 12}
-Grade sheets for grades 11 to 12 are similar to kinder2 and grades 1 to 10. The only difference is instead of combining the grades quarterly, it is done per semester. Each semester, two exams are taken by students: midterm and final exam.
+Class records for grades 11 to 12 are similar to kinder2 and grades 1 to 10. The only difference is instead of combining the grades quarterly, it is done per semester. Each semester, two exams are taken by students: midterm and final exam.
 
 Character traits are also graded by teachers. 50\% of the character trait grades comes from the adviser while the remaining 50\% will come from the subject teachers. The character traits to be observed are \textit{makadiyos, makatao, makakalikasan,} and \textit{makabansa.} Character traits are graded with a scale: always observed (AO) - 100, sometimes observed (SO) - 90, rarely observed (RO) - 80, and not observed (NO) - 70.
 
 Sometimes, attendance is included in a student's grade. Student's attendance and tardiness are recorded daily by teachers.
 
 \subsection{Teacher-centric Grade Sheet}
-A teacher-centric grade sheet is a spreadsheet file which contains lists of students currently handled by the teacher. The spreadsheet contains multiple tabs. Each tab represents the subject currently handled by the teacher. It contains a list of students taking that subject and their corresponding scores for each component. The final grade is automatically computed for every addition or adjustment of scores.
+A teacher-centric class record is a spreadsheet file which contains lists of students currently handled by the teacher. The spreadsheet contains multiple tabs. Each tab represents the subject currently handled by the teacher. It contains a list of students taking that subject and their corresponding scores for each component. The final grade is automatically computed for every addition or adjustment of scores.
 
 \subsection{Condensed Grade}
-Condensed grade is a term used to descibe the average grade of the student. It is obtained from the section-centric grade sheet. 
+Condensed grade is a term used to descibe the average grade of the student. It is obtained from the section-centric class record. 
 
 \subsection{Section-centric Grade Sheet}
-A section-centric grade sheet is a spreadsheet file which contains a list of students under a given subject. The first column has the student names. The remaining columns are populated by the grades of each student from a given subject. The last column contains the condensed grade.
+A section-centric class record is a spreadsheet file which contains a list of students under a given subject. The first column has the student names. The remaining columns are populated by the grades of each student from a given subject. The last column contains the condensed grade.
 
 \subsection{Student-centric Grade Sheet}
-A student-centric grade sheet is used for the printing of report cards. It is a spreadsheet file which contains a list of subjects the student is currently taking. The list of subjects is then followed by their corresponding grades.
+A student-centric class record is used for the printing of report cards. It is a spreadsheet file which contains a list of subjects the student is currently taking. The list of subjects is then followed by their corresponding grades.
 
 \subsection{Grade Submission}
 
 Submission of grades are done per semester for SHS students, and quarterly for kinder2 to grade 10. Submission of grades is done through messenger or passing a flash drive to the registrar.
 
-The registrar also keeps track of the submission date of the teachers. This is done manually by writing down the date the teacher submitted his/her grade sheet(s).
+The registrar also keeps track of the submission date of the teachers. This is done manually by writing down the date the teacher submitted his/her class record(s).
 
 Character traits and attendance sheets will also be checked by the registrar.
 
 \subsection{Individual Deliberation of Grades}
-Deliberation of grades is done after the teacher has submitted his/her grade sheets. It is always done personally with the registrar and the IT head. This is to ensure that all grades are correctly collected and final adjustments have been made before the creation of the condensed grades. 
+Deliberation of grades is done after the teacher has submitted his/her class records. It is always done personally with the registrar and the IT head. This is to ensure that all grades are correctly collected and final adjustments have been made before the creation of the condensed grades. 
 
-The registrar will talk and review the students' grades with the subject teacher. If no issues were raised during the talk, the registrar will accept the grade sheet to be added to the condensed grades according to the sections, generating section-centric records. Adding students to the grade sheet will also be done during the discussion with the subject teacher. 
+The registrar will talk and review the students' grades with the subject teacher. If no issues were raised during the talk, the registrar will accept the class record to be added to the condensed grades according to the sections, generating section-centric records. Adding students to the class record will also be done during the discussion with the subject teacher. 
 
 \subsection{Group Deliberation of Grades}
-Group deliberation is done for the section-centric grade sheets. In this deliberation, the subject teachers, adviser, and registrar will sit down together to talk about a section's grade sheet. Grade clarifications and student's behaviors are also discussed during the deliberation
+Group deliberation is done for the section-centric class records. In this deliberation, the subject teachers, adviser, and registrar will sit down together to talk about a section's class record. Grade clarifications and student's behaviors are also discussed during the deliberation
 
-Grade adjustments are still possible in this process. The teacher can readjust the student scores, component weights, and the transmuted grade from the teacher-centric grade sheet.
+Grade adjustments are still possible in this process. The teacher can readjust the student scores, component weights, and the transmuted grade from the teacher-centric class record.
 
 \subsection{Printing of Report Cards}
 
@@ -323,7 +336,7 @@ Some of the advantages of MySQL includes portability, good security features, fl
 
 \subsection{Context Diagram}
 
-The web application will have six access levels such as the system administrator, director, registrar, teachers, parents/guardians, and students. A context diagram is shown below in Figure 1.
+The web application will have seven access levels such as the system administrator, director, registrar, cashier's office, teachers, parents/guardians, and students. A context diagram is shown below in Figure 1.
 
 \vspace{2cm}
 \begin{center}
@@ -383,7 +396,7 @@ The system administrator is the one managing the system.
 
 The user can create accounts for the other users such as director, registrar, teachers, and students. All account creation will not have any creation requests.
 
-The administrator is the only one with access to the activity logs of the condensed grade sheet. The activity log records every information changes that occur to grade sheets in the system. This activity log cannot be edited nor deleted, it is only readable. The administrator can also search the log using date, time, teacher's name, section, school year, grade level, and/or grade sheet name.
+The administrator is the only one with access to the activity logs of the condensed class record. The activity log records every information changes that occur to class records in the system. This activity log cannot be edited nor deleted, it is only readable. The administrator can also search the log using date, time, teacher's name, section, school year, grade level, and/or class record name.
 
 Activation and deactivation of accounts is also a functionality of the administrator. An account can be deactivated if the user is no long affiliated with the school.
 
@@ -409,9 +422,9 @@ Another activity log will be present under this user, which is the submission lo
 
 A school will never be a school without its teachers. In this system, there are two types of teachers: teacher-only and teacher/advisers.
 
-Both types can input and update the grades of students. Their grade sheets will be automatically be available after they input the class and subjects they are handling in their profiles.
+Both types can input and update the grades of students. Their class records will be automatically be available after they input the class and subjects they are handling in their profiles.
 
-Both teacher-only and advisers can also submit the grades through the application to create the condensed grades sheet. Before submitting the grades, the teacher must be sure that there are no errors with the record. A save function will be available to save changes made in the grade sheet.
+Both teacher-only and advisers can also submit the grades through the application to create the condensed grades sheet. Before submitting the grades, the teacher must be sure that there are no errors with the record. A save function will be available to save changes made in the class record.
 
 The difference between teacher-only and teacher/adviser, teacher/adviser can view the condensed grades of their advisees from the profiles. In addition, teacher/adviser can view his/her advisees' report carrds after the condensed grades have been finalized.
 
@@ -433,21 +446,23 @@ Finally, the student, this user can only do simple things such as view grades fr
 
 Figure 1 shows the relationship among the user account, student, parent guardian, teacher, and nonacademic tables. The user account table contains the login credentials and basic information such as first name, last name, middle name, etc. of the user. System administrator, registrar, and principal/director fall under the nonacademic table.
 
-Figure 2 shows the relationship among the grade sheet, category, grade, teacher, section, grade level, and subject. The grade sheet table contains the collection of grades of students in a section. The category table shows the type of activity being recorded in the grade sheet. The grade table contains an individual grade of the student, and other important information such as date, category, and entry number. The section table shows the section name of the class record. The subject table contains the subject code and the subject name of the grade sheet.
+Figure 2 shows the relationship among the class record, category, grade, teacher, section, grade level, and subject. The class record table contains the collection of grades of students in a section. The category table shows the type of activity being recorded in the class record. The grade table contains an individual grade of the student, and other important information such as date, category, and entry number. The section table shows the section name of the class record. The subject table contains the subject code and the subject name of the class record.
 
-Figure 3 shows the relationship among the grade, student, category, and grade sheet. The grade table contains an individual grade of the student, and other important information such as date, category, and entry number. The category table shows the type of activity being recorded in the grade sheet. The grade sheet table contains the collection of grades of students in a section.
+Figure 3 shows the relationship among the grade, student, category, and class record. The grade table contains an individual grade of the student, and other important information such as date, category, and entry number. The category table shows the type of activity being recorded in the class record. The class record table contains the collection of grades of students in a section.
 
 Figure 4 shows the relationship among the attendance log, teacher, and the student. The attendance log table contains the atendance information of a student in a specific day. The table also contains the studentID of the student and the teacher recording the attendance. 
 
 Figure 5 shows the relationship among the advisory table, grade level, teacher and section. The advisory table contains the section being handled by the adviser. It also contains other information such as the grade level of the students being handled, the section, school year, and academic term. The teacher can only have an exact one advisory section. 
 
-Figure 6 shows the relationship among the component weight table, category, and subject. The component weight table shows the weight of each component from each subject. The category table shows the type of activity being recorded in the grade sheet. 
+Figure 6 shows the relationship among the component weight table, category, and subject. The component weight table shows the weight of each component from each subject. The category table shows the type of activity being recorded in the class record. 
 
-Figure 7 shows the relationship among the subcomponent weight table, section, teacher, category, sub category, and subject. The subcomponent weight table shows the weight of each subcomponent of a component from each subject currently handled by the teacher. The category table shows the type of activity being recorded in the grade sheet. 
+Figure 7 shows the relationship among the subcomponent weight table, section, teacher, category, sub category, and subject. The subcomponent weight table shows the weight of each subcomponent of a component from each subject currently handled by the teacher. The category table shows the type of activity being recorded in the class record. 
 
-Figure 8 shows the relationship among the teacher load, subject, teacher, and section. The teacher load table shows the subject being handled by the teachers. Teachers can have multiple load since they can teach multiple sections throughout the academic year. They can also teach multiple subjects.
+Figure 8 shows the relationship among the class, subject, teacher, and section. The class table shows the subject being handled by the teachers. Teachers can have multiple load since they can teach multiple sections throughout the academic year. They can also teach multiple subjects.
 
-Figure 9 shows the relationship among submission deadline and teacher. The submission deadline tables contains the deadline date for the submission of grades of the teacher set by the registrar. Teacher can only have exactly one submission deadline.
+Figure 9 shows the relationship among submission deadline and teacher. The submission deadline table contains the deadline date for the submission of grades of the teacher set by the registrar. Teacher can only have exactly one submission deadline.
+
+Figure 10 shows the relationship among student load and student. The student load table contains the load of the students in a given quarter. The students can have multiple student loads.
 
 \vspace{1cm}
 \newpage
@@ -461,11 +476,11 @@ Figure 9 shows the relationship among submission deadline and teacher. The submi
 
 \vspace{1cm}
 \begin{center}
-    \includegraphics[height=13.5cm]{Grade-Sheet.png}
+    \includegraphics[height=13.5cm]{Class-Record.png}
 \end{center}
 \vspace{1cm}
 \begin{center}
-    Figure 2 - Entity Relationship Diagram (ERD) (grade sheet)
+    Figure 2 - Entity Relationship Diagram (ERD) (class record)
 \end{center}
 
 \vspace{1cm}
@@ -516,11 +531,11 @@ Figure 9 shows the relationship among submission deadline and teacher. The submi
 
 \vspace{1cm}
 \begin{center}
-    \includegraphics[height=6.5cm]{Teacher-Load.png}
+    \includegraphics[height=6.5cm]{Class.png}
 \end{center}
 \vspace{1cm}
 \begin{center}
-    Figure 8 - Entity Relationship Diagram (ERD) (teacher load)
+    Figure 8 - Entity Relationship Diagram (ERD) (class)
 \end{center}
 
 \vspace{1cm}
@@ -530,6 +545,15 @@ Figure 9 shows the relationship among submission deadline and teacher. The submi
 \vspace{1cm}
 \begin{center}
     Figure 9 - Entity Relationship Diagram (ERD) (submission deadline)
+\end{center}
+
+\vspace{1cm}
+\begin{center}
+    \includegraphics[height=5.5cm]{Student-Load.png}
+\end{center}
+\vspace{1cm}
+\begin{center}
+    Figure 10 - Entity Relationship Diagram (ERD) (student load)
 \end{center}
 
 
@@ -641,6 +665,26 @@ The table will contain information about the parent/guardian.
     Table 3: Data dictionary for \textbf{parent guardian} table
 \end{center}
 
+\subsubsection{Cashier}
+
+The table will contain information about the cashier.
+
+\vspace{1cm}
+\begin{longtable}{ |p{2.5cm}|p{4.5cm}|p{2.5cm}|p{3cm}|  }
+    \hline
+    \multicolumn{4}{|c|}{\textbf{cashier}} \\
+    \hline
+    \textbf{FIELD}&\textbf{TYPE}&\textbf{KEY TYPE}&\textbf{DESCRIPTION}\\
+    \hline
+    \textbf{cashierID}   & \textbf{INT(10), AUTO\_INCREMENT}  & \textbf{PRIMARY} & \textbf{Unique identifier of cashier}\\ \hline
+    accountID& INT(10) & FOREIGN & Unique identifier of user \\ \hline
+\end{longtable}
+
+\vspace{.5cm}
+\begin{center}
+    Table 4: Data dictionary for \textbf{parent guardian} table
+\end{center}
+
 
 \subsubsection{Teacher}
 
@@ -660,7 +704,7 @@ The table will contain basic information about the teacher.
 
 \vspace{.5cm}
 \begin{center}
-    Table 4: Data dictionary for \textbf{teacher} table
+    Table 5: Data dictionary for \textbf{teacher} table
 \end{center}
 
 
@@ -681,7 +725,7 @@ The table will contain basic information about the system administrator, directo
 
 \vspace{.5cm}
 \begin{center}
-    Table 5: Data dictionary for \textbf{nonacademic} table
+    Table 6: Data dictionary for \textbf{nonacademic} table
 \end{center}
 
 
@@ -704,7 +748,7 @@ This table will contain all the names of sections.
 
 \vspace{.5cm}
 \begin{center}
-    Table 6: Data dictionary for \textbf{section} table
+    Table 7: Data dictionary for \textbf{section} table
 \end{center}
 
 
@@ -727,7 +771,7 @@ This table will contain all the subjects offered by Dee Hwa Liong Academy.
 
 \vspace{.5cm}
 \begin{center}
-    Table 7: Data dictionary for \textbf{subject} table
+    Table 8: Data dictionary for \textbf{subject} table
 \end{center}
 
 
@@ -748,13 +792,13 @@ Grade Level table will contain the grade levels under Dee Hwa Liong Academy.
 
 \vspace{.5cm}
 \begin{center}
-    Table 8: Data dictionary for \textbf{grade level} table
+    Table 9: Data dictionary for \textbf{grade level} table
 \end{center}
 
 
 \subsubsection{Category}
 
-Category table will tell us what type of activity (formative assessment-seatwork, formative assessment-assignments, written work-quizzes, written work-others, performance task-oral participation, etc.) is being recorded in the grade sheet
+Category table will tell us what type of activity (formative assessment-seatwork, formative assessment-assignments, written work-quizzes, written work-others, performance task-oral participation, etc.) is being recorded in the class record
 
 \vspace{1cm}
 \begin{longtable}{ |p{2.5cm}|p{4.5cm}|p{2.5cm}|p{3cm}|  }
@@ -769,13 +813,13 @@ Category table will tell us what type of activity (formative assessment-seatwork
 
 \vspace{.5cm}
 \begin{center}
-    Table 9: Data dictionary for \textbf{category} table
+    Table 10: Data dictionary for \textbf{category} table
 \end{center}
 
 
 \subsubsection{Subcategory}
 
-Subcategory table is a subcomponent of a specific component (formative assessment-seatwork, formative assessment-assignments, written work-quizzes, written work-others, performance task-oral participation, etc.) being recorded in the grade sheet.
+Subcategory table is a subcomponent of a specific component (formative assessment-seatwork, formative assessment-assignments, written work-quizzes, written work-others, performance task-oral participation, etc.) being recorded in the class record.
 
 \vspace{1cm}
 \begin{longtable}{ |p{2.5cm}|p{4.5cm}|p{2.5cm}|p{3cm}|  }
@@ -790,42 +834,37 @@ Subcategory table is a subcomponent of a specific component (formative assessmen
 
 \vspace{.5cm}
 \begin{center}
-    Table 10: Data dictionary for \textbf{subcategory} table
+    Table 11: Data dictionary for \textbf{subcategory} table
 \end{center}
 
 
-\subsubsection{Grade Sheet}
+\subsubsection{Class record}
 
 This will consist of the grades of the students from every activity to condensed grades.
 
 \vspace{1cm}
 \begin{longtable}{ |p{2.5cm}|p{4.5cm}|p{2.5cm}|p{3cm}|  }
     \hline
-    \multicolumn{4}{|c|}{\textbf{grade sheet}} \\
+    \multicolumn{4}{|c|}{\textbf{class record}} \\
     \hline
     \textbf{FIELD}&\textbf{TYPE}&\textbf{KEY TYPE}&\textbf{DESCRIPTION}\\
     \hline
-    \textbf{gradeSheetID}  & \textbf{INT(10), AUTO\_INCREMENT} & \textbf{PRIMARY} & \textbf{Unique identifier of a grade sheet}\\ \hline
-    schoolYear   & VARCHAR(9)   & & Academic year the student is currently enrolled in\\ \hline
-    academicTerm   & ENUM('SEMESTER\_1', 'SEMESTER\_2', 'QUARTER\_1', 'QUARTER\_2', 'QUARTER\_3', 'QUARTER\_4') &  & Academic term of the grade\\ \hline
-    dateCreated   & DATETIME   & & Date when the grade sheet was created\\ \hline
-    dateModified  & DATETIME   & & Date when the grade sheet was modified\\ \hline
+    \textbf{classRecordID}  & \textbf{INT(10), AUTO\_INCREMENT} & \textbf{PRIMARY} & \textbf{Unique identifier of a class record}\\ \hline
+    dateCreated   & DATETIME   & & Date when the class record was created\\ \hline
+    dateModified  & DATETIME   & & Date when the class record was modified\\ \hline
     isSubmitted   & BIT(1)   & & Denotes if the grade has been submitted for deliberation (1) or not (0)\\ \hline
-    subjectID   & INT(10)   & FOREIGN & Unique identifier of a subject\\ \hline
-    sectionID   & INT(10)   & FOREIGN & Unique identifier of a section\\ \hline
-    gradeLevelID   & INT(10)   & FOREIGN & Unique identifier of a grade level\\ \hline
-    teacherID   & INT(10)   & FOREIGN & Unique identifier of a teacher\\ \hline
+    classID   & INT(10)   & FOREIGN & Unique identifier of a class\\ \hline
 \end{longtable}
     
 \vspace{.5cm}
 \begin{center}
-    Table 11: Data dictionary for \textbf{grade sheet} table
+    Table 12: Data dictionary for \textbf{class record} table
 \end{center}
 
 
 \subsubsection{Grade}
 
-This represents a grade entry in a grade sheet.
+This represents a grade entry in a class record.
 
 \vspace{1cm}
 \begin{longtable}{ |p{2.5cm}|p{4.5cm}|p{2.5cm}|p{3cm}|  }
@@ -840,8 +879,8 @@ This represents a grade entry in a grade sheet.
     categoryID   & INT(10)   & FOREIGN & Unique identifier of a category \\ \hline
     subCategID   & INT(10)   & FOREIGN & Unique identifier of a subcategory \\ \hline
     date   & DATETIME   & & Date when the grade was created \\ \hline
-    gradeSheetID   & INT(10)   & & Unique identifier of a grade sheet \\ \hline
-    entryNum   & INT(1)   & & Denotes the entry number of the grade in the grade sheet \\ \hline
+    classRecordID   & INT(10)   & & Unique identifier of a class record \\ \hline
+    entryNum   & INT(1)   & & Denotes the entry number of the grade in the class record \\ \hline
     studentID   & INT(10)   & FOREIGN & Unique identifier of a student \\ \hline
     showLog & BIT(1) & &  Denotes if the grade update will be show in the update log \\ \hline
     isUpdated & BIT(1) & & Denotes if the grade is the initial input (0) or not (1) \\ \hline
@@ -849,7 +888,7 @@ This represents a grade entry in a grade sheet.
     
 \vspace{.5cm}
 \begin{center}
-    Table 12: Data dictionary for \textbf{grade} table
+    Table 13: Data dictionary for \textbf{grade} table
 \end{center}
 
 
@@ -867,7 +906,7 @@ This will hold the record of attendance of each student.
     \textbf{attendanceID}  & \textbf{INT(10), AUTO\_INCREMENT} & \textbf{PRIMARY} & \textbf{Unique identifier of an attendance}\\ \hline
     date   & DATETIME   & & School date\\ \hline
     schoolYear   & VARCHAR(9)   & & School year of the attendance log\\ \hline
-    academicTerm   & ENUM('SEMESTER\_1', 'SEMESTER\_2', 'QUARTER\_1', 'QUARTER\_2', 'QUARTER\_3', 'QUARTER\_4') &  & Academic term of the attendance log\\ \hline
+    academicTerm   & ENUM('QUARTER\_1', 'QUARTER\_2', 'QUARTER\_3', 'QUARTER\_4') &  & Academic term of the attendance log\\ \hline
     month   & INT(2) &  & Month of the attendance record\\ \hline
     daysPresent   & INT(2) &  & Number of days the student is present\\ \hline
     daysTardy   & INT(2) &  & Number of days the student is tardy\\ \hline
@@ -878,7 +917,7 @@ This will hold the record of attendance of each student.
 
 \vspace{.5cm}
 \begin{center}
-    Table 13: Data dictionary for \textbf{attendance log} table
+    Table 14: Data dictionary for \textbf{attendance log} table
 \end{center}
 
 
@@ -897,38 +936,38 @@ This table will show the section being handled by the adviser.
     gradeLevelID   & INT(10) & FOREIGN & Unique identifier of a grade   \\ \hline
     sectionID   & INT(10)   & FOREIGN & Gives the unique identifier of a section if the teacher is an adviser\\ \hline
     schoolYear   & VARCHAR(9)   & & School year of the advisory table\\ \hline
-    academicTerm   & ENUM('SEMESTER\_1', 'SEMESTER\_2', 'QUARTER\_1', 'QUARTER\_2', 'QUARTER\_3', 'QUARTER\_4')   & & Academic term of the advisory table\\ \hline
+    academicTerm   & ENUM('QUARTER\_1', 'QUARTER\_2', 'QUARTER\_3', 'QUARTER\_4')   & & Academic term of the advisory table\\ \hline
     teacherID & INT(10) & FOREIGN & Unique identifier of a teacher\\ \hline
 \end{longtable}
 
 \vspace{.5cm}
 \begin{center}
-    Table 14: Data dictionary for \textbf{advisory table} table
+    Table 15: Data dictionary for \textbf{advisory table} table
 \end{center}
 
 
-\subsubsection{Teacher's Load}
+\subsubsection{Class}
 
 This table shows the subjects handled by different teachers.
 
 \vspace{1cm}
 \begin{longtable}{ |p{2.5cm}|p{4.5cm}|p{2.5cm}|p{3cm}|  }
     \hline
-    \multicolumn{4}{|c|}{\textbf{teacher load}} \\
+    \multicolumn{4}{|c|}{\textbf{class}} \\
     \hline
     \textbf{FIELD}&\textbf{TYPE}&\textbf{KEY TYPE}&\textbf{DESCRIPTION}\\
     \hline
-    \textbf{loadID}  & \textbf{INT(10), AUTO\_INCREMENT} & \textbf{PRIMARY} & \textbf{Unique identifier of the teacher's load}\\ \hline
+    \textbf{classID}  & \textbf{INT(10), AUTO\_INCREMENT} & \textbf{PRIMARY} & \textbf{Unique identifier of the class}\\ \hline
     subjectID   & INT(10) & FOREIGN & Unique identifier of a subject\\ \hline
     sectionID   & INT(10) & FOREIGN & Unique identifier of a section\\ \hline
     teacherID   & INT(10) & FOREIGN & Unique identifier of a teacher\\ \hline
     schoolYear   & VARCHAR(9)   & & School year of the teacher's load\\ \hline
-    academicTerm   & ENUM('SEMESTER\_1', 'SEMESTER\_2', 'QUARTER\_1', 'QUARTER\_2', 'QUARTER\_3', 'QUARTER\_4')   & & Academic term of the teacher's load\\ \hline
+    academicTerm   & ENUM('QUARTER\_1', 'QUARTER\_2', 'QUARTER\_3', 'QUARTER\_4')   & & Academic term of the teacher's load\\ \hline
 \end{longtable}
 
 \vspace{.5cm}
 \begin{center}
-    Table 15: Data dictionary for \textbf{teacher load} table
+    Table 16: Data dictionary for \textbf{class} table
 \end{center}
 
 
@@ -952,7 +991,7 @@ This table will contain the deadlines set by the registrar.
 
 \vspace{.5cm}
 \begin{center}
-    Table 16: Data dictionary for \textbf{submission deadline} table
+    Table 17: Data dictionary for \textbf{submission deadline} table
 \end{center}
 
 
@@ -979,7 +1018,7 @@ This table will contain the subcomponent weights for each component.
 
 \vspace{.5cm}
 \begin{center}
-    Table 17: Data dictionary for \textbf{subcomponent weight} table
+    Table 18: Data dictionary for \textbf{subcomponent weight} table
 \end{center}
 
 \newpage

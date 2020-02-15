@@ -1,183 +1,223 @@
-PWD /Users/beatriceee/Desktop/dwla-web-app/SP
-INPUT /usr/local/texlive/2019/texmf.cnf
-INPUT /usr/local/texlive/2019/texmf-dist/web2c/texmf.cnf
-INPUT /usr/local/texlive/2019/texmf-var/web2c/pdftex/pdflatex.fmt
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.tex
-OUTPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.log
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/base/article.cls
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/base/article.cls
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/base/size11.clo
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/base/size11.clo
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/map/fontname/texfonts.map
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmr10.tfm
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/geometry/geometry.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/geometry/geometry.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/graphics/keyval.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/graphics/keyval.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/ifpdf.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/ifpdf.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/ifvtex.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/ifvtex.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/generic/ifxetex/ifxetex.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/generic/ifxetex/ifxetex.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/url/url.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/url/url.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/setspace/setspace.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/setspace/setspace.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/listings/listings.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/listings/listings.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/listings/lstmisc.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/listings/lstmisc.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/listings/listings.cfg
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/listings/listings.cfg
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/tools/multicol.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/tools/multicol.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/authoraftertitle/authoraftertitle.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/authoraftertitle/authoraftertitle.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/graphics/graphicx.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/graphics/graphicx.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/graphics/graphics.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/graphics/graphics.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/graphics/trig.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/graphics/trig.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/graphics-def/pdftex.def
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/graphics-def/pdftex.def
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/tools/array.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/tools/array.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/xcolor/xcolor.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/xcolor/xcolor.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/graphics-cfg/color.cfg
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/graphics-cfg/color.cfg
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/colortbl/colortbl.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/colortbl/colortbl.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/tocbibind/tocbibind.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/tocbibind/tocbibind.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/tocloft/tocloft.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/tocloft/tocloft.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/tools/longtable.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/tools/longtable.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/hyperref.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/hyperref.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/hobsub-hyperref.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/hobsub-hyperref.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/hobsub-hyperref.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/hobsub-generic.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/hobsub-generic.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/auxhook.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/auxhook.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/kvoptions.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/kvoptions.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/pd1enc.def
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/pd1enc.def
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/latexconfig/hyperref.cfg
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/latexconfig/hyperref.cfg
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/hpdftex.def
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/hpdftex.def
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.aux
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.aux
-OUTPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.aux
-INPUT /usr/local/texlive/2019/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
-INPUT /usr/local/texlive/2019/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/grfext.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/grfext.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/nameref.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/nameref.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
-INPUT /usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
-OUTPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.pdf
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
-OUTPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmr17.tfm
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmr12.tfm
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmr8.tfm
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmr6.tfm
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmmi12.tfm
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmmi8.tfm
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmmi6.tfm
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmsy10.tfm
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmsy8.tfm
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmsy6.tfm
-INPUT /usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmti10.tfm
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmr12.tfm
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.toc
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.toc
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmsy10.tfm
-OUTPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.toc
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmti10.tfm
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Context-Diagram.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Context-Diagram.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Context-Diagram.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Data-Flow-Diagram-1.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Data-Flow-Diagram-1.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Data-Flow-Diagram-1.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Data-Flow-Diagram-2.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Data-Flow-Diagram-2.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Data-Flow-Diagram-2.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Subexplotion-1.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Subexplotion-1.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Subexplotion-1.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Subexplotion-3.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Subexplotion-3.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Subexplotion-3.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Subexplotion-5.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Subexplotion-5.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Subexplotion-5.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Activity-Diagram-1.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Activity-Diagram-1.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Activity-Diagram-1.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/User.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/User.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/User.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Grade-Sheet.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Grade-Sheet.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Grade-Sheet.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Grade.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Grade.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Grade.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Attendance-Log.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Attendance-Log.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Attendance-Log.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Advisory-Table.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Advisory-Table.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Advisory-Table.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Component-Weight.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Component-Weight.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Component-Weight.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Subcomponent-Weight.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Subcomponent-Weight.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Subcomponent-Weight.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Teacher-Load.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Teacher-Load.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Teacher-Load.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Submission-Deadline.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Submission-Deadline.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Submission-Deadline.png
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.bbl
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.bbl
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.aux
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
-INPUT /Users/beatriceee/Desktop/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb
+PWD c:/Users/NicoMendoza/Documents/dwla-web-app/SP
+INPUT C:/Users/NicoMendoza/AppData/Local/MiKTeX/2.9/miktex/data/le/pdftex/pdflatex.fmt
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.tex
+OUTPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.log
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/article.cls
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/article.cls
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/size11.clo
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/size11.clo
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmr10.tfm
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/geometry/geometry.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/geometry/geometry.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/graphics/keyval.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/graphics/keyval.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/ifpdf.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/ifpdf.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/ifvtex.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/ifvtex.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/ifxetex/ifxetex.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/ifxetex/ifxetex.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/geometry/geometry.cfg
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/geometry/geometry.cfg
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/url/url.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/url/url.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/setspace/setspace.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/setspace/setspace.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/listings/listings.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/listings/listings.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/listings/lstmisc.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/listings/lstmisc.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/listings/listings.cfg
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/listings/listings.cfg
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tools/multicol.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tools/multicol.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/authoraftertitle/authoraftertitle.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/authoraftertitle/authoraftertitle.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/graphics/graphicx.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/graphics/graphicx.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/graphics/graphics.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/graphics/graphics.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/graphics/trig.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/graphics/trig.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/graphics-cfg/graphics.cfg
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/graphics-cfg/graphics.cfg
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/graphics-def/pdftex.def
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/graphics-def/pdftex.def
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tools/array.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tools/array.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/xcolor/xcolor.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/xcolor/xcolor.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/graphics-cfg/color.cfg
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/graphics-cfg/color.cfg
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/colortbl/colortbl.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/colortbl/colortbl.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tocbibind/tocbibind.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tocbibind/tocbibind.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tocloft/tocloft.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tocloft/tocloft.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tools/longtable.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tools/longtable.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/hyperref/hyperref.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/hyperref/hyperref.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/hobsub-hyperref.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/hobsub-hyperref.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/hobsub-hyperref.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/hobsub-generic.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/hobsub-generic.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/oberdiek/auxhook.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/oberdiek/auxhook.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/oberdiek/kvoptions.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/oberdiek/kvoptions.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/hyperref/pd1enc.def
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/hyperref/pd1enc.def
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/00miktex/hyperref.cfg
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/00miktex/hyperref.cfg
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/hyperref/hpdftex.def
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/hyperref/hpdftex.def
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/oberdiek/rerunfilecheck.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/oberdiek/rerunfilecheck.sty
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.aux
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.aux
+OUTPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.aux
+INPUT C:/Program Files/MiKTeX 2.9/tex/context/base/supp-pdf.mkii
+INPUT C:/Program Files/MiKTeX 2.9/tex/context/base/supp-pdf.mkii
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/oberdiek/epstopdf-base.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/oberdiek/epstopdf-base.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/oberdiek/grfext.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/oberdiek/grfext.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/hyperref/nameref.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/hyperref/nameref.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/gettitlestring.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/gettitlestring.sty
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
+OUTPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.pdf
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
+OUTPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmr17.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmr12.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmr8.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmr6.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmmi12.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmmi8.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmmi6.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmsy10.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmsy8.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmsy6.tfm
+INPUT C:/Users/NicoMendoza/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmbx10.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmti10.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmr12.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmbx12.tfm
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.toc
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.toc
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmmi10.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmsy10.tfm
+OUTPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.toc
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmbx12.tfm
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmti10.tfm
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Context-Diagram.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Context-Diagram.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Context-Diagram.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Context-Diagram.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Context-Diagram.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Data-Flow-Diagram-1.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Data-Flow-Diagram-1.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Data-Flow-Diagram-1.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Data-Flow-Diagram-1.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Data-Flow-Diagram-1.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Data-Flow-Diagram-2.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Data-Flow-Diagram-2.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Data-Flow-Diagram-2.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Data-Flow-Diagram-2.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Data-Flow-Diagram-2.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subexplotion-1.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subexplotion-1.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subexplotion-1.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subexplotion-1.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subexplotion-1.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subexplotion-3.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subexplotion-3.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subexplotion-3.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subexplotion-3.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subexplotion-3.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subexplotion-5.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subexplotion-5.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subexplotion-5.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subexplotion-5.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subexplotion-5.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Activity-Diagram-1.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Activity-Diagram-1.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Activity-Diagram-1.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Activity-Diagram-1.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Activity-Diagram-1.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/User.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/User.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/User.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/User.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/User.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class-Record.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class-Record.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class-Record.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class-Record.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class-Record.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Attendance-Log.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Attendance-Log.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Attendance-Log.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Attendance-Log.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Attendance-Log.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Advisory-Table.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Advisory-Table.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Advisory-Table.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Advisory-Table.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Advisory-Table.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Component-Weight.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Component-Weight.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Component-Weight.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Component-Weight.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Component-Weight.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subcomponent-Weight.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subcomponent-Weight.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subcomponent-Weight.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subcomponent-Weight.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subcomponent-Weight.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Submission-Deadline.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Submission-Deadline.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Submission-Deadline.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Submission-Deadline.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Submission-Deadline.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Student-Load.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Student-Load.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Student-Load.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Student-Load.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Student-Load.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.bbl
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.bbl
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.aux
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
+INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb
+INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb
+INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb
+INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb
+INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb
+INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb
+INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb
+INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb
+INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb
+INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb
+INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb
+INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb

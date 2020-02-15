@@ -50,7 +50,10 @@ export class AdminActivateAccount extends Component {
   };
 
   onChange(event) {
-    this.setState({ isLoading: true, page: 1 });
+    this.setState({
+      isLoading: true,
+      page: 1,
+    });
     this.setState({ [event.target.name]: event.target.value });
     axios
       .post('api/admin/getaccounts', { keyword: event.target.value, page: 1, pageSize: 5 })
@@ -206,7 +209,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(AdminActivateAccount);
+export default connect(mapStateToProps, mapDispatchToProps)(AdminActivateAccount);
