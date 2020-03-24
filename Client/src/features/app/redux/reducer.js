@@ -16,6 +16,17 @@ import { reducer as updateDirectorProfileReducer } from './updateDirectorProfile
 import { reducer as updateTeacherProfileReducer } from './updateTeacherProfile';
 import { reducer as updateRegistrarProfileReducer } from './updateRegistrarProfile';
 import { reducer as updateParentProfileReducer } from './updateParentProfile';
+import { reducer as addSectionReducer } from './addSection';
+import { reducer as editSectionReducer } from './editSection';
+import { reducer as deleteSectionReducer } from './deleteSection';
+import { reducer as createStudentSectionReducer } from './createStudentSection';
+import { reducer as deleteStudentSectionReducer } from './deleteStudentSection';
+import { reducer as assignAdvisorySectionReducer } from './assignAdvisorySection';
+import { reducer as unassignAdvisorySectionReducer } from './unassignAdvisorySection';
+import { reducer as createSubjectSectionReducer } from './createSubjectSection';
+import { reducer as deleteSubjectSectionReducer } from './deleteSubjectSection';
+import { reducer as addSubjectSectionStudentReducer } from './addSubjectSectionStudent';
+import { reducer as deleteSubjectSectionStudentReducer } from './deleteSubjectSectionStudent';
 
 const reducers = [
   setCurrentUserReducer,
@@ -35,6 +46,17 @@ const reducers = [
   updateTeacherProfileReducer,
   updateRegistrarProfileReducer,
   updateParentProfileReducer,
+  addSectionReducer,
+  editSectionReducer,
+  deleteSectionReducer,
+  createStudentSectionReducer,
+  deleteStudentSectionReducer,
+  assignAdvisorySectionReducer,
+  unassignAdvisorySectionReducer,
+  createSubjectSectionReducer,
+  deleteSubjectSectionReducer,
+  addSubjectSectionStudentReducer,
+  deleteSubjectSectionStudentReducer,
 ];
 
 export default function reducer(state = initialState, action) {

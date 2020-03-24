@@ -3,8 +3,10 @@
 // https://medium.com/@nate_wang/a-new-approach-for-managing-redux-actions-91c26ce8b5da
 
 import { APP_SET_CURRENT_USER } from './constants';
+import * as actions from './actions';
 
 export function setCurrentUser(payload) {
+  actions.getCurrentProfile();
   return {
     type: APP_SET_CURRENT_USER,
     payload,

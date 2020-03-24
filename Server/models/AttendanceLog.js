@@ -10,16 +10,9 @@ const AttendanceLog = sequelize.define(
       autoIncrement: true
     },
     date: { type: Sequelize.DATE },
-    schoolYear: { type: Sequelize.STRING(9) },
-    academicYear: {
-      type: Sequelize.ENUM(
-        "SEMESTER_1",
-        "SEMESTER_2",
-        "QUARTER_1",
-        "QUARTER_2",
-        "QUARTER_3",
-        "QUARTER_4"
-      )
+    schoolYearID: { type: Sequelize.INTEGER },
+    quarter: {
+      type: Sequelize.ENUM("Q1", "Q2", "Q3", "Q4")
     },
     month: { type: Sequelize.INTEGER(2) },
     daysPresent: { type: Sequelize.INTEGER(2) },

@@ -9,14 +9,31 @@ const Section = sequelize.define(
       primaryKey: true,
       autoIncrement: true
     },
-    teacherID: {
-      type: Sequelize.INTEGER
-    },
     sectionName: {
-      type: Sequelize.STRING(20)
+      type: Sequelize.STRING(100)
     },
-    gradeLevelID: {
-      type: Sequelize.INTEGER
+    gradeLevel: {
+      type: Sequelize.ENUM(
+        "N",
+        "K1",
+        "K2",
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5",
+        "G6",
+        "G7",
+        "G8",
+        "G9",
+        "G10",
+        "G11",
+        "G12"
+      )
+    },
+    archived: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: 0
     }
   },
   { freezeTableName: true }

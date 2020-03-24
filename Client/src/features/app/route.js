@@ -1,8 +1,61 @@
 import { HomeView } from './HomeView';
-import { Login, DashboardView, ProfileView, SampleComponent } from './';
+import {
+  Login,
+  DashboardView,
+  ProfileView,
+  SampleComponent,
+  RegistrarSectionsListView,
+  Page404,
+  Page401,
+  RegistrarManageStudentsView,
+  RegistrarViewEnrolledView,
+  RegistrarViewPastRecordsView,
+  RegistrarAssignAdvisorySectionView,
+  RegistrarAssignSubjectLoadView,
+  RegistrarViewSubjectLoadView,
+  RegistrarEditSubjectLoadView,
+  TeacherViewSubjectLoadView,
+  TeacherViewSubjectLoadByIdView,
+  TeacherManageGradesView,
+} from './';
 
 export default {
   path: '/',
   name: 'App',
-  childRoutes: [{ path: 'home-view', name: 'Home view', component: HomeView, isIndex: true }, { path: '/login', name: 'Login', component: Login }, { path: '/dashboard', name: 'Dashboard view', component: DashboardView }, { path: '/profile', name: 'Profile view', component: ProfileView }, { path: '/sampleComponent', name: 'Sample component', component: SampleComponent }],
+  childRoutes: [
+    { path: 'home-view', name: 'Home view', component: HomeView, isIndex: true },
+    { path: '/login', name: 'Login', component: Login },
+    { path: '/dashboard', name: 'Dashboard view', component: DashboardView },
+    { path: '/profile', name: 'Profile view', component: ProfileView },
+    { path: '/sampleComponent', name: 'Sample component', component: SampleComponent },
+    {
+      path: '/sectionslist',
+      name: 'Registrar add section view',
+      component: RegistrarSectionsListView,
+    },
+    { path: 'page404', name: 'Page 404', component: Page404 },
+    { path: 'page401', name: 'Page 401', component: Page401 },
+    {
+      path: '/managestudents',
+      name: 'Registrar enroll students view',
+      component: RegistrarManageStudentsView,
+    },
+    {
+      path: 'managestudents/viewenrolled/:id',
+      name: 'Registrar view enrolled view',
+      component: RegistrarViewEnrolledView,
+    },
+    {
+      path: 'managestudents/viewpastrecords/:id',
+      name: 'Registrar view past records view',
+      component: RegistrarViewPastRecordsView,
+    },
+    { path: 'assignadvisorysection', name: 'Registrar assign advisory section view', component: RegistrarAssignAdvisorySectionView },
+    { path: 'assignsubjectload', name: 'Registrar assign subject load view', component: RegistrarAssignSubjectLoadView },
+    { path: 'assignsubjectload/viewload/:id', name: 'Registrar view subject load view', component: RegistrarViewSubjectLoadView },
+    { path: 'assignsubjectload/viewload/:id/edit/:id2', name: 'Registrar edit subject load view', component: RegistrarEditSubjectLoadView },
+    { path: '/viewsubjectload', name: 'Teacher view subject load view', component: TeacherViewSubjectLoadView },
+    { path: '/viewsubjectload/:id', name: 'Teacher view subject load by id view', component: TeacherViewSubjectLoadByIdView },
+    { path: '/managegrades', name: 'Teacher manage grades view', component: TeacherManageGradesView },
+  ],
 };

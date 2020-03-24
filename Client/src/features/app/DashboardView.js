@@ -10,6 +10,7 @@ import RegistrarDashboard from './RegistrarDashboard';
 import TeacherDashboard from './TeacherDashboard';
 import StudentDashboard from './StudentDashboard';
 import ParentDashboard from './ParentDashboard';
+import { withRouter } from 'react-router-dom';
 
 function DashboardComponent(props) {
   const { position } = props;
@@ -40,15 +41,21 @@ export class DashboardView extends Component {
   componentDidMount() {
     if (!this.props.app.auth.isAuthenticated) {
       this.props.history.push('/login');
+    } else {
+      this.props.actions.getCurrentProfile();
     }
   }
 
   render() {
     return (
-      <div className="app-dashboard-view">
-        <NavBar>
-          <DashboardComponent position={this.props.app.auth.user.position} />
-        </NavBar>
+      <div className="app-dashboard-view fh">
+        {this.props.app.showLoading ? (
+          ''
+        ) : (
+          <NavBar>
+            <DashboardComponent position={this.props.app.auth.user.position} />
+          </NavBar>
+        )}
       </div>
     );
   }
@@ -68,7 +75,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(DashboardView);
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardView);

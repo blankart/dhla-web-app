@@ -18,11 +18,11 @@ export const updateAdminProfile = data => dispatch => {
       dispatch({ type: APP_GET_ERRORS, payload: {} });
     })
     .catch(err => {
-      dispatch(actions.setLoading(false));
       dispatch({
         type: APP_GET_ERRORS,
         payload: err.response.data,
       });
+      dispatch(actions.setLoading(false));
     });
   return {
     type: APP_UPDATE_ADMIN_PROFILE,

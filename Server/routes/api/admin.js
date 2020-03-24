@@ -6,9 +6,6 @@ const Teacher = require("../../models/Teacher");
 const Student = require("../../models/Student");
 const ParentGuardian = require("../../models/ParentGuardian");
 const Grade = require("../../models/Grade");
-const GradeSheet = require("../../models/GradeSheet");
-const Category = require("../../models/Category");
-const GradeLevel = require("../../models/GradeLevel");
 const Subject = require("../../models/Subject");
 const Section = require("../../models/Section");
 const bcrypt = require("bcryptjs");
@@ -20,98 +17,8 @@ const Op = Sequelize.Op;
 const validateCreateAccount = require("../../validation/createaccount");
 const validateEditProfileNonacademic = require("../../validation/editprofilenonacademic");
 
-// Essential Functions
-const capitalize = string => {
-  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-};
-
-const getTeacherName = async teacherID => {
-  return await Teacher.findOne({
-    where: {
-      teacherID
-    }
-  }).then(teacher => {
-    return UserAccount.findOne({
-      where: {
-        accountID: teacher.accountID
-      }
-    }).then(user => {
-      return capitalize(user.firstName) + " " + capitalize(user.lastName);
-    });
-  });
-};
-
-const getStudentName = async studentID => {
-  return await Student.findOne({
-    where: {
-      studentID
-    }
-  }).then(student => {
-    return UserAccount.findOne({
-      where: {
-        accountID: student.accountID
-      }
-    }).then(user => {
-      return capitalize(user.firstName) + " " + capitalize(user.lastName);
-    });
-  });
-};
-
-const getSubjectName = async subjectID => {
-  return await Subject.findOne({
-    where: {
-      subjectID
-    }
-  }).then(subject => {
-    return subject.subjectCode;
-  });
-};
-const getCategoryName = async categoryID => {
-  return await Category.findOne({
-    where: {
-      categoryID
-    }
-  }).then(category => {
-    return category.categoryName;
-  });
-};
-const getGradeLevelName = async gradeLevelID => {
-  return await GradeLevel.findOne({
-    where: {
-      gradeLevelID
-    }
-  }).then(gradeLevel => {
-    return gradeLevel.gradeLevel;
-  });
-};
-const getSectionName = async sectionID => {
-  return await Section.findOne({
-    where: {
-      sectionID
-    }
-  }).then(section => {
-    return section.sectionName;
-  });
-};
-
-const displayPosition = position => {
-  switch (position) {
-    case false:
-      return "Administrator";
-    case true:
-      return "Director";
-    case 2:
-      return "Registrar";
-    case 3:
-      return "Teacher";
-    case 4:
-      return "Student";
-    case 5:
-      return "Guardian";
-    default:
-      return "";
-  }
-};
+//Import Utility Functions
+const utils = require("../../utils");
 
 // @route POST api/admin/updateprofile
 // @desc Update profile
@@ -258,7 +165,7 @@ router.post(
                 emergencyEmail: na,
                 emergencyRelationship: na
               }).then(user2 => {
-                if (position == true || position == 2) {
+                if (position == true || position == 2 || position == 6) {
                   // Create Director or Registrar Table
                   Nonacademic.create({
                     accountID: user2.accountID
@@ -313,159 +220,103 @@ router.post(
   }
 );
 
-// @route POST api/admin/activate
-// @desc Activate an account
-// @access Private
-
-router.post(
-  "/activate",
-  passport.authenticate("admin", {
-    session: false
-  }),
-  (req, res) => {
-    const { accountID } = req.body;
-    UserAccount.findOne({
-      where: {
-        accountID
-      }
-    }).then(user => {
-      if (!user) {
-        errors.email = "User account not found";
-        res.status(404).json(errors);
-      } else {
-        user.update({ isActive: true }).then(() => {
-          res.status(200).json({ msg: "Account activated succesfully!" });
-        });
-      }
-    });
-  }
-);
-
-// @route POST api/admin/deactivate
-// @desc Deactivate an account
-// @access Private
-
-router.post(
-  "/deactivate",
-  passport.authenticate("admin", {
-    session: false
-  }),
-  (req, res) => {
-    const { accountID } = req.body;
-    UserAccount.findOne({
-      where: {
-        accountID
-      }
-    }).then(user => {
-      if (!user) {
-        errors.email = "User account not found";
-        res.status(404).json(errors);
-      } else {
-        user.update({ isActive: false }).then(() => {
-          res.status(200).json({ msg: "Account deactivated succesfully!" });
-        });
-      }
-    });
-  }
-);
-
 // @route api/admin/getupdatelog
 // @desc Get the edit/update log of the grade sheets
 // @acess Public
 
-router.post(
-  "/getupdatelog",
-  passport.authenticate("admin", { session: false }),
-  async (req, res) => {
-    const updateLogData = [];
-    let { page, pageSize } = req.body;
-    page = page - 1;
-    let offset = page * pageSize;
-    let limit = offset + pageSize;
-    const grades = await Grade.findAll({
-      where: {
-        showLog: 1
-      },
-      order: [["date", "DESC"]]
-    });
-    if (grades.length != 0) {
-      for (grade of grades) {
-        const gradesheet = await GradeSheet.findOne({
-          where: { gradeSheetID: grade.gradeSheetID }
-        });
-        const oldGrade = await Grade.findOne({
-          where: {
-            categoryID: grade.categoryID,
-            studentID: grade.studentID,
-            gradeSheetID: grade.gradeSheetID,
-            entryNum: grade.entryNum,
-            showLog: 1,
-            date: {
-              [Op.lt]: grade.date
-            }
-          },
-          order: [["date", "DESC"]]
-        });
-        if (oldGrade) {
-          const gradeID = oldGrade.gradeID;
-          const score = oldGrade.score;
-          const teacherName = await getTeacherName(gradesheet.teacherID);
-          const gradeLevel = await getGradeLevelName(gradesheet.gradeLevelID);
-          const subjectName = await getSubjectName(gradesheet.subjectID);
-          const sectionName = await getSectionName(gradesheet.sectionID);
-          const studentName = await getStudentName(grade.studentID);
-          const category = await getCategoryName(grade.categoryID);
-          const data = {
-            gradeSheetID: gradesheet.gradeSheetID,
-            schoolYear: gradesheet.schoolYear,
-            academicTerm: gradesheet.academicTerm,
-            teacherName,
-            gradeLevel,
-            subjectName,
-            sectionName,
-            dateUpdated: grade.date,
-            studentName,
-            entryNum: grade.entryNum,
-            category,
-            total: grade.total,
-            oldGrade: {
-              gradeID,
-              score
-            },
-            newGrade: {
-              gradeID: grade.gradeID,
-              score: grade.score
-            }
-          };
-          updateLogData.push(data);
-        }
-      }
-      Grade.findAndCountAll({
-        where: {
-          isUpdated: 1,
-          showLog: 1
-        }
-      })
-        .then(count => {
-          updateLogData.sort((a, b) =>
-            a.dateUpdated < b.dateUpdated ? 1 : -1
-          );
-          res.status(200).json({
-            numOfPages: Math.ceil(updateLogData.length / pageSize),
-            updateLog: updateLogData.slice(
-              page * pageSize,
-              page * pageSize + pageSize
-            )
-          });
-        })
-        .catch(err => {
-          res.status(404);
-        });
-    } else {
-      res.status(404).json({ msg: "Not found" });
-    }
-  }
-);
+// router.post(
+//   "/getupdatelog",
+//   passport.authenticate("admin", { session: false }),
+//   async (req, res) => {
+//     const updateLogData = [];
+//     let { page, pageSize } = req.body;
+//     page = page - 1;
+//     let offset = page * pageSize;
+//     let limit = offset + pageSize;
+//     const grades = await Grade.findAll({
+//       where: {
+//         showLog: 1
+//       },
+//       order: [["date", "DESC"]]
+//     });
+//     if (grades.length != 0) {
+//       for (grade of grades) {
+//         const gradesheet = await GradeSheet.findOne({
+//           where: { gradeSheetID: grade.gradeSheetID }
+//         });
+//         const oldGrade = await Grade.findOne({
+//           where: {
+//             categoryID: grade.categoryID,
+//             studentID: grade.studentID,
+//             gradeSheetID: grade.gradeSheetID,
+//             entryNum: grade.entryNum,
+//             showLog: 1,
+//             date: {
+//               [Op.lt]: grade.date
+//             }
+//           },
+//           order: [["date", "DESC"]]
+//         });
+//         if (oldGrade) {
+//           const gradeID = oldGrade.gradeID;
+//           const score = oldGrade.score;
+//           const teacherName = await utils.getTeacherName(gradesheet.teacherID);
+//           const gradeLevel = await utils.getGradeLevelName(gradesheet.gradeLevelID);
+//           const subjectName = await utils.getSubjectName(gradesheet.subjectID);
+//           const sectionName = await utils.getSectionName(gradesheet.sectionID);
+//           const studentName = await utils.getStudentName(grade.studentID);
+//           const category = await utils.getCategoryName(grade.categoryID);
+//           const data = {
+//             gradeSheetID: gradesheet.gradeSheetID,
+//             schoolYear: gradesheet.schoolYear,
+//             academicTerm: gradesheet.academicTerm,
+//             teacherName,
+//             gradeLevel,
+//             subjectName,
+//             sectionName,
+//             dateUpdated: grade.date,
+//             studentName,
+//             entryNum: grade.entryNum,
+//             category,
+//             total: grade.total,
+//             oldGrade: {
+//               gradeID,
+//               score
+//             },
+//             newGrade: {
+//               gradeID: grade.gradeID,
+//               score: grade.score
+//             }
+//           };
+//           updateLogData.push(data);
+//         }
+//       }
+//       Grade.findAndCountAll({
+//         where: {
+//           isUpdated: 1,
+//           showLog: 1
+//         }
+//       })
+//         .then(count => {
+//           updateLogData.sort((a, b) =>
+//             a.dateUpdated < b.dateUpdated ? 1 : -1
+//           );
+//           res.status(200).json({
+//             numOfPages: Math.ceil(updateLogData.length / pageSize),
+//             updateLog: updateLogData.slice(
+//               page * pageSize,
+//               page * pageSize + pageSize
+//             )
+//           });
+//         })
+//         .catch(err => {
+//           res.status(404);
+//         });
+//     } else {
+//       res.status(404).json({ msg: "Not found" });
+//     }
+//   }
+// );
 
 // @route POST api/admin/getaccounts
 // @desc Get the list of accounts
@@ -484,8 +335,8 @@ router.post(
       limit,
       offset,
       where: {
-        accountID: {
-          [Op.ne]: 1
+        position: {
+          [Op.ne]: 0
         },
         [Op.or]: [
           {
@@ -508,8 +359,10 @@ router.post(
             const keyID = user.accountID;
             const email = user.email;
             const name =
-              capitalize(user.firstName) + " " + capitalize(user.lastName);
-            const position = displayPosition(user.position);
+              utils.capitalize(user.firstName) +
+              " " +
+              utils.capitalize(user.lastName);
+            const position = utils.displayPosition(user.position);
             const imageUrl = user.imageUrl;
             const isActive = user.isActive;
             accountData.push({
@@ -542,9 +395,7 @@ router.post(
                 }
               })
                 .then(count => {
-                  accountData.sort((a, b) =>
-                    a.accountID > b.accountID ? 1 : -1
-                  );
+                  accountData.sort((a, b) => (a.key > b.key ? 1 : -1));
                   res.status(200).json({
                     numOfPages: Math.ceil(count.count / pageSize),
                     accountList: accountData
@@ -564,4 +415,5 @@ router.post(
       });
   }
 );
+
 module.exports = router;

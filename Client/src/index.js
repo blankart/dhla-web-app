@@ -8,8 +8,39 @@ import setAuthToken from './common/setAuthToken';
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
 import * as actions from './features/app/redux/actions';
-
 const store = configStore();
+
+const MAX_REQUESTS_COUNT = 5;
+const INTERVAL_MS = 50;
+let PENDING_REQUESTS = 0;
+
+axios.defaults.baseURL = 'http://localhost:5000';
+axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';
+axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+axios.interceptors.request.use(function(config) {
+  return new Promise((resolve, reject) => {
+    let interval = setInterval(() => {
+      if (PENDING_REQUESTS < MAX_REQUESTS_COUNT) {
+        PENDING_REQUESTS++;
+        clearInterval(interval);
+        resolve(config);
+      }
+    }, INTERVAL_MS);
+  });
+});
+/**
+ * Axios Response Interceptor
+ */
+axios.interceptors.response.use(
+  function(response) {
+    PENDING_REQUESTS = Math.max(0, PENDING_REQUESTS - 1);
+    return Promise.resolve(response);
+  },
+  function(error) {
+    PENDING_REQUESTS = Math.max(0, PENDING_REQUESTS - 1);
+    return Promise.reject(error);
+  },
+);
 
 if (localStorage.jwtToken) {
   setAuthToken(localStorage.jwtToken);

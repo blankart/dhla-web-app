@@ -8,6 +8,9 @@ const Op = Sequelize.Op;
 // Input Validation
 const validateEditProfileNonacademic = require("../../validation/editprofilenonacademic");
 
+//Import Utility Functions
+const utils = require("../../utils");
+
 // @route POST api/director/updateprofile
 // @desc Update profile
 // @access Private

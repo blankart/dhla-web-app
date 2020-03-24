@@ -8,6 +8,7 @@ import { ConnectedRouter } from 'react-router-redux';
 import history from './common/history';
 import 'tabler-react/dist/Tabler.css';
 import 'antd/dist/antd.css';
+import axios from 'axios';
 
 function renderRouteConfigV3(routes, contextPath) {
   // Resolve route config object in React Router v3.

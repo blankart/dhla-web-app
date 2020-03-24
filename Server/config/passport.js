@@ -114,4 +114,19 @@ module.exports = passport => {
       });
     })
   );
+
+  passport.use(
+    "cashier",
+    new JwtStrategy(jwtOptions, (jwt_payload, next) => {
+      UserAccount.findOne({
+        where: { email: jwt_payload.email, position: "6" }
+      }).then((user, err) => {
+        if (user) {
+          next(null, user);
+        } else {
+          next(null, false);
+        }
+      });
+    })
+  );
 };

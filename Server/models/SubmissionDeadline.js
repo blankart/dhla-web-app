@@ -5,7 +5,9 @@ const SubmissionDeadline = sequelize.define(
   "submission deadline",
   {
     deadlineID: {
-      type: Sequelize.INTEGER
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
     },
     teacherID: {
       type: Sequelize.INTEGER
@@ -16,7 +18,7 @@ const SubmissionDeadline = sequelize.define(
     deadline: {
       type: Sequelize.DATE
     },
-    show: {
+    isActive: {
       type: Sequelize.BOOLEAN
     }
   },

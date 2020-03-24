@@ -9,23 +9,29 @@ const Grade = sequelize.define(
       primaryKey: true,
       autoIncrement: true
     },
+    description: {
+      type: Sequelize.STRING(100)
+    },
+    dateGiven: {
+      type: Sequelize.DATE
+    },
     score: {
-      type: Sequelize.DOUBLE
+      type: Sequelize.FLOAT
     },
     total: {
-      type: Sequelize.INTEGER(3)
+      type: Sequelize.FLOAT
     },
-    categoryID: {
+    componentID: {
+      type: Sequelize.INTEGER
+    },
+    subcomponentID: {
       type: Sequelize.INTEGER
     },
     date: {
       type: Sequelize.DATE
     },
-    gradeSheetID: {
+    classRecordID: {
       type: Sequelize.INTEGER
-    },
-    entryNum: {
-      type: Sequelize.INTEGER(2)
     },
     studentID: {
       type: Sequelize.INTEGER
@@ -35,6 +41,9 @@ const Grade = sequelize.define(
     },
     isUpdated: {
       type: Sequelize.BOOLEAN
+    },
+    quarter: {
+      type: Sequelize.ENUM("Q1", "Q2", "Q3", "Q4")
     }
   },
   { freezeTableName: true }

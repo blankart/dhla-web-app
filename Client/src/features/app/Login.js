@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import * as actions from './redux/actions';
 import DHLALogo from '../../images/logo.png';
 import { FormCard, FormTextInput, Site } from 'tabler-react';
+import { withRouter } from 'react-router-dom';
 
 function StandaloneFormPage(props) {
   return (
@@ -111,7 +112,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Login);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login));

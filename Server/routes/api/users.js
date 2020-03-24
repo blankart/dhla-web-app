@@ -18,49 +18,8 @@ const validateLoginInput = require("../../validation/login");
 const validateChangePassword = require("../../validation/password");
 const isEmpty = require("../../validation/is-empty");
 
-// Essential functions
-
-const createUser = async ({ email, password, isActive, position }) => {
-  const na = "NA";
-  return await UserAccount.create({
-    email,
-    password,
-    isActive,
-    position,
-    firstName: na,
-    lastName: na,
-    middleName: na,
-    suffix: na,
-    nickname: na,
-    imageUrl: na,
-    contactNum: na,
-    address: na,
-    province: na,
-    city: na,
-    region: na,
-    zipcode: na,
-    civilStatus: "SINGLE",
-    sex: "M",
-    citizenship: na,
-    birthDate: 0,
-    birthPlace: na,
-    religion: na,
-    emergencyName: na,
-    emergencyAddress: na,
-    emergencyTelephone: na,
-    emergencyCellphone: na,
-    emergencyEmail: na,
-    emergencyRelationship: na
-  });
-};
-
-const createNonAcademic = async ({ accountID }) => {
-  return await Nonacademic.create({
-    accountID
-  });
-};
-
-// End of essential functions
+//Import Utility Functions
+const utils = require("../../utils");
 
 // @route POST api/users/createAdmin
 // @desc Initializing admin account. Will be deleted afterwards
@@ -88,18 +47,22 @@ router.post("/createAdmin", (req, res) => {
         bcrypt.hash(password, salt, (err, hash) => {
           if (err) throw err;
           console.log(hash);
-          createUser({
-            email,
-            password: hash,
-            isActive: 1,
-            position: 0
-          }).then(user => {
-            createNonAcademic({
-              accountID: user.accountID
-            }).then(user => {
-              res.json({ msg: "Account created successfully!" });
+          utils
+            .createUser({
+              email,
+              password: hash,
+              isActive: 1,
+              position: 0
+            })
+            .then(user => {
+              utils
+                .createNonAcademic({
+                  accountID: user.accountID
+                })
+                .then(user => {
+                  res.json({ msg: "Account created successfully!" });
+                });
             });
-          });
         });
       });
     }
@@ -153,7 +116,7 @@ router.post("/login", (req, res) => {
                   jwt.sign(
                     payload,
                     key.secretKey,
-                    { expiresIn: 3600 },
+                    { expiresIn: 100000 },
                     (err, token) => {
                       res.json({
                         token: "Bearer " + token

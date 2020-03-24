@@ -1,8 +1,8 @@
 const Sequelize = require("sequelize");
 
-// Configuration for Mac OS 
+// Configuration for Mac OS
 module.exports = new Sequelize({
-  database: "dwlawebapp",
+  database: "dhlawebapp",
   username: "root",
   password: "",
   dialect: "mysql"

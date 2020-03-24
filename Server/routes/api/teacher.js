@@ -2,134 +2,16 @@ const express = require("express");
 const router = express.Router();
 const UserAccount = require("../../models/UserAccount");
 const Grade = require("../../models/Grade");
-const GradeSheet = require("../../models/GradeSheet");
+const SubjectSection = require("../../models/SubjectSection");
+const SubjectSectionStudent = require("../../models/SubjectSectionStudent");
 const passport = require("passport");
 const Sequelize = require("sequelize");
 
 // Input Validation
 const validateEditProfileNonacademic = require("../../validation/editprofilenonacademic");
 
-// @route api/teacher/savegrade
-// @desc Create/Save a grade sheet
-// @access Private
-
-router.post(
-  "/savegrade",
-  passport.authenticate("teacher", { session: false }),
-  (req, res) => {
-    // Assume that if gradeSheetID is set to 0, we will create a new grade sheet
-    const {
-      gradeSheetID,
-      schoolYear,
-      academicTerm,
-      isSubmitted,
-      subjectID,
-      sectionID,
-      gradeLevelID,
-      teacherID,
-      grades
-    } = req.body;
-
-    if (gradeSheetID == 0) {
-      // Create a new grade sheet
-      GradeSheet.create({
-        schoolYear,
-        academicTerm,
-        isSubmitted: 0,
-        subjectID,
-        sectionID,
-        gradeLevelID,
-        teacherID,
-        dateCreated: new Date(),
-        dateModified: new Date()
-      }).then(async gradesheet => {
-        for (let grade of grades) {
-          await Grade.create({
-            studentID: grade.studentID,
-            score: grade.score,
-            total: grade.total,
-            categoryID: grade.categoryID,
-            entryNum: grade.entryNum,
-            showLog: false,
-            gradeSheetID: gradesheet.gradeSheetID,
-            date: new Date(),
-            isUpdated: 0
-          });
-        }
-        res.json({ msg: "Grade sheet has been created successfully!" });
-      });
-    } else {
-      // Save a grade sheet
-      GradeSheet.findOne({
-        where: {
-          gradeSheetID
-        }
-      }).then(gradesheet => {
-        if (gradesheet) {
-          gradesheet
-            .update({
-              dateModified: new Date(),
-              isSubmitted: isSubmitted == 1 ? 1 : 0
-            })
-            .then(g => {
-              for (let grade of grades) {
-                Grade.findOne({
-                  where: {
-                    studentID: grade.studentID,
-                    total: grade.total,
-                    categoryID: grade.categoryID,
-                    entryNum: grade.entryNum,
-                    gradeSheetID: gradesheet.gradeSheetID,
-                    showLog: 1
-                  },
-                  order: [["date", "DESC"]]
-                }).then(async tempGrade => {
-                  if (tempGrade) {
-                    if (tempGrade.score == grade.score) {
-                      // Update nothing
-                    } else {
-                      await Grade.create({
-                        studentID: grade.studentID,
-                        score: grade.score,
-                        total: grade.total,
-                        categoryID: grade.categoryID,
-                        entryNum: grade.entryNum,
-                        showLog: gradesheet.isSubmitted == 1 ? 1 : 0,
-                        gradeSheetID: gradesheet.gradeSheetID,
-                        date: new Date(),
-                        isUpdated: 1
-                      });
-                    }
-                  } else {
-                    await Grade.create({
-                      studentID: grade.studentID,
-                      score: grade.score,
-                      total: grade.total,
-                      categoryID: grade.categoryID,
-                      entryNum: grade.entryNum,
-                      showLog: gradesheet.isSubmitted == 1 ? 1 : 0,
-                      gradeSheetID: gradesheet.gradeSheetID,
-                      date: new Date(),
-                      isUpdated: 1
-                    });
-                  }
-                });
-                res.json({
-                  msg: "Grade sheet has been updated successfully!"
-                });
-              }
-            });
-        } else {
-          res.status(404).json({
-            errors: {
-              gradeSheet: "Grade sheet not found!"
-            }
-          });
-        }
-      });
-    }
-  }
-);
+//Import Utility Functions
+const utils = require("../../utils");
 
 // @route POST api/teacher/updateprofile
 // @desc Update profile
@@ -210,6 +92,244 @@ router.post(
           .then(user2 => {
             res.status(200).json({ msg: "Profile updated successfully!" });
           });
+      }
+    });
+  }
+);
+
+// @route POST api/teacher/listsubjectsection
+// @desc List subject section of teacher by school year
+// @access Private
+
+router.post(
+  "/listsubjectsection",
+  passport.authenticate("teacher", { session: false }),
+  async (req, res) => {
+    let { teacherID, schoolYear, page, pageSize } = req.body;
+    let offset = page * pageSize;
+    let limit = offset + pageSize;
+    SubjectSection.findAll({
+      limit,
+      offset,
+      where: { teacherID, schoolYear }
+    })
+      .then(subjectsections => {
+        let subjectsectionData = [];
+        if (subjectsections.length != 0) {
+          subjectsections
+            .slice(0, pageSize)
+            .forEach(async (subjectsection, key, arr) => {
+              const keyID = subjectsection.subsectID;
+              const subjectName = await utils.getSubjectName(
+                subjectsection.subjectID
+              );
+              const sectionName = await utils.getSectionName(
+                subjectsection.sectionID
+              );
+              const classRecordID = subjectsection.classRecordID;
+              subjectsectionData.push({
+                key: keyID,
+                subjectName,
+                sectionName,
+                classRecordID
+              });
+              if (key == arr.length - 1) {
+                SubjectSection.findAndCountAll({
+                  where: { teacherID, schoolYear }
+                })
+                  .then(count => {
+                    subjectsectionData.sort((a, b) => {
+                      a.key > b.key ? 1 : -1;
+                    });
+                    res.status(200).json({
+                      numOfPages: Math.ceil(count.count / pageSize),
+                      subjectsectionList: subjectsectionData
+                    });
+                  })
+                  .catch(err => {
+                    res.status(404);
+                  });
+              }
+            });
+        } else {
+          req.status(404).json({ msg: "Not found" });
+        }
+      })
+      .catch(err => {
+        res.status(404);
+      });
+  }
+);
+
+// @route GET api/registrar/getsy
+// @desc Get current school year
+// @access Private
+router.get(
+  "/getsy",
+  passport.authenticate("teacher", { session: false }),
+  async (req, res) => {
+    let schoolYearID = await utils.getActiveSY();
+    if (schoolYearID != 0) {
+      let schoolYear = await utils.getSYname(schoolYearID);
+      res.status(200).json({ schoolYear, schoolYearID });
+    } else {
+      res.status(404).json({ msg: "There is no active school year" });
+    }
+  }
+);
+
+// @route POST api/registrar/getsujectload
+// @desc Get subject load of teacher
+// @access Private
+
+router.post(
+  "/getsubjectload",
+  passport.authenticate("teacher", { session: false }),
+  async (req, res) => {
+    const { accountID } = req.user;
+    let { page, pageSize } = req.body;
+    page = page - 1;
+    let offset = page * pageSize;
+    let limit = offset + pageSize;
+    const teacherID = await utils.getTeacherID(accountID);
+    const schoolYearID = await utils.getActiveSY();
+    SubjectSection.findAll({
+      limit,
+      offset,
+      where: { teacherID, schoolYearID }
+    }).then(async subjectsections => {
+      if (subjectsections.length == 0) {
+        res.status(404).json({ msg: "No record" });
+      } else {
+        let subjectsectionData = [];
+        let i = 0;
+        for (i; i < subjectsections.slice(0, pageSize).length; i++) {
+          const key = subjectsections[i].subsectID;
+          const subjectCode = await utils.getSubjectCode(
+            subjectsections[i].subjectID
+          );
+          const subjectName = await utils.getSubjectName(
+            subjectsections[i].subjectID
+          );
+          const gradeLevel = await utils.getSectionGradeLevel(
+            subjectsections[i].sectionID
+          );
+          const sectionName = await utils.getSectionName(
+            subjectsections[i].sectionID
+          );
+          subjectsectionData.push({
+            key,
+            subjectCode,
+            subjectName,
+            gradeLevel,
+            sectionName
+          });
+        }
+        SubjectSection.findAndCountAll({
+          where: { teacherID, schoolYearID }
+        }).then(count => {
+          res.status(200).json({
+            numOfPages: Math.ceil(count.count / pageSize),
+            subjectSectionData: subjectsectionData
+          });
+        });
+      }
+    });
+  }
+);
+
+// @route POST api/teacher/getsubsectinfo
+// @desc Get subject section info
+// @access Private
+
+router.post(
+  "/getsubsectinfo",
+  passport.authenticate("teacher", { session: false }),
+  async (req, res) => {
+    const { subsectID } = req.body;
+    let { page, pageSize } = req.body;
+    page = page - 1;
+    let offset = page * pageSize;
+    let limit = offset + pageSize;
+    SubjectSection.findOne({ where: { subsectID } }).then(subjectsection => {
+      if (subjectsection) {
+        SubjectSectionStudent.findAll({
+          limit,
+          offset,
+          where: { subsectID }
+        }).then(async subjectsectionstudents => {
+          if (subjectsectionstudents.length == 0) {
+            const sectionName = await utils.getSectionName(
+              subjectsection.sectionID
+            );
+            const gradeLevel = await utils.getSectionGradeLevel(
+              subjectsection.sectionID
+            );
+            const subjectName = await utils.getSubjectName(
+              subjectsection.subjectID
+            );
+            res.status(200).json({
+              numOfPages: 1,
+              sectionName,
+              gradeLevel,
+              subjectName,
+              studentList: []
+            });
+          } else {
+            let i = 0;
+            let studarr = [];
+            const sectionName = await utils.getSectionName(
+              subjectsection.sectionID
+            );
+            const gradeLevel = await utils.getSectionGradeLevel(
+              subjectsection.sectionID
+            );
+            const subjectName = await utils.getSubjectName(
+              subjectsection.subjectID
+            );
+            for (i; i < subjectsectionstudents.slice(0, pageSize).length; i++) {
+              let key = subjectsectionstudents[i].subsectstudID;
+              let name = await utils.getStudentNameByStudsectID(
+                subjectsectionstudents[i].studsectID
+              );
+              let email = await utils.getStudentEmailByStudsectID(
+                subjectsectionstudents[i].studsectID
+              );
+              let sectionName = await utils.getSectionNameByStudsectID(
+                subjectsectionstudents[i].studsectID
+              );
+              let imageUrl = await utils.getStudentImageUrlByStudsectID(
+                subjectsectionstudents[i].studsectID
+              );
+              let gradeLevel = await utils.getSectionGradeLevelByStudsectID(
+                subjectsectionstudents[i].studsectID
+              );
+              studarr.push({
+                key,
+                name,
+                email,
+                sectionName,
+                imageUrl,
+                gradeLevel
+              });
+            }
+            SubjectSectionStudent.findAndCountAll({
+              limit,
+              offset,
+              where: { subsectID }
+            }).then(count => {
+              res.status(200).json({
+                numOfPages: Math.ceil(count.count / pageSize),
+                sectionName,
+                gradeLevel,
+                subjectName,
+                studentList: studarr
+              });
+            });
+          }
+        });
+      } else {
+        res.status(404).json({ msg: "Subject section not found!" });
       }
     });
   }

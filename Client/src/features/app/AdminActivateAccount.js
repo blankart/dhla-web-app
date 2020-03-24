@@ -93,26 +93,6 @@ export class AdminActivateAccount extends Component {
       });
   }
 
-  componentWillReceiveProps() {
-    this.setState({ isLoading: true });
-    axios
-      .post('api/admin/getaccounts', {
-        keyword: this.state.keyword,
-        page: this.state.page,
-        pageSize: 5,
-      })
-      .then(res => {
-        this.setState({ isLoading: false });
-        this.setState({
-          numOfPages: res.data.numOfPages,
-          data: res.data.accountList,
-        });
-      })
-      .catch(err => {
-        this.setState({ isLoading: false });
-      });
-  }
-
   render() {
     const DisplayData = [];
     for (const [index, value] of this.state.data.entries()) {

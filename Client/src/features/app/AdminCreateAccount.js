@@ -90,6 +90,7 @@ export class AdminCreateAccount extends Component {
                     <option value="3">Teacher</option>
                     <option value="4">Student</option>
                     <option value="5">Parent or Guardian</option>
+                    <option value="6">Cashier</option>
                   </Form.Select>
                 </Form.Group>
               </Grid.Col>
