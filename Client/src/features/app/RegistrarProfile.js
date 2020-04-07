@@ -9,6 +9,7 @@ import { Container, Grid, Card, Button, Form, Header, List } from 'tabler-react'
 import { Alert, Upload, message } from 'antd';
 import cn from 'classnames';
 import placeholder from '../../images/placeholder.jpg';
+import bg from '../../images/BG.png';
 
 function ProfileImage({ avatarURL }) {
   return <img className="card-profile-img" alt="Profile" src={avatarURL} />;
@@ -240,7 +241,7 @@ export class RegistrarProfile extends Component {
                     .charAt(0)
                     .toUpperCase()}. ${capitalize(lastName)}`}
                   avatarURL={imageUrl == 'NA' ? placeholder : imageUrl}
-                  backgroundURL={imageUrl}
+                  backgroundURL={bg}
                 >
                   <Upload
                     name="file"

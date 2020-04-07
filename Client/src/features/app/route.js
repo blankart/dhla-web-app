@@ -17,6 +17,12 @@ import {
   TeacherViewSubjectLoadView,
   TeacherViewSubjectLoadByIdView,
   TeacherManageGradesView,
+  TeacherComponentView,
+  TeacherSubcomponentView,
+  TeacherAddRecordView,
+  TeacherSummaryPerQuarterView,
+  TeacherEditRecordView,
+  TeacherSummaryView,
 } from './';
 
 export default {
@@ -50,12 +56,66 @@ export default {
       name: 'Registrar view past records view',
       component: RegistrarViewPastRecordsView,
     },
-    { path: 'assignadvisorysection', name: 'Registrar assign advisory section view', component: RegistrarAssignAdvisorySectionView },
-    { path: 'assignsubjectload', name: 'Registrar assign subject load view', component: RegistrarAssignSubjectLoadView },
-    { path: 'assignsubjectload/viewload/:id', name: 'Registrar view subject load view', component: RegistrarViewSubjectLoadView },
-    { path: 'assignsubjectload/viewload/:id/edit/:id2', name: 'Registrar edit subject load view', component: RegistrarEditSubjectLoadView },
-    { path: '/viewsubjectload', name: 'Teacher view subject load view', component: TeacherViewSubjectLoadView },
-    { path: '/viewsubjectload/:id', name: 'Teacher view subject load by id view', component: TeacherViewSubjectLoadByIdView },
-    { path: '/managegrades', name: 'Teacher manage grades view', component: TeacherManageGradesView },
+    {
+      path: 'assignadvisorysection',
+      name: 'Registrar assign advisory section view',
+      component: RegistrarAssignAdvisorySectionView,
+    },
+    {
+      path: 'assignsubjectload',
+      name: 'Registrar assign subject load view',
+      component: RegistrarAssignSubjectLoadView,
+    },
+    {
+      path: 'assignsubjectload/viewload/:id',
+      name: 'Registrar view subject load view',
+      component: RegistrarViewSubjectLoadView,
+    },
+    {
+      path: 'assignsubjectload/viewload/:id/edit/:id2',
+      name: 'Registrar edit subject load view',
+      component: RegistrarEditSubjectLoadView,
+    },
+    {
+      path: '/viewsubjectload',
+      name: 'Teacher view subject load view',
+      component: TeacherViewSubjectLoadView,
+    },
+    {
+      path: '/viewsubjectload/:id/:q',
+      name: 'Teacher view subject load by id view',
+      component: TeacherViewSubjectLoadByIdView,
+    },
+    {
+      path: '/managegrades/:id/:q',
+      name: 'Teacher manage grades view',
+      component: TeacherManageGradesView,
+    },
+    {
+      path: '/managegrades/:id/:q/:comp',
+      name: 'Teacher component view',
+      component: TeacherComponentView,
+    },
+    {
+      path: '/managegrades/:id/:q/:comp/subcomp/:subcomp',
+      name: 'Teacher subcomponent view',
+      component: TeacherSubcomponentView,
+    },
+    {
+      path: '/managegrades/:id/:q/:comp/subcomp/:subcomp/addrecord',
+      name: 'Teacher add record view',
+      component: TeacherAddRecordView,
+    },
+    {
+      path: '/summaryreport/:id/:q',
+      name: 'Teacher summary per quarter view',
+      component: TeacherSummaryPerQuarterView,
+    },
+    {
+      path: '/managegrades/:id/:q/:comp/subcomp/:subcomp/editrecord/:rec',
+      name: 'Teacher edit record view',
+      component: TeacherEditRecordView,
+    },
+    { path: '/summaryreportall/:id', name: 'Teacher summary view', component: TeacherSummaryView },
   ],
 };

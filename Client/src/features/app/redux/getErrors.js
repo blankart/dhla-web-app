@@ -4,12 +4,9 @@
 
 import { APP_GET_ERRORS } from './constants';
 
-export function getErrors(errors) {
-  return {
-    type: APP_GET_ERRORS,
-    payload: errors,
-  };
-}
+export const getErrors = data => dispatch => {
+  dispatch({ type: APP_GET_ERRORS, payload: data });
+};
 
 export function reducer(state, action) {
   switch (action.type) {

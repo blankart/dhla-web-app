@@ -18,7 +18,16 @@ const ClassRecord = sequelize.define(
     isSubmitted: {
       type: Sequelize.BOOLEAN
     },
-    transmutation: {
+    q1Transmu: {
+      type: Sequelize.ENUM("60", "55", "50")
+    },
+    q2Transmu: {
+      type: Sequelize.ENUM("60", "55", "50")
+    },
+    q3Transmu: {
+      type: Sequelize.ENUM("60", "55", "50")
+    },
+    q4Transmu: {
       type: Sequelize.ENUM("60", "55", "50")
     }
   },

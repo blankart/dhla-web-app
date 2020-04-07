@@ -4,10 +4,18 @@ const SchoolYear = require("../models/SchoolYear");
 const Section = require("../models/Section");
 const Student = require("../models/Student");
 const StudentSection = require("../models/StudentSection");
+const SubjectSection = require("../models/SubjectSection");
+const SubjectSectionStudent = require("../models/SubjectSectionStudent");
+const StudentWeightedScore = require("../models/StudentWeightedScore");
+const StudentGrades = require("../models/StudentGrades");
+const ClassRecord = require("../models/ClassRecord");
+const Component = require("../models/Component");
+const Subcomponent = require("../models/Subcomponent");
 const Adviser = require("../models/Adviser");
 const Teacher = require("../models/Teacher");
 const Sequelize = require("sequelize");
 const Subject = require("../models/Subject");
+const Grade = require("../models/Grade");
 const Op = Sequelize.Op;
 
 // Utility Functions
@@ -209,7 +217,6 @@ exports.getStudentSectionBySYAndSectionID = async ({
       var i = 0;
       for (i; i < useraccounts.length; i++) {
         let studentID = await this.getStudentID(useraccounts[i].accountID);
-        console.log(useraccounts[i].accountID);
         if (studentID != "") {
           studentIDs.push(studentID);
         }
@@ -484,4 +491,802 @@ exports.getSectionGradeLevelByStudsectID = async studsectID => {
       }
     }
   );
+};
+
+exports.getStudentNameBySubsectstudID = async subsectstudID => {
+  return await SubjectSectionStudent.findOne({ where: { subsectstudID } }).then(
+    async subsectstud => {
+      if (subsectstud) {
+        return await StudentSection.findOne({
+          where: { studsectID: subsectstud.studsectID }
+        }).then(async studsect => {
+          if (studsect) {
+            return await this.getStudentName(studsect.studentID);
+          } else {
+            return "";
+          }
+        });
+      } else {
+        return "";
+      }
+    }
+  );
+};
+
+exports.getComponentName = async componentID => {
+  return await Component.findOne({ where: { componentID } }).then(
+    async comp => {
+      if (comp) {
+        return comp.component == "FA"
+          ? "Formative Assessment"
+          : comp.component == "WW"
+          ? "Written Works"
+          : comp.component == "PT"
+          ? "Performance Task"
+          : comp.component == "QE"
+          ? "Quarterly Exam"
+          : "";
+      } else {
+        return "";
+      }
+    }
+  );
+};
+
+exports.getSubcomponentName = async subcompID => {
+  return await Subcomponent.findOne({ where: { subcompID } }).then(
+    async subcomp => {
+      if (subcomp) {
+        return subcomp.name;
+      } else {
+        return "";
+      }
+    }
+  );
+};
+
+exports.getStudentImageUrlBySubsectstudID = async subsectstudID => {
+  return await SubjectSectionStudent.findOne({ where: { subsectstudID } }).then(
+    async subsectstud => {
+      if (subsectstud) {
+        return await StudentSection.findOne({
+          where: { studsectID: subsectstud.studsectID }
+        }).then(async studsect => {
+          if (studsect) {
+            return await this.getStudentImageUrl(studsect.studentID);
+          } else {
+            return "";
+          }
+        });
+      } else {
+        return "";
+      }
+    }
+  );
+};
+
+exports.getSubcompWsBySubsectstudIDAndSubcompIDAndQuarter = async ({
+  subcompID,
+  subsectstudID,
+  quarter
+}) => {
+  return await Grade.findAll({
+    where: { subcomponentID: subcompID, subsectstudID, quarter }
+  }).then(async grades => {
+    if (grades.length == 0) {
+      return -1;
+    } else {
+      let score = 0;
+      let i = 0;
+      let total = 0;
+      let ps = 0;
+      for (i = 0; i < grades.length; i++) {
+        const name = await this.getStudentNameBySubsectstudID(subsectstudID);
+        const subcompname = await this.getSubcomponentName(subcompID);
+        score = score + parseFloat(grades[i].score);
+        total = total + parseFloat(grades[i].total);
+      }
+
+      if (grades.length != 0) {
+        ps = (score / total) * 100;
+      }
+      return ps;
+    }
+  });
+};
+
+exports.refreshStudentWeightedScoreBySubsectID = async subsectID => {
+  const { subjectID, classRecordID } = await SubjectSection.findOne({
+    where: { subsectID }
+  }).then(subsect => {
+    if (subsect) {
+      const { subjectID, classRecordID } = subsect;
+      return { subjectID, classRecordID };
+    } else {
+      return -1;
+    }
+  });
+  return await SubjectSectionStudent.findAll({ where: { subsectID } }).then(
+    async subsectstud => {
+      if (subsectstud.length == 0) {
+        return false;
+      } else {
+        let q = ["Q1", "Q2", "Q3", "Q4"];
+        let subsectstudIDs = [];
+        let i = 0;
+        for (i = 0; i < subsectstud.length; i++) {
+          let { subsectstudID } = subsectstud[i];
+          subsectstudIDs.push(subsectstudID);
+        }
+        Component.findOne({
+          where: { subjectID, component: "FA" }
+        }).then(async comp1 => {
+          if (comp1) {
+            Component.findOne({
+              where: { subjectID, component: "WW" }
+            }).then(async comp2 => {
+              if (comp2) {
+                Component.findOne({
+                  where: { subjectID, component: "PT" }
+                }).then(async comp3 => {
+                  if (comp3) {
+                    Component.findOne({
+                      where: { subjectID, component: "QE" }
+                    }).then(async comp4 => {
+                      if (comp4) {
+                        //Refreshing all FA records
+                        await Subcomponent.findAll({
+                          where: {
+                            componentID: comp1.componentID,
+                            classRecordID
+                          }
+                        }).then(async fasc => {
+                          if (fasc.length != 0) {
+                            for (const [
+                              index3,
+                              value3
+                            ] of subsectstudIDs.entries()) {
+                              for (const [index2, value2] of q.entries()) {
+                                let faData = [];
+                                let hasNegativeOne = false;
+                                for (const [index, value] of fasc.entries()) {
+                                  if (value.quarter == value2) {
+                                    const { compWeight } = value;
+                                    const ws = await this.getSubcompWsBySubsectstudIDAndSubcompIDAndQuarter(
+                                      {
+                                        subcompID: value.subcompID,
+                                        subsectstudID: value3,
+                                        quarter: value2
+                                      }
+                                    );
+                                    if (ws == -1) {
+                                      if (parseFloat(compWeight) != 0)
+                                        hasNegativeOne = true;
+                                    }
+                                    faData.push({ compWeight, ws });
+                                  }
+                                }
+                                if (!hasNegativeOne) {
+                                  let sum = 0;
+                                  for (const [
+                                    index,
+                                    value4
+                                  ] of faData.entries()) {
+                                    sum =
+                                      sum +
+                                      (parseFloat(value4.compWeight) / 100) *
+                                        parseFloat(value4.ws);
+                                  }
+                                  StudentWeightedScore.findOne({
+                                    where: {
+                                      subsectstudID: value3,
+                                      quarter: value2,
+                                      classRecordID
+                                    }
+                                  }).then(async sws => {
+                                    if (sws) {
+                                      sws
+                                        .update({
+                                          faWS: sum
+                                        })
+                                        .then(async () => {});
+                                    }
+                                  });
+                                } else {
+                                  StudentWeightedScore.findOne({
+                                    where: {
+                                      subsectstudID: value3,
+                                      quarter: value2,
+                                      classRecordID
+                                    }
+                                  }).then(async sws => {
+                                    if (sws) {
+                                      sws
+                                        .update({
+                                          faWS: -1
+                                        })
+                                        .then(async () => {});
+                                    }
+                                  });
+                                }
+                              }
+                            }
+                          }
+                        });
+
+                        //Refreshing all WW records
+                        await Subcomponent.findAll({
+                          where: {
+                            componentID: comp2.componentID,
+                            classRecordID
+                          }
+                        }).then(async wwsc => {
+                          if (wwsc.length != 0) {
+                            for (const [
+                              index3,
+                              value3
+                            ] of subsectstudIDs.entries()) {
+                              for (const [index2, value2] of q.entries()) {
+                                let wwData = [];
+                                let hasNegativeOne = false;
+                                for (const [index, value] of wwsc.entries()) {
+                                  if (value.quarter == value2) {
+                                    const { compWeight } = value;
+                                    const ws = await this.getSubcompWsBySubsectstudIDAndSubcompIDAndQuarter(
+                                      {
+                                        subcompID: value.subcompID,
+                                        subsectstudID: value3,
+                                        quarter: value2
+                                      }
+                                    );
+                                    if (ws == -1) {
+                                      if (parseFloat(compWeight) != 0)
+                                        hasNegativeOne = true;
+                                    }
+                                    wwData.push({ compWeight, ws });
+                                  }
+                                }
+                                if (!hasNegativeOne) {
+                                  let sum = 0;
+                                  for (const [
+                                    index,
+                                    value4
+                                  ] of wwData.entries()) {
+                                    sum =
+                                      sum +
+                                      (parseFloat(value4.compWeight) / 100) *
+                                        parseFloat(value4.ws);
+                                  }
+                                  StudentWeightedScore.findOne({
+                                    where: {
+                                      subsectstudID: value3,
+                                      quarter: value2,
+                                      classRecordID
+                                    }
+                                  }).then(async sws => {
+                                    if (sws) {
+                                      sws
+                                        .update({
+                                          wwWS: sum
+                                        })
+                                        .then(async () => {});
+                                    }
+                                  });
+                                } else {
+                                  StudentWeightedScore.findOne({
+                                    where: {
+                                      subsectstudID: value3,
+                                      quarter: value2,
+                                      classRecordID
+                                    }
+                                  }).then(async sws => {
+                                    if (sws) {
+                                      sws
+                                        .update({
+                                          wwWS: -1
+                                        })
+                                        .then(async () => {});
+                                    }
+                                  });
+                                }
+                              }
+                            }
+                          }
+                        });
+
+                        //Refreshing all PT records
+                        await Subcomponent.findAll({
+                          where: {
+                            componentID: comp3.componentID,
+                            classRecordID
+                          }
+                        }).then(async ptsc => {
+                          if (ptsc.length != 0) {
+                            for (const [
+                              index3,
+                              value3
+                            ] of subsectstudIDs.entries()) {
+                              for (const [index2, value2] of q.entries()) {
+                                let ptdata = [];
+                                let hasNegativeOne = false;
+                                for (const [index, value] of ptsc.entries()) {
+                                  if (value.quarter == value2) {
+                                    const { compWeight } = value;
+                                    const ws = await this.getSubcompWsBySubsectstudIDAndSubcompIDAndQuarter(
+                                      {
+                                        subcompID: value.subcompID,
+                                        subsectstudID: value3,
+                                        quarter: value2
+                                      }
+                                    );
+                                    if (ws == -1) {
+                                      if (parseFloat(compWeight) != 0)
+                                        hasNegativeOne = true;
+                                    }
+                                    ptdata.push({ compWeight, ws });
+                                  }
+                                }
+                                if (!hasNegativeOne) {
+                                  let sum = 0;
+                                  for (const [
+                                    index,
+                                    value4
+                                  ] of ptdata.entries()) {
+                                    sum =
+                                      sum +
+                                      (parseFloat(value4.compWeight) / 100) *
+                                        parseFloat(value4.ws);
+                                  }
+                                  StudentWeightedScore.findOne({
+                                    where: {
+                                      subsectstudID: value3,
+                                      quarter: value2,
+                                      classRecordID
+                                    }
+                                  }).then(async sws => {
+                                    if (sws) {
+                                      sws
+                                        .update({
+                                          ptWS: sum
+                                        })
+                                        .then(async () => {});
+                                    }
+                                  });
+                                } else {
+                                  StudentWeightedScore.findOne({
+                                    where: {
+                                      subsectstudID: value3,
+                                      quarter: value2,
+                                      classRecordID
+                                    }
+                                  }).then(async sws => {
+                                    if (sws) {
+                                      sws
+                                        .update({
+                                          ptWS: -1
+                                        })
+                                        .then(async () => {});
+                                    }
+                                  });
+                                }
+                              }
+                            }
+                          }
+                        });
+
+                        //Refreshing all QE records
+                        await Subcomponent.findAll({
+                          where: {
+                            componentID: comp4.componentID,
+                            classRecordID
+                          }
+                        }).then(async qesc => {
+                          if (qesc.length != 0) {
+                            for (const [
+                              index3,
+                              value3
+                            ] of subsectstudIDs.entries()) {
+                              for (const [index2, value2] of q.entries()) {
+                                let qeData = [];
+                                let hasNegativeOne = false;
+                                for (const [index, value] of qesc.entries()) {
+                                  if (value.quarter == value2) {
+                                    const { compWeight } = value;
+                                    const ws = await this.getSubcompWsBySubsectstudIDAndSubcompIDAndQuarter(
+                                      {
+                                        subcompID: value.subcompID,
+                                        subsectstudID: value3,
+                                        quarter: value2
+                                      }
+                                    );
+                                    if (ws == -1) {
+                                      if (parseFloat(compWeight) != 0)
+                                        hasNegativeOne = true;
+                                    }
+                                    qeData.push({ compWeight, ws });
+                                  }
+                                }
+                                if (!hasNegativeOne) {
+                                  let sum = 0;
+                                  for (const [
+                                    index,
+                                    value4
+                                  ] of qeData.entries()) {
+                                    sum =
+                                      sum +
+                                      (parseFloat(value4.compWeight) / 100) *
+                                        parseFloat(value4.ws);
+                                  }
+                                  StudentWeightedScore.findOne({
+                                    where: {
+                                      subsectstudID: value3,
+                                      quarter: value2,
+                                      classRecordID
+                                    }
+                                  }).then(async sws => {
+                                    if (sws) {
+                                      sws
+                                        .update({
+                                          qeWS: sum
+                                        })
+                                        .then(async () => {});
+                                    }
+                                  });
+                                } else {
+                                  StudentWeightedScore.findOne({
+                                    where: {
+                                      subsectstudID: value3,
+                                      quarter: value2,
+                                      classRecordID
+                                    }
+                                  }).then(async sws => {
+                                    if (sws) {
+                                      sws
+                                        .update({
+                                          qeWS: -1
+                                        })
+                                        .then(async () => {});
+                                    }
+                                  });
+                                }
+                              }
+                            }
+                          }
+                        });
+                        for (const [index5, value5] of q.entries()) {
+                          for (const [
+                            index6,
+                            value6
+                          ] of subsectstudIDs.entries()) {
+                            StudentWeightedScore.findOne({
+                              where: { subsectstudID: value6, quarter: value5 }
+                            }).then(async sws2 => {
+                              if (sws2) {
+                                await this.studentWeightedScoreUpdate(
+                                  sws2.weightedScoreID
+                                );
+                              }
+                            });
+
+                            StudentGrades.findOne({
+                              where: { subsectstudID: value6 }
+                            }).then(async sg => {
+                              if (sg) {
+                                await this.studentGradesUpdate(
+                                  sg.studentGradesID
+                                );
+                              }
+                            });
+                          }
+                        }
+                      } else {
+                        res
+                          .status(404)
+                          .json({ msg: "QE component not found!" });
+                      }
+                    });
+                  } else {
+                    res.status(404).json({ msg: "PT component not found!" });
+                  }
+                });
+              } else {
+                res.status(404).json({ msg: "WW component not found!" });
+              }
+            });
+          } else {
+            res.status(404).json({ msg: "FA component not found!" });
+          }
+        });
+      }
+    }
+  );
+};
+
+exports.getSubjectIDBySubsectstudID = async subsectstudID => {
+  return await SubjectSectionStudent.findOne({ where: { subsectstudID } }).then(
+    async sss => {
+      if (sss) {
+        return await SubjectSection.findOne({
+          where: { subsectID: sss.subsectID }
+        }).then(async ss => {
+          if (ss) {
+            return ss.subjectID;
+          } else {
+            return -1;
+          }
+        });
+      } else {
+        return -1;
+      }
+    }
+  );
+};
+
+exports.studentGradesUpdate = async studentGradesID => {
+  return await StudentGrades.findOne({ where: { studentGradesID } }).then(
+    async sg => {
+      if (sg) {
+        const q1Transmutation = await ClassRecord.findOne({
+          where: { classRecordID: sg.classRecordID }
+        }).then(async cr => {
+          if (cr) {
+            return cr.q1Transmu;
+          }
+        });
+        const q2Transmutation = await ClassRecord.findOne({
+          where: { classRecordID: sg.classRecordID }
+        }).then(async cr => {
+          if (cr) {
+            return cr.q2Transmu;
+          }
+        });
+        const q3Transmutation = await ClassRecord.findOne({
+          where: { classRecordID: sg.classRecordID }
+        }).then(async cr => {
+          if (cr) {
+            return cr.q3Transmu;
+          }
+        });
+        const q4Transmutation = await ClassRecord.findOne({
+          where: { classRecordID: sg.classRecordID }
+        }).then(async cr => {
+          if (cr) {
+            return cr.q4Transmu;
+          }
+        });
+        const q1TransmuGrade = await StudentWeightedScore.findOne({
+          where: {
+            classRecordID: sg.classRecordID,
+            subsectstudID: sg.subsectstudID,
+            quarter: "Q1"
+          }
+        }).then(async sws => {
+          if (sws) {
+            switch (q1Transmutation) {
+              case "50": {
+                return sws.transmutedGrade50;
+                break;
+              }
+              case "55": {
+                return sws.transmutedGrade55;
+                break;
+              }
+              case "60": {
+                return sws.transmutedGrade60;
+                break;
+              }
+              default:
+                break;
+            }
+          }
+        });
+
+        const q2TransmuGrade = await StudentWeightedScore.findOne({
+          where: {
+            classRecordID: sg.classRecordID,
+            subsectstudID: sg.subsectstudID,
+            quarter: "Q2"
+          }
+        }).then(async sws => {
+          if (sws) {
+            switch (q2Transmutation) {
+              case "50": {
+                return sws.transmutedGrade50;
+                break;
+              }
+              case "55": {
+                return sws.transmutedGrade55;
+                break;
+              }
+              case "60": {
+                return sws.transmutedGrade60;
+                break;
+              }
+              default:
+                break;
+            }
+          }
+        });
+
+        const q3TransmuGrade = await StudentWeightedScore.findOne({
+          where: {
+            classRecordID: sg.classRecordID,
+            subsectstudID: sg.subsectstudID,
+            quarter: "Q3"
+          }
+        }).then(async sws => {
+          if (sws) {
+            switch (q3Transmutation) {
+              case "50": {
+                return sws.transmutedGrade50;
+                break;
+              }
+              case "55": {
+                return sws.transmutedGrade55;
+                break;
+              }
+              case "60": {
+                return sws.transmutedGrade60;
+                break;
+              }
+              default:
+                break;
+            }
+          }
+        });
+
+        const q4TransmuGrade = await StudentWeightedScore.findOne({
+          where: {
+            classRecordID: sg.classRecordID,
+            subsectstudID: sg.subsectstudID,
+            quarter: "Q4"
+          }
+        }).then(async sws => {
+          if (sws) {
+            switch (q4Transmutation) {
+              case "50": {
+                return sws.transmutedGrade50;
+                break;
+              }
+              case "55": {
+                return sws.transmutedGrade55;
+                break;
+              }
+              case "60": {
+                return sws.transmutedGrade60;
+                break;
+              }
+              default:
+                break;
+            }
+          }
+        });
+
+        if (parseFloat(q1TransmuGrade) != -1) {
+          await sg.update({ q1FinalGrade: Math.round(parseFloat(q1TransmuGrade)) });
+        } else {
+          await sg.update({ q1FinalGrade: -1 });
+        }
+
+        if (parseFloat(q2TransmuGrade) != -1) {
+          await sg.update({ q2FinalGrade: Math.round(parseFloat(q2TransmuGrade)) });
+        } else {
+          await sg.update({ q2FinalGrade: -1 });
+        }
+
+        if (parseFloat(q3TransmuGrade) != -1) {
+          await sg.update({ q3FinalGrade: Math.round(parseFloat(q3TransmuGrade)) });
+        } else {
+          await sg.update({ q3FinalGrade: -1 });
+        }
+
+        if (parseFloat(q4TransmuGrade) != -1) {
+          await sg.update({ q4FinalGrade: Math.round(parseFloat(q4TransmuGrade)) });
+        } else {
+          await sg.update({ q4FinalGrade: -1 });
+        }
+
+        if (
+          parseFloat(q1TransmuGrade) != -1 &&
+          parseFloat(q2TransmuGrade) != -1 &&
+          parseFloat(q3TransmuGrade) != -1 &&
+          parseFloat(q4TransmuGrade) != -1
+        ) {
+          let ave =
+            (parseFloat(q1TransmuGrade) +
+              parseFloat(q2TransmuGrade) +
+              parseFloat(q3TransmuGrade) +
+              parseFloat(q4TransmuGrade)) /
+            4;
+          await sg.update({ ave });
+        } else {
+          await sg.update({ ave: -1 });
+        }
+      }
+    }
+  );
+};
+
+exports.studentWeightedScoreUpdate = async weightedScoreID => {
+  return await StudentWeightedScore.findOne({
+    where: { weightedScoreID }
+  }).then(async sws => {
+    if (sws) {
+      const subjectID = await this.getSubjectIDBySubsectstudID(
+        sws.subsectstudID
+      );
+      Component.findAll({ where: { subjectID } }).then(async comps => {
+        if (comps.length != 0) {
+          let data = [];
+          let hasNegativeOne =
+            sws.wwWS == -1 || sws.ptWS == -1 || sws.qeWS == -1;
+          for (const [index, value] of comps.entries()) {
+            const { component, compWeight } = value;
+            data.push({ component, compWeight });
+          }
+          let sum = 0;
+          for (const [index2, value2] of data.entries()) {
+            switch (value2.component) {
+              case "FA": {
+                sum =
+                  sum +
+                  (parseFloat(sws.faWS) * parseFloat(value2.compWeight)) / 100;
+                break;
+              }
+              case "WW": {
+                sum =
+                  sum +
+                  (parseFloat(sws.wwWS) * parseFloat(value2.compWeight)) / 100;
+                break;
+              }
+              case "PT": {
+                sum =
+                  sum +
+                  (parseFloat(sws.ptWS) * parseFloat(value2.compWeight)) / 100;
+                break;
+              }
+              case "QE": {
+                sum =
+                  sum +
+                  (parseFloat(sws.qeWS) * parseFloat(value2.compWeight)) / 100;
+                break;
+              }
+              default:
+                break;
+            }
+          }
+          if (!hasNegativeOne) {
+            await sws.update({
+              actualGrade: sum
+            });
+          } else {
+            await sws.update({ actualGrade: -1 });
+          }
+
+          let transmuGrade50 =
+            75 +
+            (parseFloat(sws.actualGrade) - parseFloat(50)) /
+              ((100-parseFloat(50)) / 25);
+          let transmuGrade55 =
+            75 +
+            (parseFloat(sws.actualGrade) - parseFloat(55)) /
+              ((100-(parseFloat(55))) / 25);
+          let transmuGrade60 =
+            75 +
+            (parseFloat(sws.actualGrade) - parseFloat(60)) /
+              ((100-parseFloat(60)) / 25);
+
+          if (sws.actualGrade != -1) {
+            await sws.update({ transmutedGrade50: transmuGrade50 });
+            await sws.update({ transmutedGrade55: transmuGrade55 });
+            await sws.update({ transmutedGrade60: transmuGrade60 });
+          } else {
+            await sws.update({ transmutedGrade50: -1 });
+            await sws.update({ transmutedGrade55: -1 });
+            await sws.update({ transmutedGrade60: -1 });
+          }
+        }
+      });
+    }
+  });
 };

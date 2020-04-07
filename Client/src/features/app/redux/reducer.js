@@ -27,6 +27,13 @@ import { reducer as createSubjectSectionReducer } from './createSubjectSection';
 import { reducer as deleteSubjectSectionReducer } from './deleteSubjectSection';
 import { reducer as addSubjectSectionStudentReducer } from './addSubjectSectionStudent';
 import { reducer as deleteSubjectSectionStudentReducer } from './deleteSubjectSectionStudent';
+import { reducer as addNewSubcomponentReducer } from './addNewSubcomponent';
+import { reducer as editSubcomponentReducer } from './editSubcomponent';
+import { reducer as deleteSubcomponentReducer } from './deleteSubcomponent';
+import { reducer as addNewRecordReducer } from './addNewRecord';
+import { reducer as deleteRecordReducer } from './deleteRecord';
+import { reducer as changeTransmutationReducer } from './changeTransmutation';
+import { reducer as editRecordReducer } from './editRecord';
 
 const reducers = [
   setCurrentUserReducer,
@@ -57,6 +64,13 @@ const reducers = [
   deleteSubjectSectionReducer,
   addSubjectSectionStudentReducer,
   deleteSubjectSectionStudentReducer,
+  addNewSubcomponentReducer,
+  editSubcomponentReducer,
+  deleteSubcomponentReducer,
+  addNewRecordReducer,
+  deleteRecordReducer,
+  changeTransmutationReducer,
+  editRecordReducer,
 ];
 
 export default function reducer(state = initialState, action) {

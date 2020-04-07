@@ -33,7 +33,7 @@ const Grade = sequelize.define(
     classRecordID: {
       type: Sequelize.INTEGER
     },
-    studentID: {
+    subsectstudID: {
       type: Sequelize.INTEGER
     },
     showLog: {

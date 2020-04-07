@@ -19,17 +19,15 @@ const Subcomponent = require("../models/Subcomponent");
 const AccountNotice = require("../models/AccountNotice");
 const SchoolYear = require("../models/SchoolYear");
 const StudentSection = require("../models/StudentSection");
+const StudentGrades = require("../models/StudentGrades");
 
 const useraccountERD = async function() {
   // user account ERD
-  await Nonacademic.belongsTo(UserAccount, { foreignKey: "accountID" });
+
   await UserAccount.hasOne(Nonacademic, { foreignKey: "accountID" });
   await UserAccount.hasOne(Student, { foreignKey: "accountID" });
   await UserAccount.hasOne(ParentGuardian, { foreignKey: "accountID" });
   await UserAccount.hasOne(Teacher, { foreignKey: "accountID" });
-  await Student.belongsTo(UserAccount, { foreignKey: "accountID" });
-  await ParentGuardian.belongsTo(UserAccount, { foreignKey: "accountID" });
-  await Teacher.belongsTo(UserAccount, { foreignKey: "accountID" });
   await UserAccount.sync({ force: false }).then(() => {
     console.log("user account table created/synced");
     Nonacademic.sync({ force: false }).then(() => {
@@ -53,7 +51,9 @@ const subjectsectionERD = async function() {
   await Section.hasMany(SubjectSection, { foreignKey: "sectionID" });
   await Teacher.hasMany(SubjectSection, { foreignKey: "teacherID" });
   await Subject.hasMany(SubjectSection, { foreignKey: "subjectID" });
-  await StudentSection.hasMany(SubjectSectionStudent, { foreignKey: "studsectID" });
+  await StudentSection.hasMany(SubjectSectionStudent, {
+    foreignKey: "studsectID"
+  });
   await SubjectSection.hasMany(SubjectSectionStudent, {
     foreignKey: "subsectID"
   });
@@ -96,17 +96,27 @@ const gradeERD = async function() {
     await ClassRecord.hasMany(StudentWeightedScore, {
       foreignKey: "classRecordID"
     });
-    await Student.hasMany(StudentWeightedScore, { foreignKey: "studentID" });
+    await SubjectSectionStudent.hasMany(StudentWeightedScore, {
+      foreignKey: "subsectstudID"
+    });
+    await ClassRecord.hasMany(StudentGrades, { foreignKey: "classRecordID" });
+    await SubjectSectionStudent.hasMany(StudentGrades, {
+      foreignKey: "subsectstudID"
+    });
     await ClassRecord.hasMany(Grade, { foreignKey: "classRecordID" });
     await ClassRecord.hasMany(Subcomponent, { foreignKey: "classRecordID" });
     await Component.hasMany(Subcomponent, { foreignKey: "componentID" });
     await Subcomponent.sync({ force: false }).then(async function() {
       await StudentWeightedScore.sync({ force: false }).then(async function() {
-        await Subcomponent.hasMany(Grade, { foreignKey: "subcomponentID" });
-        await Component.hasMany(Grade, { foreignKey: "componentID" });
-        await Student.hasMany(Grade, { foreignKey: "studentID" });
-        await Grade.sync({ force: false }).then(async function() {
-          console.log("grade table created/synced");
+        await StudentGrades.sync({ force: false }).then(async function() {
+          await Subcomponent.hasMany(Grade, { foreignKey: "subcomponentID" });
+          await Component.hasMany(Grade, { foreignKey: "componentID" });
+          await SubjectSectionStudent.hasMany(Grade, {
+            foreignKey: "subsectstudID"
+          });
+          await Grade.sync({ force: false }).then(async function() {
+            console.log("grade table created/synced");
+          });
         });
       });
     });

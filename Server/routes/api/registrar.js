@@ -10,9 +10,13 @@ const StudentSection = require("../../models/StudentSection");
 const SubjectSection = require("../../models/SubjectSection");
 const ClassRecord = require("../../models/ClassRecord");
 const SubjectSectionStudent = require("../../models/SubjectSectionStudent");
+const StudentWeightedScore = require("../../models/StudentWeightedScore");
 const Student = require("../../models/Student");
 const Adviser = require("../../models/Adviser");
 const Subject = require("../../models/Subject");
+const Component = require("../../models/Component");
+const Subcomponent = require("../../models/Subcomponent");
+const StudentGrades = require("../../models/StudentGrades");
 const Op = Sequelize.Op;
 
 //Import Utility Functions
@@ -384,6 +388,13 @@ router.post(
             }
           }
         );
+        await SubjectSection.findAll({
+          where: { sectionID, schoolYearID }
+        }).then(subjectsections => {
+          subjectsections.forEach(async (subjectsection, key, arr) => {
+            subjectsection.destroy({});
+          });
+        });
         await section
           .update({ archived: 1 })
           .then(() => {
@@ -1023,7 +1034,10 @@ router.post(
           dateCreated: utils.getPHTime(),
           dateModified: utils.getPHTime(),
           isSubmitted: 0,
-          transmutation: "50"
+          q1Transmu: "50",
+          q2Transmu: "50",
+          q3Transmu: "50",
+          q4Transmu: "50",
         })
           .then(classrecord => {
             SubjectSection.create({
@@ -1039,9 +1053,100 @@ router.post(
                   SubjectSectionStudent.create({
                     subsectID: subjectsection.subsectID,
                     studsectID: payload[i].studsectID
+                  }).then(subsectstud => {
+                    let q = ["Q1", "Q2", "Q3", "Q4"];
+                    let i = 0;
+                    for (i = 0; i < q.length; i++) {
+                      StudentWeightedScore.create({
+                        subsectstudID: subsectstud.subsectstudID,
+                        classRecordID: classrecord.classRecordID,
+                        faWS: -1,
+                        wwWS: -1,
+                        ptWS: -1,
+                        qeWS: -1,
+                        finalGrade: -1,
+                        quarter: q[i]
+                      });
+                    }
+                    StudentGrades.create({
+                      subsectstudID: subsectstud.subsectstudID,
+                      classRecordID: classrecord.classRecordID
+                    });
                   });
                 }
-                res.status(200).json({ msg: "Added successfully!" });
+                Component.findOne({
+                  where: { subjectID, component: "FA" }
+                }).then(comp1 => {
+                  if (comp1) {
+                    Component.findOne({
+                      where: { subjectID, component: "WW" }
+                    }).then(comp2 => {
+                      if (comp2) {
+                        Component.findOne({
+                          where: { subjectID, component: "PT" }
+                        }).then(comp3 => {
+                          if (comp3) {
+                            Component.findOne({
+                              where: { subjectID, component: "QE" }
+                            }).then(comp4 => {
+                              if (comp4) {
+                                let q = ["Q1", "Q2", "Q3", "Q4"];
+                                let j = 0;
+                                for (j; j < q.length; j++) {
+                                  Subcomponent.create({
+                                    classRecordID: classrecord.classRecordID,
+                                    name: "Subcomponent 1",
+                                    componentID: comp1.componentID,
+                                    compWeight: 100,
+                                    quarter: q[j]
+                                  });
+                                  Subcomponent.create({
+                                    classRecordID: classrecord.classRecordID,
+                                    name: "Subcomponent 1",
+                                    componentID: comp2.componentID,
+                                    compWeight: 100,
+                                    quarter: q[j]
+                                  });
+                                  Subcomponent.create({
+                                    classRecordID: classrecord.classRecordID,
+                                    name: "Subcomponent 1",
+                                    componentID: comp3.componentID,
+                                    compWeight: 100,
+                                    quarter: q[j]
+                                  });
+                                  Subcomponent.create({
+                                    classRecordID: classrecord.classRecordID,
+                                    name: "Quarterly Exam",
+                                    componentID: comp4.componentID,
+                                    compWeight: 100,
+                                    quarter: q[j]
+                                  });
+                                }
+                                res
+                                  .status(200)
+                                  .json({ msg: "Added successfully!" });
+                              } else {
+                                res
+                                  .status(404)
+                                  .json({ msg: "QE component not found!" });
+                              }
+                            });
+                          } else {
+                            res
+                              .status(404)
+                              .json({ msg: "PT component not found!" });
+                          }
+                        });
+                      } else {
+                        res
+                          .status(404)
+                          .json({ msg: "WW component not found!" });
+                      }
+                    });
+                  } else {
+                    res.status(404).json({ msg: "FA component not found!" });
+                  }
+                });
               })
               .catch(err => {
                 res.status(400).json({ msg: "Error adding subject section" });
@@ -1473,14 +1578,12 @@ router.post(
               const subjectName = await utils.getSubjectName(
                 subjectsection.subjectID
               );
-              res
-                .status(200)
-                .json({
-                  sectionName,
-                  gradeLevel,
-                  subjectName,
-                  studentList: []
-                });
+              res.status(200).json({
+                sectionName,
+                gradeLevel,
+                subjectName,
+                studentList: []
+              });
             } else {
               let i = 0;
               let studarr = [];

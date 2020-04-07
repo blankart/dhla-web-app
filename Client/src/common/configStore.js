@@ -7,10 +7,7 @@ import rootReducer from './rootReducer';
 const router = routerMiddleware(history);
 
 // NOTE: Do not change middleares delaration pattern since rekit plugins may register middlewares to it.
-const middlewares = [
-  thunk,
-  router,
-];
+const middlewares = [thunk, router];
 
 let devToolsExtension = f => f;
 
@@ -27,10 +24,14 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 export default function configureStore(initialState) {
-  const store = createStore(rootReducer, initialState, compose(
-    applyMiddleware(...middlewares),
-    devToolsExtension
-  ));
+  const store = createStore(
+    rootReducer,
+    initialState,
+    compose(
+      applyMiddleware(...middlewares),
+      window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
+    ),
+  );
 
   /* istanbul ignore if  */
   if (module.hot) {

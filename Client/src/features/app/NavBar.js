@@ -113,17 +113,6 @@ const showNavBarItems = position => {
           ],
         },
         {
-          value: 'Grades',
-          icon: 'book',
-          subItems: [
-            {
-              value: 'Manage Grades',
-              to: '/managegrades',
-              LinkComponent: withRouter(NavLink),
-            },
-          ],
-        },
-        {
           value: 'Adviser',
           icon: 'user',
           subItems: [

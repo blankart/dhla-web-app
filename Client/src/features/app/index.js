@@ -46,3 +46,15 @@ export { default as TeacherViewSubjectLoadByIdView } from './TeacherViewSubjectL
 export { default as TeacherViewSubjectLoadById } from './TeacherViewSubjectLoadById';
 export { default as TeacherManageGradesView } from './TeacherManageGradesView';
 export { default as TeacherManageGrades } from './TeacherManageGrades';
+export { default as TeacherComponentView } from './TeacherComponentView';
+export { default as TeacherComponent } from './TeacherComponent';
+export { default as TeacherSubcomponentView } from './TeacherSubcomponentView';
+export { default as TeacherSubcomponent } from './TeacherSubcomponent';
+export { default as TeacherAddRecordView } from './TeacherAddRecordView';
+export { default as TeacherAddRecord } from './TeacherAddRecord';
+export { default as TeacherSummaryPerQuarterView } from './TeacherSummaryPerQuarterView';
+export { default as TeacherSummaryPerQuarter } from './TeacherSummaryPerQuarter';
+export { default as TeacherEditRecordView } from './TeacherEditRecordView';
+export { default as TeacherEditRecord } from './TeacherEditRecord';
+export { default as TeacherSummaryView } from './TeacherSummaryView';
+export { default as TeacherSummary } from './TeacherSummary';

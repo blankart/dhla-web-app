@@ -9,7 +9,7 @@ const StudentWeightedScore = sequelize.define(
       primaryKey: true,
       autoIncrement: true
     },
-    studentID: {
+    subsectstudID: {
       type: Sequelize.INTEGER
     },
     classRecordID: {
@@ -27,9 +27,24 @@ const StudentWeightedScore = sequelize.define(
     qeWS: {
       type: Sequelize.FLOAT
     },
-    finalGrade: {
+    actualGrade: {
       type: Sequelize.FLOAT,
       defaultValue: -1
+    },
+    transmutedGrade50: {
+      type: Sequelize.FLOAT,
+      defaultValue: -1
+    },
+    transmutedGrade55: {
+      type: Sequelize.FLOAT,
+      defaultValue: -1
+    },
+    transmutedGrade60: {
+      type: Sequelize.FLOAT,
+      defaultValue: -1
+    },
+    quarter: {
+      type: Sequelize.ENUM("Q1", "Q2", "Q3", "Q4")
     }
   },
   { freezeTableName: true }

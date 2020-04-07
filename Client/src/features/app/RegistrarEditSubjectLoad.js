@@ -20,6 +20,7 @@ import {
 import RegistrarAddNewLoad from './RegistrarAddNewLoad';
 import cn from 'classnames';
 import placeholder from '../../images/placeholder.jpg';
+import bg from '../../images/BG.png';
 const { Option } = AutoComplete;
 
 function ProfileImage({ avatarURL }) {
@@ -245,13 +246,13 @@ export class RegistrarEditSubjectLoad extends Component {
             <Grid.Col sm={12} lg={4}>
               {this.state.isLoading ? (
                 <Spin spinning={this.state.isLoading}>
-                  <Profile name="" avatarURL={placeholder} backgroundUrl=""></Profile>
+                  <Profile name="" avatarURL={placeholder} backgroundURL={bg}></Profile>
                 </Spin>
               ) : (
                 <Profile
                   name={this.state.name}
                   avatarURL={this.state.imageUrl === 'NA' ? placeholder : this.state.imageUrl}
-                  backgroundUrl={this.state.imageUrl}
+                  backgroundURL={bg}
                 ></Profile>
               )}
             </Grid.Col>

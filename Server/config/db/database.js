@@ -5,5 +5,6 @@ module.exports = new Sequelize({
   database: "dhlawebapp",
   username: "root",
   password: "",
-  dialect: "mysql"
+  dialect: "mysql",
+  logging: false
 });

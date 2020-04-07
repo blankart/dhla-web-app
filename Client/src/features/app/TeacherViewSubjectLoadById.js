@@ -158,18 +158,29 @@ export class TeacherViewSubjectLoadById extends Component {
                   {this.state.isLoading ? (
                     ''
                   ) : (
-                    <div>
-                      <Card.Title>
-                        <Breadcrumb>
-                          <Breadcrumb.Item>Subjects</Breadcrumb.Item>
-                          <Breadcrumb.Item>View Subject Load</Breadcrumb.Item>
+                    <Grid.Row>
+                      <Grid.Col xs={12} sm={12} lg={6}>
+                        <Card.Title>
+                          <Breadcrumb>
+                            <Breadcrumb.Item>Subjects</Breadcrumb.Item>
+                            <Breadcrumb.Item>View Subject Load</Breadcrumb.Item>
 
-                          <Breadcrumb.Item>
-                            {this.state.sectionName} - {this.state.subjectName}
-                          </Breadcrumb.Item>
-                        </Breadcrumb>
-                      </Card.Title>
-                    </div>
+                            <Breadcrumb.Item>
+                              {this.state.sectionName} - {this.state.subjectName}
+                            </Breadcrumb.Item>
+                          </Breadcrumb>
+                        </Card.Title>
+                      </Grid.Col>
+                      <Grid.Col xs={12} sm={12} lg={6}>
+                        <Link to={`/managegrades/${this.props.subsectID}/Q1`}>
+                          <Button.List align="right">
+                            <Button style={{ margin: '20px' }} icon="file" color="primary">
+                              Manage Grades
+                            </Button>
+                          </Button.List>
+                        </Link>
+                      </Grid.Col>
+                    </Grid.Row>
                   )}
                   <Descriptions
                     style={{ marginBottom: '15px', marginTop: '15px' }}

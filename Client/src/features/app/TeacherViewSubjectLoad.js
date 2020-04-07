@@ -51,6 +51,9 @@ export class TeacherViewSubjectLoad extends Component {
             data: res2.data.subjectSectionData,
             numOfPages: res2.data.numOfPages,
           });
+        })
+        .catch(err => {
+          this.setState({ isLoadingTable: false, data: [] });
         });
     });
   }
@@ -123,7 +126,7 @@ export class TeacherViewSubjectLoad extends Component {
           <Table.Col>{displayGradeLevel(value.gradeLevel)}</Table.Col>
           <Table.Col>{value.sectionName}</Table.Col>
           <Table.Col>
-            <Link to={`/viewsubjectload/${value.key}`}>
+            <Link to={`/viewsubjectload/${value.key}/Q1`}>
               <Button pill size="sm" icon="user" color="primary">
                 View information
               </Button>

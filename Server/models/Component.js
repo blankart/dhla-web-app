@@ -13,10 +13,10 @@ const Component = sequelize.define(
       type: Sequelize.INTEGER
     },
     component: {
-      type: Sequelize.ENUM("FA", "WW", "FT", "QE")
+      type: Sequelize.ENUM("FA", "WW", "PT", "QE")
     },
     compWeight: {
-      type: Sequelize.INTEGER(2)
+      type: Sequelize.FLOAT
     }
   },
   { freezeTableName: true }

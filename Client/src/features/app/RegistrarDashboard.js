@@ -7,6 +7,7 @@ import { Container, Grid, Card, Button, Form, Header } from 'tabler-react';
 import cn from 'classnames';
 import placeholder from '../../images/placeholder.jpg';
 import { Spin } from 'antd';
+import bg from '../../images/BG.png';
 function ProfileImage({ avatarURL }) {
   return <img className="card-profile-img" alt="Profile" src={avatarURL} />;
 }
@@ -208,7 +209,7 @@ export class RegistrarDashboard extends Component {
                     .charAt(0)
                     .toUpperCase()}. ${capitalize(lastName)}`}
                   avatarURL={imageUrl === 'NA' ? placeholder : imageUrl}
-                  backgroundURL={imageUrl}
+                  backgroundURL={bg}
                 >
                   <div>
                     <Header.H5>{displayPosition(position)}</Header.H5>

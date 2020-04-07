@@ -19,7 +19,10 @@ const Subcomponent = sequelize.define(
       type: Sequelize.INTEGER
     },
     compWeight: {
-      type: Sequelize.INTEGER
+      type: Sequelize.FLOAT
+    },
+    quarter: {
+      type: Sequelize.ENUM("Q1", "Q2", "Q3", "Q4")
     }
   },
   { freezeTableName: true }

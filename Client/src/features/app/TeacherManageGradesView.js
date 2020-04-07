@@ -30,6 +30,10 @@ export class TeacherManageGradesView extends Component {
     } else {
       if (this.props.app.auth.user.position != 3) {
         this.props.history.push('/page401');
+      } else {
+        if (!['Q1', 'Q2', 'Q3', 'Q4'].includes(this.props.match.params.q)) {
+          this.props.history.push('/page404');
+        }
       }
     }
   }
@@ -74,7 +78,10 @@ export class TeacherManageGradesView extends Component {
             <Container>
               <Grid.Row>
                 <Grid.Col xs={12} sm={12} md={12}>
-                  <TeacherManageGrades />
+                  <TeacherManageGrades
+                    subsectID={this.props.match.params.id}
+                    quarter={this.props.match.params.q}
+                  />
                 </Grid.Col>
               </Grid.Row>
             </Container>
