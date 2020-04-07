@@ -47,7 +47,7 @@ export class TeacherSummary extends Component {
       subsectID: 0,
       subjectName: '',
       subjectCode: '',
-      sectionName: '',P
+      sectionName: '',
       schoolYear: '',
       schoolYearID: '',
       data: [],
