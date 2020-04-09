@@ -12,7 +12,7 @@ const ClassRecord = require("../../models/ClassRecord");
 const SubjectSectionStudent = require("../../models/SubjectSectionStudent");
 const StudentWeightedScore = require("../../models/StudentWeightedScore");
 const Student = require("../../models/Student");
-const Adviser = require("../../models/Adviser");
+const TeacherSection = require("../../models/TeacherSection");
 const Subject = require("../../models/Subject");
 const Component = require("../../models/Component");
 const Subcomponent = require("../../models/Subcomponent");
@@ -381,7 +381,7 @@ router.post(
             studentsection.destroy({});
           });
         });
-        await Adviser.findOne({ where: { sectionID, schoolYearID } }).then(
+        await TeacherSection.findOne({ where: { sectionID, schoolYearID } }).then(
           adviser => {
             if (adviser) {
               adviser.destroy({});
@@ -1240,7 +1240,7 @@ router.post(
     } else {
       let data = [];
       let sectionsID = await utils.getSectionsID({ limit, offset, keyword });
-      let advisersData = await utils.getAdviserBySchoolYearID(schoolYearID);
+      let advisersData = await utils.getTeacherSectionBySchoolYearID(schoolYearID);
       let i = 0;
       for (i; i < sectionsID.slice(0, pageSize).length; i++) {
         let sectionID = sectionsID[i];
@@ -1281,7 +1281,7 @@ router.post(
   passport.authenticate("registrar", { session: false }),
   async (req, res) => {
     const { schoolYearID, sectionID, teacherID } = req.body;
-    Adviser.findOne({ where: { schoolYearID, sectionID, teacherID } }).then(
+    TeacherSection.findOne({ where: { schoolYearID, sectionID, teacherID } }).then(
       adviser => {
         if (adviser) {
           adviser.destroy().then(() => {
@@ -1306,13 +1306,13 @@ router.post(
   passport.authenticate("registrar", { session: false }),
   async (req, res) => {
     const { schoolYearID, sectionID, teacherID } = req.body;
-    Adviser.findOne({ where: { schoolYearID, teacherID } }).then(adivser => {
+    TeacherSection.findOne({ where: { schoolYearID, teacherID } }).then(adivser => {
       if (adivser) {
         res
           .status(404)
           .json({ teacherName: "There's already assigned adviser!" });
       } else {
-        Adviser.create({ schoolYearID, sectionID, teacherID })
+        TeacherSection.create({ schoolYearID, sectionID, teacherID })
           .then(adivser2 => {
             res
               .status(200)

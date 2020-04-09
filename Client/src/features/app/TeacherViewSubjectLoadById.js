@@ -20,6 +20,7 @@ import {
 import RegistrarAddNewLoad from './RegistrarAddNewLoad';
 import cn from 'classnames';
 import placeholder from '../../images/placeholder.jpg';
+import { getImageUrl } from '../../utils';
 const { Option } = AutoComplete;
 
 export class TeacherViewSubjectLoadById extends Component {
@@ -130,7 +131,7 @@ export class TeacherViewSubjectLoadById extends Component {
       displayStudentData.push(
         <Table.Row>
           <Table.Col className="w-1">
-            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : value.imageUrl} />
+            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)} />
           </Table.Col>
           <Table.Col>{value.name}</Table.Col>
           <Table.Col>{value.email}</Table.Col>

@@ -32,6 +32,7 @@ import {
   Badge,
 } from 'tabler-react';
 import { Link } from 'react-router-dom';
+import { getImageUrl } from '../../utils';
 const { Option } = AutoComplete;
 
 export class TeacherSummary extends Component {
@@ -114,7 +115,7 @@ export class TeacherSummary extends Component {
       displayData.push(
         <Table.Row>
           <Table.Col className="w-1">
-            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : value.imageUrl} />
+            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)} />
           </Table.Col>
           <Table.Col>{value.name}</Table.Col>
           <Table.Col alignContent="center">

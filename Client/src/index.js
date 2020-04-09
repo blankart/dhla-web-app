@@ -8,13 +8,15 @@ import setAuthToken from './common/setAuthToken';
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
 import * as actions from './features/app/redux/actions';
+import { BASE_URL } from './utils';
 const store = configStore();
 
 const MAX_REQUESTS_COUNT = 5;
 const INTERVAL_MS = 50;
 let PENDING_REQUESTS = 0;
 
-axios.defaults.baseURL = 'http://localhost:5000';
+axios.defaults.baseURL = BASE_URL;
+// axios.defaults.baseURL = 'https://24af2174.ngrok.io';
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';
 axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 axios.interceptors.request.use(function(config) {

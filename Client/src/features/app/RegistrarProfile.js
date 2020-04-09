@@ -10,7 +10,7 @@ import { Alert, Upload, message } from 'antd';
 import cn from 'classnames';
 import placeholder from '../../images/placeholder.jpg';
 import bg from '../../images/BG.png';
-
+import { getImageUrl } from '../../utils';
 function ProfileImage({ avatarURL }) {
   return <img className="card-profile-img" alt="Profile" src={avatarURL} />;
 }
@@ -240,7 +240,7 @@ export class RegistrarProfile extends Component {
                   name={`${capitalize(firstName)} ${middleName
                     .charAt(0)
                     .toUpperCase()}. ${capitalize(lastName)}`}
-                  avatarURL={imageUrl == 'NA' ? placeholder : imageUrl}
+                  avatarURL={imageUrl == 'NA' ? placeholder : getImageUrl(imageUrl)}
                   backgroundURL={bg}
                 >
                   <Upload

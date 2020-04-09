@@ -10,6 +10,7 @@ import axios from 'axios';
 import { Pagination, Spin, Tooltip } from 'antd';
 import { Modal, Popconfirm, Search, Breadcrumb, AutoComplete, Input, message } from 'antd';
 import placeholder from '../../images/placeholder.jpg';
+import { getImageUrl } from '../../utils';
 const { Option } = AutoComplete;
 
 export class RegistrarViewEnrolled extends Component {
@@ -147,7 +148,9 @@ export class RegistrarViewEnrolled extends Component {
           let optionData = res.data.accountList.map(data => (
             <Option key={data.key} text={data.name}>
               <div>
-                <Avatar imageURL={data.imageUrl == 'NA' ? placeholder : data.imageUrl} />
+                <Avatar
+                  imageURL={data.imageUrl == 'NA' ? placeholder : getImageUrl(data.imageUrl)}
+                />
                 <span style={{ margin: '16px', verticalAlign: 'text-top' }}>{data.name}</span>
               </div>
             </Option>
@@ -177,7 +180,7 @@ export class RegistrarViewEnrolled extends Component {
       DisplayData.push(
         <Table.Row>
           <Table.Col className="w-1">
-            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : value.imageUrl} />
+            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)} />
           </Table.Col>
           <Table.Col>
             <Tooltip title={<StudentTooltip id={value.key} />}>{value.name}</Tooltip>

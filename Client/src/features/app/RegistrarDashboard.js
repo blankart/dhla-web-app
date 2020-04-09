@@ -8,6 +8,7 @@ import cn from 'classnames';
 import placeholder from '../../images/placeholder.jpg';
 import { Spin } from 'antd';
 import bg from '../../images/BG.png';
+import { getImageUrl } from '../../utils';
 function ProfileImage({ avatarURL }) {
   return <img className="card-profile-img" alt="Profile" src={avatarURL} />;
 }
@@ -208,7 +209,7 @@ export class RegistrarDashboard extends Component {
                   name={`${capitalize(firstName)} ${middleName
                     .charAt(0)
                     .toUpperCase()}. ${capitalize(lastName)}`}
-                  avatarURL={imageUrl === 'NA' ? placeholder : imageUrl}
+                  avatarURL={imageUrl === 'NA' ? placeholder : getImageUrl(imageUrl)}
                   backgroundURL={bg}
                 >
                   <div>

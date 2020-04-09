@@ -152,6 +152,10 @@ The main goal of the study is to develop a web-based application for record keep
         \item Login and logout
         \item View and update profile
         \item Change his/her password
+        \item Create a school year and update the current quarter
+        \item Add/Update the names of sections
+        \item Add students to a section
+        \item Add subject load to teachers
         \item Set deadline for submission of grades
         \begin{enumerate}
             \item Deadline for submission of grades will be set to be able to see who submitted late since a fine is to be collected for every day, after the due date, without submission. Deadline alerts will be automatically sent by the system, during 5 days and 3 days before the deadline and during the deadline day. Different deadline for teachers is possible especially if one teacher has more load compared to others.
@@ -162,9 +166,7 @@ The main goal of the study is to develop a web-based application for record keep
         \end{enumerate}
         \item View and produce report cards
         \item View school information, Elementary Learners Data, Elementary Learners Age Profile, Junior High School Learners Data, JHS Learners Age Profile, Senior High School Repeaters Age Profile, SHS Learners Data by Track, SHS Learners Data in Technical-Vocational-Livelihood Track Specializations, Total Number of Enrollees, Number of Enrollees by Sex, Age, Grade Level, and etc., needed by DepEd and Private Educational Assistance Committee (PEAC).
-        \item Add/Update the names of sections
-        \item Add students to a section
-        \item Add subject load to teachers
+        
         \item View grade submission logs of teachers
     \end{enumerate}
 
@@ -394,19 +396,13 @@ All accounts will have a login and logout function. Each user account can also c
 
 The system administrator is the one managing the system.
 
-The user can create accounts for the other users such as director, registrar, teachers, and students. All account creation will not have any creation requests.
+The system administrator can create accounts for the other users such as director, registrar, teachers, and students. All account creation will not have any creation requests.
 
-The administrator is the only one with access to the activity logs of the condensed class record. The activity log records every information changes that occur to class records in the system. This activity log cannot be edited nor deleted, it is only readable. The administrator can also search the log using date, time, teacher's name, section, school year, grade level, and/or class record name.
+The administrator and registrar have an access to the activity logs of the class record. The activity log records every information changes that occur to class records in the system. It includes adding, updating, and deleting records. This activity log cannot be edited nor deleted, it is only readable. Both administrator and registrar can also search the log using date, time, teacher's name, section, school year, and grade level.
 
-Activation and deactivation of accounts is also a functionality of the administrator. An account can be deactivated if the user is no long affiliated with the school.
+Activation and deactivation of accounts is also a functionality of the administrator. An account can be deactivated/deleted if the user is no long affiliated with the school.
 
-Since DepEd may issue a change in the grading process of schools, updating grade computation formula is also included in the function of the administrator. Such changes can only occur if the school director approves these changes.
-
-As mentioned earlier, some changes or updates can only occur if the director approves it.
-
-The director is the one who directs and shapes the curriculum and the teaching process of a school.
-
-This user will be the one in charge of approving changes for grade computation formula. Furthermore, he can also view grades of each subject and the condensed grades. Viewing of summary reports is also possible.
+The director can view grades of each subject and the condensed grades. Viewing of summary reports is also possible.
 
 Summary reports will get all the information needed from the database of the system.
 
@@ -414,7 +410,7 @@ The school registrar is in charge of keeping student records.
 
 The school registrar will be able to set the deadline for submission of grades. Different deadlines may be set for different teachers due to their workload differences. Deadline alerts will be automatically sent, by the system, during 5 days and 3 days before the deadline and during the deadline day.
 
-Since a school registrar keeps student records, they can view record from past school years and produce TORs. Viewing of summary reports will also be possible. Summary reports may be requested by the principal, director, and/or the DepEd and PEAC.
+Since a school registrar keeps student records, they can view record from past school years and produce unofficial TORs. Viewing of summary reports will also be possible. Summary reports may be requested by the principal, director, and/or the DepEd and PEAC.
 
 School registrars can update the student list of each section by adding or removing students from the class list. They can also update the section name and view the submitted grade of teachers.
 

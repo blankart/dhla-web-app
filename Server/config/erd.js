@@ -7,7 +7,7 @@ const Teacher = require("../models/Teacher");
 const Grade = require("../models/Grade");
 const Section = require("../models/Section");
 const Subject = require("../models/Subject");
-const Adviser = require("../models/Adviser");
+const TeacherSection = require("../models/TeacherSection");
 const AttendanceLog = require("../models/AttendanceLog");
 const SubmissionDeadline = require("../models/SubmissionDeadline");
 const SubjectSection = require("../models/SubjectSection");
@@ -20,6 +20,7 @@ const AccountNotice = require("../models/AccountNotice");
 const SchoolYear = require("../models/SchoolYear");
 const StudentSection = require("../models/StudentSection");
 const StudentGrades = require("../models/StudentGrades");
+const ActivityLog = require("../models/ActivityLog");
 
 const useraccountERD = async function() {
   // user account ERD
@@ -125,10 +126,10 @@ const gradeERD = async function() {
 
 const adviserERD = async function() {
   // adviser ERD
-  await SchoolYear.hasMany(Adviser, { foreignKey: "schoolYearID" });
-  await Section.hasMany(Adviser, { foreignKey: "sectionID" });
-  await Teacher.hasMany(Adviser, { foreignKey: "teacherID" });
-  await Adviser.sync({ force: false }).then(() => {
+  await SchoolYear.hasMany(TeacherSection, { foreignKey: "schoolYearID" });
+  await Section.hasMany(TeacherSection, { foreignKey: "sectionID" });
+  await Teacher.hasMany(TeacherSection, { foreignKey: "teacherID" });
+  await TeacherSection.sync({ force: false }).then(() => {
     console.log("adviser table created/synced");
   });
 };
@@ -159,6 +160,15 @@ const studentnoticeERD = async function() {
   });
 };
 
+const activitylogERD = async function() {
+  await Teacher.hasMany(ActivityLog, { foreignKey: "teacherID" });
+  await Section.hasMany(ActivityLog, { foreignKey: "sectionID" });
+  await SchoolYear.hasMany(ActivityLog, { foreignKey: "schoolYearID" });
+  await ActivityLog.sync({ force: false }).then(() => {
+    console.log("Activity log table created/synced");
+  });
+};
+
 exports.init = async function() {
   await useraccountERD();
   await studentsectionERD();
@@ -169,4 +179,5 @@ exports.init = async function() {
   await attendancelogERD();
   await submissiondeadlineERD();
   await studentnoticeERD();
+  await activitylogERD();
 };

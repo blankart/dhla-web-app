@@ -12,6 +12,7 @@ import RegistrarAddNewLoad from './RegistrarAddNewLoad';
 import cn from 'classnames';
 import placeholder from '../../images/placeholder.jpg';
 import bg from '../../images/BG.png';
+import { getImageUrl } from '../../utils';
 const { Option } = AutoComplete;
 
 function ProfileImage({ avatarURL }) {
@@ -220,7 +221,9 @@ export class RegistrarViewSubjectLoad extends Component {
               ) : (
                 <Profile
                   name={this.state.name}
-                  avatarURL={this.state.imageUrl === 'NA' ? placeholder : this.state.imageUrl}
+                  avatarURL={
+                    this.state.imageUrl === 'NA' ? placeholder : getImageUrl(this.state.imageUrl)
+                  }
                   backgroundURL={bg}
                 ></Profile>
               )}

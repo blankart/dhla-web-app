@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import * as actions from './redux/actions';
 import { Card, Button, Grid, Avatar, Table, Form } from 'tabler-react';
 import { Pagination, Spin } from 'antd';
+import { getImageUrl } from '../../utils';
+import placeholder from '../../images/placeholder.jpg';
 import axios from 'axios';
 
 export class AdminActivateAccount extends Component {
@@ -99,7 +101,7 @@ export class AdminActivateAccount extends Component {
       DisplayData.push(
         <Table.Row>
           <Table.Col className="w-1">
-            <Avatar imageURL={value.imageUrl} />
+            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)} />
           </Table.Col>
           <Table.Col>{value.name}</Table.Col>
           <Table.Col>{value.email}</Table.Col>

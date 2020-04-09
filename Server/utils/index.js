@@ -11,7 +11,7 @@ const StudentGrades = require("../models/StudentGrades");
 const ClassRecord = require("../models/ClassRecord");
 const Component = require("../models/Component");
 const Subcomponent = require("../models/Subcomponent");
-const Adviser = require("../models/Adviser");
+const TeacherSection = require("../models/TeacherSection");
 const Teacher = require("../models/Teacher");
 const Sequelize = require("sequelize");
 const Subject = require("../models/Subject");
@@ -296,8 +296,8 @@ exports.getStudentImageUrl = async studentID => {
   });
 };
 
-exports.getAdviserBySchoolYearID = async schoolYearID => {
-  return await Adviser.findAll({ where: { schoolYearID } }).then(
+exports.getTeacherSectionBySchoolYearID = async schoolYearID => {
+  return await TeacherSection.findAll({ where: { schoolYearID } }).then(
     async advisers => {
       if (advisers.length == 0) {
         return [];

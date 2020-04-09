@@ -31,6 +31,7 @@ import {
   Alert,
 } from 'tabler-react';
 import { Link } from 'react-router-dom';
+import { getImageUrl } from '../../utils';
 
 const { Option } = AutoComplete;
 
@@ -133,7 +134,7 @@ export class TeacherComponent extends Component {
         tableData.push(
           <Table.Row>
             <Table.Col className="w-1">
-              <Avatar imageURL={imageUrl == 'NA' ? placeholder : imageUrl} />
+              <Avatar imageURL={imageUrl == 'NA' ? placeholder : getImageUrl(imageUrl)} />
             </Table.Col>
             <Table.Col>{name}</Table.Col>
             {tempRow}

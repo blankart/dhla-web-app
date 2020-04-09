@@ -1,10 +1,10 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../config/db/database");
 
-const Adviser = sequelize.define(
-  "adviser",
+const TeacherSection = sequelize.define(
+  "teacher section",
   {
-    adviserID: {
+    teachersectionID: {
       type: Sequelize.INTEGER,
       primaryKey: true,
       autoIncrement: true
@@ -16,4 +16,4 @@ const Adviser = sequelize.define(
   { freezeTableName: true }
 );
 
-module.exports = Adviser;
+module.exports = TeacherSection;

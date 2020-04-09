@@ -10,6 +10,7 @@ import { Modal } from 'antd';
 import { Spin } from 'antd';
 import placeholder from '../../images/placeholder.jpg';
 import { Header } from 'tabler-react';
+import { getImageUrl } from '../../utils';
 
 const showNavBarItems = position => {
   switch (position) {
@@ -268,7 +269,7 @@ export class NavBar extends Component {
       }
     };
     const accountDropdownProps = {
-      avatarURL: imageUrl === 'NA' ? placeholder : imageUrl,
+      avatarURL: imageUrl === 'NA' ? placeholder : getImageUrl(imageUrl),
       name: capitalize(firstName) + ' ' + capitalize(lastName),
       description: displayPosition(position),
       options: [
