@@ -3398,7 +3398,7 @@ router.post(
     session: false
   }),
   async(req, res) => {
-    const {
+    let {
       classRecordID,
       quarter
     } = req.body;
@@ -3409,6 +3409,7 @@ router.post(
     page = page - 1;
     let offset = page * pageSize;
     let limit = offset + pageSize;
+    const subjectType = await utils.getSubjectTypeByClassRecordID(classRecordID)
 
     const {
       IDs,
@@ -3432,7 +3433,20 @@ router.post(
             const {
               subsectstudID
             } = value;
-            const grade = value[`${quarter.toLowerCase()}FinalGrade`];
+            let grade = value[`${quarter.toLowerCase()}FinalGrade`];
+            if (subjectType == '2ND_SEM') {
+              if (quarter == 'Q3') {
+                grade = value['q1FinalGrade']
+              } else if (quarter == 'Q4') {
+                grade = value['q2FinalGrade']
+              } else {
+                grade = -1
+              }
+            } else if (subjectType == '1ST_SEM') {
+              if (quarter == 'Q3' || quarter == 'Q4') {
+                grade = -1
+              }
+            }
             const accountID = await utils.getAccountIDBySubsectstudID(
               subsectstudID
             );

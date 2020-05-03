@@ -31,6 +31,7 @@ import {
   RegistrarSubcomponentView,
   RegistrarEditRecordView,
   RegistrarAddRecordView,
+  RegistrarSummaryReportView,
 } from './';
 
 export default {
@@ -163,5 +164,6 @@ export default {
       component: RegistrarEditRecordView,
     },
     { path: '/individualdeliberation/:id/managegrade/:classRecordID/quarter/:Q/comp/:comp/subcomp/:subcomp/addrecord', name: 'Registrar add record view', component: RegistrarAddRecordView },
+    { path: 'individualdeliberation/:id/managegrade/:classRecordID/quarter/:Q/summaryreport', name: 'Registrar summary report view', component: RegistrarSummaryReportView },
   ],
 };

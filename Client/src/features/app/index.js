@@ -79,3 +79,5 @@ export { default as RegistrarEditRecordView } from './RegistrarEditRecordView';
 export { default as RegistrarEditRecord } from './RegistrarEditRecord';
 export { default as RegistrarAddRecordView } from './RegistrarAddRecordView';
 export { default as RegistrarAddRecord } from './RegistrarAddRecord';
+export { default as RegistrarSummaryReportView } from './RegistrarSummaryReportView';
+export { default as RegistrarSummaryReport } from './RegistrarSummaryReport';

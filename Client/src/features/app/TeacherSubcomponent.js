@@ -31,7 +31,6 @@ import {
   Alert,
 } from 'tabler-react';
 import { Link } from 'react-router-dom';
-import moment from 'moment';
 import { getImageUrl } from '../../utils';
 const { Option } = AutoComplete;
 
@@ -195,10 +194,6 @@ export class TeacherSubcomponent extends Component {
                     <b>Description:</b> {value.description}
                   </p>
                   <p>
-                    <b>Date given:</b>
-                    {` ${moment(new Date(value.dateGiven)).format('MMMM DD, YYYY')}`}
-                  </p>
-                  <p>
                     <b>Number of items:</b> {value.total}
                   </p>
                 </div>
@@ -254,10 +249,6 @@ export class TeacherSubcomponent extends Component {
                   <div>
                     <p>
                       <b>Description:</b> {value2.description}
-                    </p>
-                    <p>
-                      <b>Date given:</b>
-                      {` ${moment(new Date(value2.dateGiven)).format('MMMM DD, YYYY')}`}
                     </p>
                     <p>
                       <b>Number of items:</b> {value2.total}

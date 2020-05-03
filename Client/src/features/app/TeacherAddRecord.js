@@ -63,16 +63,19 @@ export class TeacherAddRecord extends Component {
   }
 
   addNewRecord() {
-    this.props.actions.addNewRecord({
-      componentID: this.state.componentID,
-      subcompID: this.state.subcompID,
-      payload: this.state.studList,
-      dateGiven: this.state.dateGiven,
-      description: this.state.itemDesc,
-      total: this.state.total,
-      subsectID: this.props.subsectID,
-      quarter: this.props.quarter,
-    });
+    this.props.actions.addNewRecord(
+      {
+        componentID: this.state.componentID,
+        subcompID: this.state.subcompID,
+        payload: this.state.studList,
+        dateGiven: this.state.dateGiven,
+        description: this.state.itemDesc,
+        total: this.state.total,
+        subsectID: this.props.subsectID,
+        quarter: this.props.quarter,
+      },
+      'Teacher',
+    );
   }
 
   componentDidMount() {
