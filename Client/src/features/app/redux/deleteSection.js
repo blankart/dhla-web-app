@@ -18,6 +18,7 @@ export const deleteSection = data => dispatch => {
     })
     .catch(err => {
       dispatch({ type: APP_GET_ERRORS, payload: err.response.data });
+      message.error(err.response.data.msg);
       dispatch(actions.setLoading(false));
     });
   return {

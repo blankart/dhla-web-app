@@ -21,6 +21,7 @@ export class TeacherViewSubjectLoadView extends Component {
     this.state = {
       locked: false,
       isLoading: true,
+      quarter: '',
     };
   }
 
@@ -38,7 +39,7 @@ export class TeacherViewSubjectLoadView extends Component {
     axios
       .get('api/teacher/getsy')
       .then(res => {
-        this.setState({ locked: false, isLoading: false });
+        this.setState({ locked: false, quarter: res.data.quarter, isLoading: false });
       })
       .catch(err => {
         this.setState({ locked: true, isLoading: false });
@@ -74,7 +75,7 @@ export class TeacherViewSubjectLoadView extends Component {
             <Container>
               <Grid.Row>
                 <Grid.Col xs={12} sm={12} md={12}>
-                  <TeacherViewSubjectLoad />
+                  <TeacherViewSubjectLoad quarter={this.state.quarter} />
                 </Grid.Col>
               </Grid.Row>
             </Container>

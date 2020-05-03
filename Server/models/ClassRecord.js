@@ -15,9 +15,6 @@ const ClassRecord = sequelize.define(
     dateModified: {
       type: Sequelize.DATE
     },
-    isSubmitted: {
-      type: Sequelize.BOOLEAN
-    },
     q1Transmu: {
       type: Sequelize.ENUM("60", "55", "50")
     },

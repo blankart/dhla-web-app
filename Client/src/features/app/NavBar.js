@@ -18,7 +18,7 @@ const showNavBarItems = position => {
       // Navbar items for Administrator
       return [
         {
-          value: 'Home',
+          value: 'Dashboard',
           to: '/dashboard',
           icon: 'home',
         },
@@ -74,14 +74,27 @@ const showNavBarItems = position => {
           ],
         },
         {
+          value: 'Deliberation',
+          icon: 'file',
+          subItems: [
+            {
+              value: 'Individual Deliberation',
+              to: '/individualdeliberation',
+              LinkComponent: withRouter(NavLink),
+            },
+            {
+              value: 'Group Deliberation',
+              to: '/groupdeliberation',
+              LinkComponent: withRouter(NavLink),
+            },
+          ],
+        },
+        {
           value: 'Grades',
           icon: 'book',
           subItems: [
             {
-              value: 'View Student Records',
-            },
-            {
-              value: 'Grade Update Log',
+              value: 'View Past Records',
             },
           ],
         },

@@ -21,7 +21,7 @@ export const deleteStudentSection = data => dispatch => {
       dispatch({ type: APP_DELETE_STUDENT_SECTION });
       dispatch(actions.setLoading(false));
       dispatch({ type: APP_GET_ERRORS, payload: err.response.data });
-      message.error(err.response.data.studentName);
+      message.error(err.response.data.msg);
     });
 };
 

@@ -7,20 +7,35 @@ import * as actions from './actions';
 import axios from 'axios';
 import { message } from 'antd';
 
-export const addNewSubcomponent = data => dispatch => {
+export const addNewSubcomponent = (data, position) => dispatch => {
   dispatch(actions.setLoading(true));
-  axios
-    .post('api/teacher/addnewsubcomp', data)
-    .then(res => {
-      message.success(res.data.msg);
-      dispatch(actions.setLoading(false));
-      dispatch({ type: APP_GET_ERRORS, payload: {} });
-    })
-    .catch(err => {
-      dispatch({ type: APP_GET_ERRORS, payload: err.response.data });
-      dispatch(actions.setLoading(false));
-      message.error(err.response.data.msg);
-    });
+  if (position == 'Teacher') {
+    axios
+      .post('api/teacher/addnewsubcomp', data)
+      .then(res => {
+        message.success(res.data.msg);
+        dispatch(actions.setLoading(false));
+        dispatch({ type: APP_GET_ERRORS, payload: {} });
+      })
+      .catch(err => {
+        dispatch({ type: APP_GET_ERRORS, payload: err.response.data });
+        dispatch(actions.setLoading(false));
+        message.error(err.response.data.msg);
+      });
+  } else {
+    axios
+      .post('api/registrar/addnewsubcomp', data)
+      .then(res => {
+        message.success(res.data.msg);
+        dispatch(actions.setLoading(false));
+        dispatch({ type: APP_GET_ERRORS, payload: {} });
+      })
+      .catch(err => {
+        dispatch({ type: APP_GET_ERRORS, payload: err.response.data });
+        dispatch(actions.setLoading(false));
+        message.error(err.response.data.msg);
+      });
+  }
 };
 
 export function reducer(state, action) {

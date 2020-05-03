@@ -21,6 +21,9 @@ const SubjectSection = sequelize.define(
     schoolYearID: {
       type: Sequelize.INTEGER
     },
+    subjectType: {
+      type: Sequelize.ENUM("NON_SHS", "1ST_SEM", "2ND_SEM")
+    },
     classRecordID: {
       type: Sequelize.INTEGER
     }

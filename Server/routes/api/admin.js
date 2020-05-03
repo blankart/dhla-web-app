@@ -220,103 +220,26 @@ router.post(
   }
 );
 
-// @route api/admin/getupdatelog
-// @desc Get the edit/update log of the grade sheets
-// @acess Public
+// @route POST api/admin/deactivate
+// @desc Delete an account
+// @access Private
 
-// router.post(
-//   "/getupdatelog",
-//   passport.authenticate("admin", { session: false }),
-//   async (req, res) => {
-//     const updateLogData = [];
-//     let { page, pageSize } = req.body;
-//     page = page - 1;
-//     let offset = page * pageSize;
-//     let limit = offset + pageSize;
-//     const grades = await Grade.findAll({
-//       where: {
-//         showLog: 1
-//       },
-//       order: [["date", "DESC"]]
-//     });
-//     if (grades.length != 0) {
-//       for (grade of grades) {
-//         const gradesheet = await GradeSheet.findOne({
-//           where: { gradeSheetID: grade.gradeSheetID }
-//         });
-//         const oldGrade = await Grade.findOne({
-//           where: {
-//             categoryID: grade.categoryID,
-//             studentID: grade.studentID,
-//             gradeSheetID: grade.gradeSheetID,
-//             entryNum: grade.entryNum,
-//             showLog: 1,
-//             date: {
-//               [Op.lt]: grade.date
-//             }
-//           },
-//           order: [["date", "DESC"]]
-//         });
-//         if (oldGrade) {
-//           const gradeID = oldGrade.gradeID;
-//           const score = oldGrade.score;
-//           const teacherName = await utils.getTeacherName(gradesheet.teacherID);
-//           const gradeLevel = await utils.getGradeLevelName(gradesheet.gradeLevelID);
-//           const subjectName = await utils.getSubjectName(gradesheet.subjectID);
-//           const sectionName = await utils.getSectionName(gradesheet.sectionID);
-//           const studentName = await utils.getStudentName(grade.studentID);
-//           const category = await utils.getCategoryName(grade.categoryID);
-//           const data = {
-//             gradeSheetID: gradesheet.gradeSheetID,
-//             schoolYear: gradesheet.schoolYear,
-//             academicTerm: gradesheet.academicTerm,
-//             teacherName,
-//             gradeLevel,
-//             subjectName,
-//             sectionName,
-//             dateUpdated: grade.date,
-//             studentName,
-//             entryNum: grade.entryNum,
-//             category,
-//             total: grade.total,
-//             oldGrade: {
-//               gradeID,
-//               score
-//             },
-//             newGrade: {
-//               gradeID: grade.gradeID,
-//               score: grade.score
-//             }
-//           };
-//           updateLogData.push(data);
-//         }
-//       }
-//       Grade.findAndCountAll({
-//         where: {
-//           isUpdated: 1,
-//           showLog: 1
-//         }
-//       })
-//         .then(count => {
-//           updateLogData.sort((a, b) =>
-//             a.dateUpdated < b.dateUpdated ? 1 : -1
-//           );
-//           res.status(200).json({
-//             numOfPages: Math.ceil(updateLogData.length / pageSize),
-//             updateLog: updateLogData.slice(
-//               page * pageSize,
-//               page * pageSize + pageSize
-//             )
-//           });
-//         })
-//         .catch(err => {
-//           res.status(404);
-//         });
-//     } else {
-//       res.status(404).json({ msg: "Not found" });
-//     }
-//   }
-// );
+router.post(
+  "/deactivate",
+  passport.authenticate("admin", { session: false }),
+  (req, res) => {
+    const { accountID } = req.body;
+    UserAccount.findOne({ where: { accountID } }).then(account => {
+      if (account) {
+        account.destroy().then(() => {
+          res.status(200).json({ msg: "Account deleted successfully!" });
+        });
+      } else {
+        res.status(404).json({ msg: "User account not found!" });
+      }
+    });
+  }
+);
 
 // @route POST api/admin/getaccounts
 // @desc Get the list of accounts
@@ -358,10 +281,11 @@ router.post(
           users.slice(0, pageSize).forEach(async (user, key, arr) => {
             const keyID = user.accountID;
             const email = user.email;
-            const name =
-              utils.capitalize(user.firstName) +
-              " " +
-              utils.capitalize(user.lastName);
+            const name = `${utils.capitalize(
+              user.lastName
+            )}, ${utils.capitalize(user.firstName)} ${user.middleName
+              .charAt(0)
+              .toUpperCase()}.`;
             const position = utils.displayPosition(user.position);
             const imageUrl = user.imageUrl;
             const isActive = user.isActive;
@@ -395,7 +319,15 @@ router.post(
                 }
               })
                 .then(count => {
-                  accountData.sort((a, b) => (a.key > b.key ? 1 : -1));
+                  accountData.sort((a, b) => {
+                    if (a.name < b.name) {
+                      return -1;
+                    }
+                    if (a.name > b.name) {
+                      return 1;
+                    }
+                    return 0;
+                  });
                   res.status(200).json({
                     numOfPages: Math.ceil(count.count / pageSize),
                     accountList: accountData

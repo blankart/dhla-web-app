@@ -16,6 +16,7 @@ const Teacher = require("../models/Teacher");
 const Sequelize = require("sequelize");
 const Subject = require("../models/Subject");
 const Grade = require("../models/Grade");
+const ClassRecordStatus = require("../models/ClassRecordStatus");
 const Op = Sequelize.Op;
 
 // Utility Functions
@@ -75,6 +76,14 @@ const capitalize = string => {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 };
 
+exports.getAccountName = async accountID => {
+  return await UserAccount.findOne({ where: { accountID } }).then(user => {
+    return `${capitalize(user.lastName)}, ${capitalize(
+      user.firstName
+    )} ${user.middleName.charAt(0).toUpperCase()}.`;
+  });
+};
+
 exports.getTeacherName = async teacherID => {
   return await Teacher.findOne({
     where: {
@@ -86,9 +95,47 @@ exports.getTeacherName = async teacherID => {
         accountID: teacher.accountID
       }
     }).then(user => {
-      return capitalize(user.firstName) + " " + capitalize(user.lastName);
+      return `${capitalize(user.lastName)}, ${capitalize(
+        user.firstName
+      )} ${user.middleName.charAt(0).toUpperCase()}.`;
     });
   });
+};
+
+exports.getAccountIDBySubsectstudID = async subsectstudID => {
+  return await SubjectSectionStudent.findOne({ where: { subsectstudID } }).then(
+    async ss => {
+      if (ss) {
+        return await StudentSection.findOne({
+          where: { studsectID: ss.studsectID }
+        }).then(async ss => {
+          if (ss) {
+            return await Student.findOne({
+              where: { studentID: ss.studentID }
+            }).then(async s => {
+              if (s) {
+                return s.accountID;
+              }
+            });
+          }
+        });
+      }
+    }
+  );
+};
+
+exports.getNonacademicName = async facultyID => {
+  return await Nonacademic.findOne({ where: { facultyID } }).then(
+    nonacademic => {
+      return UserAccount.findOne({
+        where: { accountID: nonacademic.accountID }
+      }).then(user => {
+        return `${capitalize(user.lastName)}, ${capitalize(
+          user.firstName
+        )} ${user.middleName.charAt(0).toUpperCase()}.`;
+      });
+    }
+  );
 };
 
 exports.getStudentName = async studentID => {
@@ -102,7 +149,9 @@ exports.getStudentName = async studentID => {
         accountID: student.accountID
       }
     }).then(user => {
-      return capitalize(user.firstName) + " " + capitalize(user.lastName);
+      return `${capitalize(user.lastName)}, ${capitalize(
+        user.firstName
+      )} ${user.middleName.charAt(0).toUpperCase()}.`;
     });
   });
 };
@@ -177,8 +226,10 @@ exports.displayPosition = position => {
 exports.getActiveSY = async () => {
   return await SchoolYear.findOne({ where: { isActive: 1 } }).then(
     schoolYear => {
-      if (schoolYear) return schoolYear.schoolYearID;
-      else return 0;
+      if (schoolYear) {
+        const { schoolYearID, quarter } = schoolYear;
+        return { schoolYearID, quarter };
+      } else return { schoolYearID: 0, quarter: "Q1" };
     }
   );
 };
@@ -580,15 +631,24 @@ exports.getSubcompWsBySubsectstudIDAndSubcompIDAndQuarter = async ({
       let i = 0;
       let total = 0;
       let ps = 0;
+      let excused = 0;
       for (i = 0; i < grades.length; i++) {
-        const name = await this.getStudentNameBySubsectstudID(subsectstudID);
-        const subcompname = await this.getSubcomponentName(subcompID);
-        score = score + parseFloat(grades[i].score);
-        total = total + parseFloat(grades[i].total);
+        if (grades[i].attendance == "E") {
+          excused = excused + 1;
+        } else if (grades[i].attendance == "A") {
+          score = score + 0;
+          total = total + parseFloat(grades[i].total);
+        } else {
+          score = score + parseFloat(grades[i].score);
+          total = total + parseFloat(grades[i].total);
+        }
       }
-
       if (grades.length != 0) {
-        ps = (score / total) * 100;
+        if (grades.length == excused) {
+          ps = -1;
+        } else {
+          ps = (score / total) * 100;
+        }
       }
       return ps;
     }
@@ -596,12 +656,16 @@ exports.getSubcompWsBySubsectstudIDAndSubcompIDAndQuarter = async ({
 };
 
 exports.refreshStudentWeightedScoreBySubsectID = async subsectID => {
-  const { subjectID, classRecordID } = await SubjectSection.findOne({
+  const {
+    subjectID,
+    classRecordID,
+    subjectType
+  } = await SubjectSection.findOne({
     where: { subsectID }
   }).then(subsect => {
     if (subsect) {
-      const { subjectID, classRecordID } = subsect;
-      return { subjectID, classRecordID };
+      const { subjectID, classRecordID, subjectType } = subsect;
+      return { subjectID, classRecordID, subjectType };
     } else {
       return -1;
     }
@@ -611,7 +675,8 @@ exports.refreshStudentWeightedScoreBySubsectID = async subsectID => {
       if (subsectstud.length == 0) {
         return false;
       } else {
-        let q = ["Q1", "Q2", "Q3", "Q4"];
+        let q =
+          subjectType == "NON_SHS" ? ["Q1", "Q2", "Q3", "Q4"] : ["Q1", "Q2"];
         let subsectstudIDs = [];
         let i = 0;
         for (i = 0; i < subsectstud.length; i++) {
@@ -973,7 +1038,8 @@ exports.refreshStudentWeightedScoreBySubsectID = async subsectID => {
                             }).then(async sg => {
                               if (sg) {
                                 await this.studentGradesUpdate(
-                                  sg.studentGradesID
+                                  sg.studentGradesID,
+                                  subjectType
                                 );
                               }
                             });
@@ -1022,7 +1088,7 @@ exports.getSubjectIDBySubsectstudID = async subsectstudID => {
   );
 };
 
-exports.studentGradesUpdate = async studentGradesID => {
+exports.studentGradesUpdate = async (studentGradesID, subjectType) => {
   return await StudentGrades.findOne({ where: { studentGradesID } }).then(
     async sg => {
       if (sg) {
@@ -1163,48 +1229,77 @@ exports.studentGradesUpdate = async studentGradesID => {
         });
 
         if (parseFloat(q1TransmuGrade) != -1) {
-          await sg.update({ q1FinalGrade: Math.round(parseFloat(q1TransmuGrade)) });
+          await sg.update({
+            q1FinalGrade: Math.round(parseFloat(q1TransmuGrade))
+          });
         } else {
           await sg.update({ q1FinalGrade: -1 });
         }
 
         if (parseFloat(q2TransmuGrade) != -1) {
-          await sg.update({ q2FinalGrade: Math.round(parseFloat(q2TransmuGrade)) });
+          await sg.update({
+            q2FinalGrade: Math.round(parseFloat(q2TransmuGrade))
+          });
         } else {
           await sg.update({ q2FinalGrade: -1 });
         }
 
         if (parseFloat(q3TransmuGrade) != -1) {
-          await sg.update({ q3FinalGrade: Math.round(parseFloat(q3TransmuGrade)) });
+          await sg.update({
+            q3FinalGrade: Math.round(parseFloat(q3TransmuGrade))
+          });
         } else {
           await sg.update({ q3FinalGrade: -1 });
         }
 
         if (parseFloat(q4TransmuGrade) != -1) {
-          await sg.update({ q4FinalGrade: Math.round(parseFloat(q4TransmuGrade)) });
+          await sg.update({
+            q4FinalGrade: Math.round(parseFloat(q4TransmuGrade))
+          });
         } else {
           await sg.update({ q4FinalGrade: -1 });
         }
 
-        if (
-          parseFloat(q1TransmuGrade) != -1 &&
-          parseFloat(q2TransmuGrade) != -1 &&
-          parseFloat(q3TransmuGrade) != -1 &&
-          parseFloat(q4TransmuGrade) != -1
-        ) {
-          let ave =
-            (parseFloat(q1TransmuGrade) +
-              parseFloat(q2TransmuGrade) +
-              parseFloat(q3TransmuGrade) +
-              parseFloat(q4TransmuGrade)) /
-            4;
-          await sg.update({ ave });
+        if (subjectType == "NON_SHS") {
+          if (
+            parseFloat(q1TransmuGrade) != -1 &&
+            parseFloat(q2TransmuGrade) != -1 &&
+            parseFloat(q3TransmuGrade) != -1 &&
+            parseFloat(q4TransmuGrade) != -1
+          ) {
+            let ave =
+              (parseFloat(q1TransmuGrade) +
+                parseFloat(q2TransmuGrade) +
+                parseFloat(q3TransmuGrade) +
+                parseFloat(q4TransmuGrade)) /
+              4;
+            await sg.update({ ave });
+          } else {
+            await sg.update({ ave: -1 });
+          }
         } else {
-          await sg.update({ ave: -1 });
+          if (
+            parseFloat(q1TransmuGrade) != -1 &&
+            parseFloat(q2TransmuGrade) != -1
+          ) {
+            let ave =
+              (parseFloat(q1TransmuGrade) + parseFloat(q2TransmuGrade)) / 2;
+            await sg.update({ ave });
+          } else {
+            await sg.update({ ave: -1 });
+          }
         }
       }
     }
   );
+};
+
+exports.getSubjectTypeByClassRecordID = async classRecordID => {
+  return await SubjectSection.findOne({ where: { classRecordID } }).then(ss => {
+    if (ss) {
+      return ss.subjectType;
+    }
+  });
 };
 
 exports.studentWeightedScoreUpdate = async weightedScoreID => {
@@ -1266,15 +1361,15 @@ exports.studentWeightedScoreUpdate = async weightedScoreID => {
           let transmuGrade50 =
             75 +
             (parseFloat(sws.actualGrade) - parseFloat(50)) /
-              ((100-parseFloat(50)) / 25);
+              ((100 - parseFloat(50)) / 25);
           let transmuGrade55 =
             75 +
             (parseFloat(sws.actualGrade) - parseFloat(55)) /
-              ((100-(parseFloat(55))) / 25);
+              ((100 - parseFloat(55)) / 25);
           let transmuGrade60 =
             75 +
             (parseFloat(sws.actualGrade) - parseFloat(60)) /
-              ((100-parseFloat(60)) / 25);
+              ((100 - parseFloat(60)) / 25);
 
           if (sws.actualGrade != -1) {
             await sws.update({ transmutedGrade50: transmuGrade50 });

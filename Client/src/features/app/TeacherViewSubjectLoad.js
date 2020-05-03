@@ -126,7 +126,7 @@ export class TeacherViewSubjectLoad extends Component {
           <Table.Col>{displayGradeLevel(value.gradeLevel)}</Table.Col>
           <Table.Col>{value.sectionName}</Table.Col>
           <Table.Col>
-            <Link to={`/viewsubjectload/${value.key}/Q1`}>
+            <Link to={`/viewsubjectload/${value.key}/${this.props.quarter}`}>
               <Button pill size="sm" icon="user" color="primary">
                 View information
               </Button>

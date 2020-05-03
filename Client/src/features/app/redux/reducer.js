@@ -34,6 +34,15 @@ import { reducer as addNewRecordReducer } from './addNewRecord';
 import { reducer as deleteRecordReducer } from './deleteRecord';
 import { reducer as changeTransmutationReducer } from './changeTransmutation';
 import { reducer as editRecordReducer } from './editRecord';
+import { reducer as setDeadlineAllReducer } from './setDeadlineAll';
+import { reducer as setDeadlineReducer } from './setDeadline';
+import { reducer as removeDeadlineReducer } from './removeDeadline';
+import { reducer as createSchoolYearReducer } from './createSchoolYear';
+import { reducer as changeQuarterSyReducer } from './changeQuarterSy';
+import { reducer as endSchoolYearReducer } from './endSchoolYear';
+import { reducer as addSubjectSectionStudentBulkReducer } from './addSubjectSectionStudentBulk';
+import { reducer as submitClassRecordReducer } from './submitClassRecord';
+import { reducer as postClassRecordReducer } from './postClassRecord';
 
 const reducers = [
   setCurrentUserReducer,
@@ -71,6 +80,15 @@ const reducers = [
   deleteRecordReducer,
   changeTransmutationReducer,
   editRecordReducer,
+  setDeadlineAllReducer,
+  setDeadlineReducer,
+  removeDeadlineReducer,
+  createSchoolYearReducer,
+  changeQuarterSyReducer,
+  endSchoolYearReducer,
+  addSubjectSectionStudentBulkReducer,
+  submitClassRecordReducer,
+  postClassRecordReducer,
 ];
 
 export default function reducer(state = initialState, action) {

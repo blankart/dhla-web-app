@@ -7,7 +7,7 @@ import * as actions from './actions';
 import axios from 'axios';
 import { message } from 'antd';
 
-export const createStudentSection = data => dispatch => {
+export const createStudentSection = (data, setState, subsect) => dispatch => {
   dispatch(actions.setLoading(true));
   dispatch({ type: APP_CREATE_STUDENT_SECTION });
   axios
@@ -16,6 +16,9 @@ export const createStudentSection = data => dispatch => {
       dispatch(actions.setLoading(false));
       message.success(`Student added successfully!`);
       dispatch({ type: APP_GET_ERRORS, payload: {} });
+      if (subsect.length != 0) {
+        setState({ showModal: true, selectedStudSectID: res.data.studsectID, selectedSubsect: [] });
+      }
     })
     .catch(err => {
       dispatch(actions.setLoading(false));

@@ -21,6 +21,7 @@ import {
   Alert,
 } from 'tabler-react';
 import { Link } from 'react-router-dom';
+import ViewEditLog from './ViewEditLog';
 const { Option } = AutoComplete;
 
 export class TeacherManageGrades extends Component {
@@ -57,6 +58,9 @@ export class TeacherManageGrades extends Component {
       hasErrors: true,
       quarter: 'Q1',
       currentUpdated: '',
+      subjectType: '',
+      locked: true,
+      status: '',
     };
 
     this.showAddNewSubcomponent = this.showAddNewSubcomponent.bind(this);
@@ -66,28 +70,61 @@ export class TeacherManageGrades extends Component {
     this.deleteSubcomponent = this.deleteSubcomponent.bind(this);
     this.onReset = this.onReset.bind(this);
     this.editSubcomponent = this.editSubcomponent.bind(this);
+    this.confirmSubmit = this.confirmSubmit.bind(this);
   }
 
+  confirmSubmit = () => {
+    Modal.confirm({
+      title: 'Are you sure you want to submit this class record?',
+      content: 'Once submitted, it cannot be undone.',
+      okText: 'Submit',
+      cancelText: 'Cancel',
+      onOk: () => {
+        this.props.actions.submitClassRecord({
+          classRecordID: this.state.classRecordID,
+          quarter: this.state.quarter,
+        });
+      },
+    });
+  };
+
   editSubcomponent(payload) {
-    this.props.actions.editSubcomponent({ payload });
+    this.props.actions.editSubcomponent(
+      {
+        payload,
+        classRecordID: this.state.classRecordID,
+        quarter: this.state.quarter,
+      },
+      'Teacher',
+    );
   }
 
   deleteSubcomponent() {
     if (this.state.deleteText != 'DELETE') {
       message.error('You must type DELETE to confirm');
     } else {
-      this.props.actions.deleteSubcomponent({ subcompID: this.state.selectedSubcompID });
+      this.props.actions.deleteSubcomponent(
+        {
+          subcompID: this.state.selectedSubcompID,
+          classRecordID: this.state.classRecordID,
+          quarter: this.state.quarter,
+        },
+        'Teacher',
+      );
       this.setState({ showConfirmDelete: false });
     }
   }
 
   addNewSubcomponent() {
-    this.props.actions.addNewSubcomponent({
-      classRecordID: this.state.classRecordID,
-      name: this.state.keyword,
-      componentID: this.state.selectedCompID,
-      quarter: this.props.quarter,
-    });
+    this.props.actions.addNewSubcomponent(
+      {
+        classRecordID: this.state.classRecordID,
+        name: this.state.keyword,
+        componentID: this.state.selectedCompID,
+        quarter: this.props.quarter,
+      },
+      'Teacher',
+    );
     this.setState({ showAddNewSubcomponent: false });
   }
 
@@ -104,27 +141,46 @@ export class TeacherManageGrades extends Component {
   }
 
   componentDidMount() {
+    this.setState({ isLoading: true });
     this.props.actions.getErrors({});
-    axios
-      .post('api/teacher/getcomponents', {
-        subsectID: this.props.subsectID,
-        quarter: this.props.quarter,
-      })
-      .then(res => {
-        this.setState({
-          isLoading: false,
-          sectionName: res.data.sectionName,
-          subjectName: res.data.subjectName,
-          schoolYear: res.data.schoolYear,
-          subjectCode: res.data.subjectCode,
-          classRecordID: res.data.classRecordID,
-          faData: res.data.FA,
-          wwData: res.data.WW,
-          ptData: res.data.PT,
-          qeData: res.data.QE,
+    axios.post('api/teacher/getsubjecttype', { subsectID: this.props.subsectID }).then(res2 => {
+      axios
+        .post('api/teacher/getcomponents', {
+          subsectID: this.props.subsectID,
           quarter: this.props.quarter,
+        })
+        .then(res => {
+          axios
+            .post('api/teacher/ifclassrecordlocked', {
+              classRecordID: res.data.classRecordID,
+              quarter: this.props.quarter,
+            })
+            .then(res3 => {
+              this.setState(
+                {
+                  locked: res3.data.locked,
+                },
+                () => {
+                  this.setState({
+                    sectionName: res.data.sectionName,
+                    subjectName: res.data.subjectName,
+                    schoolYear: res.data.schoolYear,
+                    subjectCode: res.data.subjectCode,
+                    classRecordID: res.data.classRecordID,
+                    faData: res.data.FA,
+                    wwData: res.data.WW,
+                    ptData: res.data.PT,
+                    qeData: res.data.QE,
+                    quarter: this.props.quarter,
+                    subjectType: res2.data.subjectType,
+                    isLoading: false,
+                    status: res3.data.status,
+                  });
+                },
+              );
+            });
         });
-      });
+    });
   }
 
   onReset(key) {
@@ -201,45 +257,51 @@ export class TeacherManageGrades extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!nextProps.app.showLoading && Object.keys(nextProps.app.errors).length == 0)
-      axios
-        .post('api/teacher/getcomponents', {
-          subsectID: this.props.subsectID,
-          quarter: this.props.quarter,
-        })
-        .then(res => {
-          this.setState({
-            isLoading: false,
-            sectionName: res.data.sectionName,
-            subjectName: res.data.subjectName,
-            schoolYear: res.data.schoolYear,
-            subjectCode: res.data.subjectCode,
-            classRecordID: res.data.classRecordID,
-            faData: res.data.FA,
-            wwData: res.data.WW,
-            ptData: res.data.PT,
-            qeData: res.data.QE,
+    if (!nextProps.app.showLoading && Object.keys(nextProps.app.errors).length == 0) {
+      this.setState({ isLoading: true });
+      axios.post('api/teacher/getsubjecttype', { subsectID: this.props.subsectID }).then(res2 => {
+        axios
+          .post('api/teacher/getcomponents', {
+            subsectID: this.props.subsectID,
+            quarter: this.props.quarter,
+          })
+          .then(res => {
+            axios
+              .post('api/teacher/ifclassrecordlocked', {
+                classRecordID: res.data.classRecordID,
+                quarter: this.props.quarter,
+              })
+              .then(res3 => {
+                this.setState(
+                  {
+                    locked: res3.data.locked,
+                  },
+                  () => {
+                    this.setState({
+                      sectionName: res.data.sectionName,
+                      subjectName: res.data.subjectName,
+                      schoolYear: res.data.schoolYear,
+                      subjectCode: res.data.subjectCode,
+                      classRecordID: res.data.classRecordID,
+                      faData: res.data.FA,
+                      wwData: res.data.WW,
+                      ptData: res.data.PT,
+                      qeData: res.data.QE,
+                      quarter: this.props.quarter,
+                      subjectType: res2.data.subjectType,
+                      isLoading: false,
+                      status: res3.data.status,
+                    });
+                  },
+                );
+              });
           });
-          switch (this.state.currentUpdated) {
-            case 'FA': {
-              this.setState({ editFA: false });
-              break;
-            }
-            case 'WW': {
-              this.setState({ editWW: false });
-              break;
-            }
-            case 'PT': {
-              this.setState({ editPT: false });
-              break;
-            }
-            default:
-              break;
-          }
-        });
+      });
+    }
   }
 
   render() {
+    const { locked, status } = this.state;
     let displayFaData = [];
     let displayWwData = [];
     let displayPtData = [];
@@ -287,21 +349,23 @@ export class TeacherManageGrades extends Component {
               <Table.Col>{value.name}</Table.Col>
               <Table.Col>{value.compWeight}%</Table.Col>
               <Table.Col alignContent="center">
-                <span>
-                  <Button
-                    icon="trash"
-                    color="danger"
-                    onClick={() =>
-                      this.setState({
-                        selectedSubcompID: value.subcompID,
-                        showConfirmDelete: true,
-                        deleteText: '',
-                      })
-                    }
-                    pill
-                    size="sm"
-                  ></Button>
-                </span>
+                {!locked && (
+                  <span>
+                    <Button
+                      icon="trash"
+                      color="danger"
+                      onClick={() =>
+                        this.setState({
+                          selectedSubcompID: value.subcompID,
+                          showConfirmDelete: true,
+                          deleteText: '',
+                        })
+                      }
+                      pill
+                      size="sm"
+                    ></Button>
+                  </span>
+                )}
               </Table.Col>
             </Table.Row>,
           );
@@ -349,21 +413,23 @@ export class TeacherManageGrades extends Component {
               <Table.Col>{value.name}</Table.Col>
               <Table.Col>{value.compWeight}%</Table.Col>
               <Table.Col alignContent="center">
-                <span>
-                  <Button
-                    icon="trash"
-                    color="danger"
-                    onClick={() =>
-                      this.setState({
-                        selectedSubcompID: value.subcompID,
-                        showConfirmDelete: true,
-                        deleteText: '',
-                      })
-                    }
-                    pill
-                    size="sm"
-                  ></Button>
-                </span>
+                {!locked && (
+                  <span>
+                    <Button
+                      icon="trash"
+                      color="danger"
+                      onClick={() =>
+                        this.setState({
+                          selectedSubcompID: value.subcompID,
+                          showConfirmDelete: true,
+                          deleteText: '',
+                        })
+                      }
+                      pill
+                      size="sm"
+                    ></Button>
+                  </span>
+                )}
               </Table.Col>
             </Table.Row>,
           );
@@ -411,21 +477,23 @@ export class TeacherManageGrades extends Component {
               <Table.Col>{value.name}</Table.Col>
               <Table.Col>{value.compWeight}%</Table.Col>
               <Table.Col alignContent="center">
-                <span>
-                  <Button
-                    icon="trash"
-                    color="danger"
-                    onClick={() =>
-                      this.setState({
-                        selectedSubcompID: value.subcompID,
-                        showConfirmDelete: true,
-                        deleteText: '',
-                      })
-                    }
-                    pill
-                    size="sm"
-                  ></Button>
-                </span>
+                {!locked && (
+                  <span>
+                    <Button
+                      icon="trash"
+                      color="danger"
+                      onClick={() =>
+                        this.setState({
+                          selectedSubcompID: value.subcompID,
+                          showConfirmDelete: true,
+                          deleteText: '',
+                        })
+                      }
+                      pill
+                      size="sm"
+                    ></Button>
+                  </span>
+                )}
               </Table.Col>
             </Table.Row>,
           );
@@ -553,6 +621,58 @@ export class TeacherManageGrades extends Component {
                         </Breadcrumb.Item>
                       </Breadcrumb>
                     </Card.Title>
+                    <Grid.Row>
+                      <Container>
+                        {status !== '' && (
+                          <Alert
+                            type={
+                              status == 'E'
+                                ? 'secondary'
+                                : status == 'L'
+                                ? 'danger'
+                                : status == 'D'
+                                ? 'warning'
+                                : 'success'
+                            }
+                            icon={
+                              status == 'E'
+                                ? 'info'
+                                : status == 'L'
+                                ? 'lock'
+                                : status == 'D'
+                                ? 'alert-triangle'
+                                : 'check'
+                            }
+                          >
+                            {status == 'E' && (
+                              <React.Fragment>
+                                <b>Note: </b>This class record is now ready for encoding. You may
+                                now input the students' scores.
+                              </React.Fragment>
+                            )}
+                            {status == 'L' && (
+                              <React.Fragment>
+                                <b>Note: </b>This class record is currently locked.
+                              </React.Fragment>
+                            )}
+                            {status == 'D' && (
+                              <React.Fragment>
+                                <b>Note: </b>This class record is already submitted and will now go
+                                through the deliberation process. Please contact the school
+                                registrar for more information. Changes made by the registrar will
+                                displayed in the class record update log.
+                              </React.Fragment>
+                            )}
+                            {status == 'F' && (
+                              <React.Fragment>
+                                <b>Note: </b>This class record is now posted. Students and parents
+                                may now view the grades.
+                              </React.Fragment>
+                            )}
+                          </Alert>
+                        )}
+                      </Container>
+                    </Grid.Row>
                     <Card.Title>
                       <Header.H3>
                         {this.state.subjectCode} - {this.state.subjectName}
@@ -560,7 +680,13 @@ export class TeacherManageGrades extends Component {
                     </Card.Title>
                     <Card.Title>
                       <Text.Small>
-                        {this.state.sectionName} {this.props.quarter} S.Y. {this.state.schoolYear}
+                        {this.state.sectionName}{' '}
+                        {this.state.subjectType == 'NON_SHS'
+                          ? this.props.quarter
+                          : this.props.quarter == 'Q1' || this.props.quarter == 'Q2'
+                          ? 'FIRST SEMESTER'
+                          : 'SECOND SEMESTER'}{' '}
+                        S.Y. {this.state.schoolYear}
                       </Text.Small>
                       <Grid.Row>
                         <Grid.Col xs={12} sm={12} md={3}>
@@ -570,15 +696,24 @@ export class TeacherManageGrades extends Component {
                             }}
                             value={this.state.quarter}
                           >
-                            <option>Q1</option>
-                            <option>Q2</option>
-                            <option>Q3</option>
-                            <option>Q4</option>
+                            {this.state.subjectType == 'NON_SHS' ? (
+                              <React.Fragment>
+                                <option>Q1</option>
+                                <option>Q2</option>
+                                <option>Q3</option>
+                                <option>Q4</option>
+                              </React.Fragment>
+                            ) : (
+                              <React.Fragment>
+                                <option value={'Q1'}>Midterm</option>
+                                <option value={'Q2'}>Finals</option>
+                              </React.Fragment>
+                            )}
                           </Form.Select>
                         </Grid.Col>
                         <Grid.Col xs={12} sm={12} md={3}>
                           <a href={`/managegrades/${this.props.subsectID}/${this.state.quarter}`}>
-                            <Button color="primary">Change Quarter</Button>
+                            <Button color="primary">Change</Button>
                           </a>
                         </Grid.Col>
                         <Grid.Col xs={12} sm={12} md={6}>
@@ -587,7 +722,13 @@ export class TeacherManageGrades extends Component {
                               to={`/summaryreport/${this.props.subsectID}/${this.state.quarter}`}
                             >
                               <Button color="success" icon="file">
-                                View {this.state.quarter} Summary Report
+                                View{' '}
+                                {this.state.subjectType == 'NON_SHS'
+                                  ? this.props.quarter
+                                  : this.props.quarter == 'Q1' || this.props.quarter == 'Q3'
+                                  ? 'MIDTERM'
+                                  : 'FINALS'}{' '}
+                                Summary Report
                               </Button>
                             </Link>
                           </Button.List>
@@ -598,7 +739,7 @@ export class TeacherManageGrades extends Component {
                 )}
               </Card.Body>
               {this.state.isLoading ? (
-                <Spin spinning={true}></Spin>
+                <Spin spinning={this.state.isLoading}></Spin>
               ) : (
                 <Card.Body>
                   <Grid.Row>
@@ -610,40 +751,300 @@ export class TeacherManageGrades extends Component {
                       </Alert>
                     )}
                   </Grid.Row>
-                  <Grid.Row>
-                    <Grid.Col sm={12} xs={12} md={6}>
-                      <Spin spinning={this.state.faLoading}>
-                        <Card statusColor={this.state.editFA ? 'yellow' : 'blue'}>
+
+                  <Spin spinning={this.state.isLoading}>
+                    <Grid.Row>
+                      <Grid.Col sm={12} xs={12} md={6}>
+                        <Spin spinning={this.state.faLoading}>
+                          <Card statusColor={this.state.editFA ? 'yellow' : 'blue'}>
+                            <Card.Header>
+                              <Card.Title>
+                                Formative Assessment - {this.state.faData.weight}%
+                              </Card.Title>
+                              <Card.Options>
+                                {this.state.editFA ? (
+                                  ''
+                                ) : (
+                                  <Button.List>
+                                    <Button color="info" size="sm">
+                                      <Link
+                                        style={{ color: 'white' }}
+                                        to={`/managegrades/${this.props.subsectID}/${this.props.quarter}/${this.state.faData.componentID}`}
+                                      >
+                                        View
+                                      </Link>
+                                    </Button>
+                                    {!locked && (
+                                      <Button
+                                        color="primary"
+                                        size="sm"
+                                        onClick={() => {
+                                          this.setState({
+                                            editFA: true,
+                                          });
+                                        }}
+                                      >
+                                        Edit
+                                      </Button>
+                                    )}
+                                  </Button.List>
+                                )}
+                              </Card.Options>
+                            </Card.Header>
+                            <Card.Body>
+                              <Table responsive={true}>
+                                <Table.Header>
+                                  <Table.ColHeader>Subcomponent Name</Table.ColHeader>
+                                  <Table.ColHeader>Weight</Table.ColHeader>
+                                  <Table.ColHeader>Actions</Table.ColHeader>
+                                </Table.Header>
+                                <Table.Body>{displayFaData}</Table.Body>
+                              </Table>
+                            </Card.Body>
+                            {!locked && (
+                              <Card.Footer>
+                                {this.state.editFA ? (
+                                  <Button.List align="right">
+                                    <Button
+                                      color="info"
+                                      size="sm"
+                                      onClick={() => {
+                                        this.setState({ editFA: false });
+                                        this.onReset('FA');
+                                      }}
+                                    >
+                                      Back
+                                    </Button>
+                                    <Button
+                                      color="primary"
+                                      size="sm"
+                                      onClick={() => {
+                                        this.setState({ currentUpdated: 'FA' }, () => {
+                                          this.editSubcomponent(this.state.faData.subcomponents);
+                                        });
+                                      }}
+                                    >
+                                      Save
+                                    </Button>
+                                  </Button.List>
+                                ) : (
+                                  <Button.List align="right">
+                                    <Button
+                                      color="primary"
+                                      size="sm"
+                                      icon="plus"
+                                      onClick={() =>
+                                        this.showAddNewSubcomponent(this.state.faData.componentID)
+                                      }
+                                    >
+                                      Add New Subcomponent
+                                    </Button>
+                                  </Button.List>
+                                )}
+                              </Card.Footer>
+                            )}
+                          </Card>
+                        </Spin>
+                      </Grid.Col>
+                      <Grid.Col sm={12} xs={12} md={6}>
+                        <Spin spinning={this.state.wwLoading}>
+                          <Card statusColor={this.state.editWW ? 'yellow' : 'blue'}>
+                            <Card.Header>
+                              <Card.Title>Written Works - {this.state.wwData.weight}%</Card.Title>
+                              <Card.Options>
+                                {this.state.editWW ? (
+                                  ''
+                                ) : (
+                                  <Button.List>
+                                    <Button color="info" size="sm">
+                                      <Link
+                                        style={{ color: 'white' }}
+                                        to={`/managegrades/${this.props.subsectID}/${this.props.quarter}/${this.state.wwData.componentID}`}
+                                      >
+                                        View
+                                      </Link>
+                                    </Button>
+                                    {!locked && (
+                                      <Button
+                                        color="primary"
+                                        size="sm"
+                                        onClick={() => {
+                                          this.setState({
+                                            editWW: true,
+                                          });
+                                        }}
+                                      >
+                                        Edit
+                                      </Button>
+                                    )}
+                                  </Button.List>
+                                )}
+                              </Card.Options>
+                            </Card.Header>
+                            <Card.Body>
+                              <Table responsive={true}>
+                                <Table.Header>
+                                  <Table.ColHeader>Subcomponent Name</Table.ColHeader>
+                                  <Table.ColHeader>Weight</Table.ColHeader>
+                                  <Table.ColHeader>Actions</Table.ColHeader>
+                                </Table.Header>
+                                <Table.Body>{displayWwData}</Table.Body>
+                              </Table>
+                            </Card.Body>
+                            {!locked && (
+                              <Card.Footer>
+                                {this.state.editWW ? (
+                                  <Button.List align="right">
+                                    <Button
+                                      color="info"
+                                      size="sm"
+                                      onClick={() => {
+                                        this.setState({ editWW: false });
+                                        this.onReset('WW');
+                                      }}
+                                    >
+                                      Back
+                                    </Button>
+                                    <Button
+                                      color="primary"
+                                      size="sm"
+                                      onClick={() => {
+                                        this.setState({ currentUpdated: 'WW' }, () => {
+                                          this.editSubcomponent(this.state.wwData.subcomponents);
+                                        });
+                                      }}
+                                    >
+                                      Save
+                                    </Button>
+                                  </Button.List>
+                                ) : (
+                                  <Button.List align="right">
+                                    <Button
+                                      color="primary"
+                                      size="sm"
+                                      icon="plus"
+                                      onClick={() =>
+                                        this.showAddNewSubcomponent(this.state.wwData.componentID)
+                                      }
+                                    >
+                                      Add New Subcomponent
+                                    </Button>
+                                  </Button.List>
+                                )}
+                              </Card.Footer>
+                            )}
+                          </Card>
+                        </Spin>
+                      </Grid.Col>
+                      <Grid.Col sm={12} xs={12} md={6}>
+                        <Spin spinning={this.state.ptLoading}>
+                          <Card statusColor={this.state.editPT ? 'yellow' : 'blue'}>
+                            <Card.Header>
+                              <Card.Title>
+                                Performance Task - {this.state.ptData.weight}%
+                              </Card.Title>
+                              <Card.Options>
+                                {this.state.editPT ? (
+                                  ''
+                                ) : (
+                                  <Button.List>
+                                    <Button color="info" size="sm">
+                                      <Link
+                                        style={{ color: 'white' }}
+                                        to={`/managegrades/${this.props.subsectID}/${this.props.quarter}/${this.state.ptData.componentID}`}
+                                      >
+                                        View
+                                      </Link>
+                                    </Button>
+                                    {!locked && (
+                                      <Button
+                                        color="primary"
+                                        size="sm"
+                                        onClick={() => {
+                                          this.setState({
+                                            editPT: true,
+                                          });
+                                        }}
+                                      >
+                                        Edit
+                                      </Button>
+                                    )}
+                                  </Button.List>
+                                )}
+                              </Card.Options>
+                            </Card.Header>
+                            <Card.Body>
+                              <Table responsive={true}>
+                                <Table.Header>
+                                  <Table.ColHeader>Subcomponent Name</Table.ColHeader>
+                                  <Table.ColHeader>Weight</Table.ColHeader>
+                                  <Table.ColHeader>Actions</Table.ColHeader>
+                                </Table.Header>
+                                <Table.Body>{displayPtData}</Table.Body>
+                              </Table>
+                            </Card.Body>
+                            {!locked && (
+                              <Card.Footer>
+                                {this.state.editPT ? (
+                                  <Button.List align="right">
+                                    <Button
+                                      color="info"
+                                      size="sm"
+                                      onClick={() => {
+                                        this.setState({ editPT: false });
+                                        this.onReset('PT');
+                                      }}
+                                    >
+                                      Back
+                                    </Button>
+                                    <Button
+                                      color="primary"
+                                      size="sm"
+                                      onClick={() => {
+                                        this.setState({ currentUpdated: 'PT' }, () => {
+                                          this.editSubcomponent(this.state.ptData.subcomponents);
+                                        });
+                                      }}
+                                    >
+                                      Save
+                                    </Button>
+                                  </Button.List>
+                                ) : (
+                                  <Button.List align="right">
+                                    <Button
+                                      color="primary"
+                                      size="sm"
+                                      icon="plus"
+                                      onClick={() =>
+                                        this.showAddNewSubcomponent(this.state.ptData.componentID)
+                                      }
+                                    >
+                                      Add New Subcomponent
+                                    </Button>
+                                  </Button.List>
+                                )}
+                              </Card.Footer>
+                            )}
+                          </Card>
+                        </Spin>
+                      </Grid.Col>
+                      <Grid.Col sm={12} xs={12} md={6}>
+                        <Card statusColor="blue">
                           <Card.Header>
                             <Card.Title>
-                              Formative Assessment - {this.state.faData.weight}%
+                              Quarterly Assessment - {this.state.qeData.weight}%
                             </Card.Title>
                             <Card.Options>
-                              {this.state.editFA ? (
-                                ''
-                              ) : (
-                                <Button.List>
-                                  <Button color="info" size="sm">
-                                    <Link
-                                      style={{ color: 'white' }}
-                                      to={`/managegrades/${this.props.subsectID}/${this.props.quarter}/${this.state.faData.componentID}`}
-                                    >
-                                      View
-                                    </Link>
-                                  </Button>
-                                  <Button
-                                    color="primary"
-                                    size="sm"
-                                    onClick={() => {
-                                      this.setState({
-                                        editFA: true,
-                                      });
-                                    }}
+                              <Button.List>
+                                <Button color="info" size="sm">
+                                  <Link
+                                    style={{ color: 'white' }}
+                                    to={`/managegrades/${this.props.subsectID}/${this.props.quarter}/${this.state.qeData.componentID}`}
                                   >
-                                    Edit
-                                  </Button>
-                                </Button.List>
-                              )}
+                                    View
+                                  </Link>
+                                </Button>
+                              </Button.List>
                             </Card.Options>
                           </Card.Header>
                           <Card.Body>
@@ -651,259 +1052,30 @@ export class TeacherManageGrades extends Component {
                               <Table.Header>
                                 <Table.ColHeader>Subcomponent Name</Table.ColHeader>
                                 <Table.ColHeader>Weight</Table.ColHeader>
-                                <Table.ColHeader>Actions</Table.ColHeader>
                               </Table.Header>
-                              <Table.Body>{displayFaData}</Table.Body>
+                              <Table.Body>{displayQeData}</Table.Body>
                             </Table>
                           </Card.Body>
-                          <Card.Footer>
-                            {this.state.editFA ? (
-                              <Button.List align="right">
-                                <Button
-                                  color="info"
-                                  size="sm"
-                                  onClick={() => {
-                                    this.setState({ editFA: false });
-                                    this.onReset('FA');
-                                  }}
-                                >
-                                  Back
-                                </Button>
-                                <Button
-                                  color="primary"
-                                  size="sm"
-                                  onClick={() => {
-                                    this.setState({ currentUpdated: 'FA' }, () => {
-                                      this.editSubcomponent(this.state.faData.subcomponents);
-                                    });
-                                  }}
-                                >
-                                  Save
-                                </Button>
-                              </Button.List>
-                            ) : (
-                              <Button.List align="right">
-                                <Button
-                                  color="primary"
-                                  size="sm"
-                                  icon="plus"
-                                  onClick={() =>
-                                    this.showAddNewSubcomponent(this.state.faData.componentID)
-                                  }
-                                >
-                                  Add New Subcomponent
-                                </Button>
-                              </Button.List>
-                            )}
-                          </Card.Footer>
                         </Card>
-                      </Spin>
-                    </Grid.Col>
-                    <Grid.Col sm={12} xs={12} md={6}>
-                      <Spin spinning={this.state.wwLoading}>
-                        <Card statusColor={this.state.editWW ? 'yellow' : 'blue'}>
-                          <Card.Header>
-                            <Card.Title>Written Works - {this.state.wwData.weight}%</Card.Title>
-                            <Card.Options>
-                              {this.state.editWW ? (
-                                ''
-                              ) : (
-                                <Button.List>
-                                  <Button color="info" size="sm">
-                                    <Link
-                                      style={{ color: 'white' }}
-                                      to={`/managegrades/${this.props.subsectID}/${this.props.quarter}/${this.state.wwData.componentID}`}
-                                    >
-                                      View
-                                    </Link>
-                                  </Button>
-                                  <Button
-                                    color="primary"
-                                    size="sm"
-                                    onClick={() => {
-                                      this.setState({
-                                        editWW: true,
-                                      });
-                                    }}
-                                  >
-                                    Edit
-                                  </Button>
-                                </Button.List>
-                              )}
-                            </Card.Options>
-                          </Card.Header>
-                          <Card.Body>
-                            <Table responsive={true}>
-                              <Table.Header>
-                                <Table.ColHeader>Subcomponent Name</Table.ColHeader>
-                                <Table.ColHeader>Weight</Table.ColHeader>
-                                <Table.ColHeader>Actions</Table.ColHeader>
-                              </Table.Header>
-                              <Table.Body>{displayWwData}</Table.Body>
-                            </Table>
-                          </Card.Body>
-                          <Card.Footer>
-                            {this.state.editWW ? (
-                              <Button.List align="right">
-                                <Button
-                                  color="info"
-                                  size="sm"
-                                  onClick={() => {
-                                    this.setState({ editWW: false });
-                                    this.onReset('WW');
-                                  }}
-                                >
-                                  Back
-                                </Button>
-                                <Button
-                                  color="primary"
-                                  size="sm"
-                                  onClick={() => {
-                                    this.setState({ currentUpdated: 'WW' }, () => {
-                                      this.editSubcomponent(this.state.wwData.subcomponents);
-                                    });
-                                  }}
-                                >
-                                  Save
-                                </Button>
-                              </Button.List>
-                            ) : (
-                              <Button.List align="right">
-                                <Button
-                                  color="primary"
-                                  size="sm"
-                                  icon="plus"
-                                  onClick={() =>
-                                    this.showAddNewSubcomponent(this.state.wwData.componentID)
-                                  }
-                                >
-                                  Add New Subcomponent
-                                </Button>
-                              </Button.List>
-                            )}
-                          </Card.Footer>
-                        </Card>
-                      </Spin>
-                    </Grid.Col>
-                    <Grid.Col sm={12} xs={12} md={6}>
-                      <Spin spinning={this.state.ptLoading}>
-                        <Card statusColor={this.state.editPT ? 'yellow' : 'blue'}>
-                          <Card.Header>
-                            <Card.Title>Performance Task - {this.state.ptData.weight}%</Card.Title>
-                            <Card.Options>
-                              {this.state.editPT ? (
-                                ''
-                              ) : (
-                                <Button.List>
-                                  <Button color="info" size="sm">
-                                    <Link
-                                      style={{ color: 'white' }}
-                                      to={`/managegrades/${this.props.subsectID}/${this.props.quarter}/${this.state.ptData.componentID}`}
-                                    >
-                                      View
-                                    </Link>
-                                  </Button>
-                                  <Button
-                                    color="primary"
-                                    size="sm"
-                                    onClick={() => {
-                                      this.setState({
-                                        editPT: true,
-                                      });
-                                    }}
-                                  >
-                                    Edit
-                                  </Button>
-                                </Button.List>
-                              )}
-                            </Card.Options>
-                          </Card.Header>
-                          <Card.Body>
-                            <Table responsive={true}>
-                              <Table.Header>
-                                <Table.ColHeader>Subcomponent Name</Table.ColHeader>
-                                <Table.ColHeader>Weight</Table.ColHeader>
-                                <Table.ColHeader>Actions</Table.ColHeader>
-                              </Table.Header>
-                              <Table.Body>{displayPtData}</Table.Body>
-                            </Table>
-                          </Card.Body>
-                          <Card.Footer>
-                            {this.state.editPT ? (
-                              <Button.List align="right">
-                                <Button
-                                  color="info"
-                                  size="sm"
-                                  onClick={() => {
-                                    this.setState({ editPT: false });
-                                    this.onReset('PT');
-                                  }}
-                                >
-                                  Back
-                                </Button>
-                                <Button
-                                  color="primary"
-                                  size="sm"
-                                  onClick={() => {
-                                    this.setState({ currentUpdated: 'PT' }, () => {
-                                      this.editSubcomponent(this.state.ptData.subcomponents);
-                                    });
-                                  }}
-                                >
-                                  Save
-                                </Button>
-                              </Button.List>
-                            ) : (
-                              <Button.List align="right">
-                                <Button
-                                  color="primary"
-                                  size="sm"
-                                  icon="plus"
-                                  onClick={() =>
-                                    this.showAddNewSubcomponent(this.state.ptData.componentID)
-                                  }
-                                >
-                                  Add New Subcomponent
-                                </Button>
-                              </Button.List>
-                            )}
-                          </Card.Footer>
-                        </Card>
-                      </Spin>
-                    </Grid.Col>
-                    <Grid.Col sm={12} xs={12} md={6}>
-                      <Card statusColor="blue">
-                        <Card.Header>
-                          <Card.Title>
-                            Quarterly Assessment - {this.state.qeData.weight}%
-                          </Card.Title>
-                          <Card.Options>
-                            <Button.List>
-                              <Button color="info" size="sm">
-                                <Link
-                                  style={{ color: 'white' }}
-                                  to={`/managegrades/${this.props.subsectID}/${this.props.quarter}/${this.state.qeData.componentID}`}
-                                >
-                                  View
-                                </Link>
-                              </Button>
-                            </Button.List>
-                          </Card.Options>
-                        </Card.Header>
-                        <Card.Body>
-                          <Table responsive={true}>
-                            <Table.Header>
-                              <Table.ColHeader>Subcomponent Name</Table.ColHeader>
-                              <Table.ColHeader>Weight</Table.ColHeader>
-                            </Table.Header>
-                            <Table.Body>{displayQeData}</Table.Body>
-                          </Table>
-                        </Card.Body>
-                      </Card>
-                    </Grid.Col>
-                  </Grid.Row>
+                      </Grid.Col>
+                    </Grid.Row>
+                  </Spin>
                 </Card.Body>
               )}
+              <Card.Footer>
+                <Button.List align="right">
+                  <ViewEditLog
+                    classRecordID={this.state.classRecordID}
+                    quarter={this.state.quarter}
+                    position="Teacher"
+                  />
+                  {status == 'E' && (
+                    <Button color="success" icon="file" onClick={this.confirmSubmit}>
+                      Submit Class Record
+                    </Button>
+                  )}
+                </Button.List>
+              </Card.Footer>
             </Card>
           </Grid.Row>
         </Container>

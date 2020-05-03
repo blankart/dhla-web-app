@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from './redux/actions';
 import { Card, Button, Grid, Avatar, Table, Form } from 'tabler-react';
-import { Pagination, Spin } from 'antd';
+import { Pagination, Spin, Popconfirm } from 'antd';
 import { getImageUrl } from '../../utils';
 import placeholder from '../../images/placeholder.jpg';
 import axios from 'axios';
@@ -24,6 +24,7 @@ export class AdminActivateAccount extends Component {
       pageSize: 5,
       numOfPages: 1,
       data: [],
+      selectedKey: -1,
     };
     this.onChange = this.onChange.bind(this);
   }
@@ -67,16 +68,28 @@ export class AdminActivateAccount extends Component {
         });
       })
       .catch(err => {
-        this.setState({ isLoading: false });
+        this.setState({ isLoading: false, data: [] });
       });
-  }
-
-  activateAccount(accountID) {
-    this.props.actions.activateAccount({ accountID });
   }
 
   deactivateAccount(accountID) {
     this.props.actions.deactivateAccount({ accountID });
+  }
+
+  componentWillReceiveProps() {
+    this.setState({ isLoading: true });
+    axios
+      .post('api/admin/getaccounts', { keyword: '', page: this.state.page, pageSize: 5 })
+      .then(res => {
+        this.setState({ isLoading: false });
+        this.setState({
+          numOfPages: res.data.numOfPages,
+          data: res.data.accountList,
+        });
+      })
+      .catch(err => {
+        this.setState({ isLoading: false });
+      });
   }
 
   componentWillMount() {
@@ -108,26 +121,25 @@ export class AdminActivateAccount extends Component {
           <Table.Col>{value.position}</Table.Col>
           <Table.Col>
             {value.isActive == 0 ? (
-              <Button
-                icon="check"
-                size="sm"
-                pill
-                color="success"
-                onClick={() => this.activateAccount(value.key)}
-              >
-                Activate
-              </Button>
+              ''
             ) : value.isActive == 1 ? (
-              <Button
-                icon="trash"
-                size="sm"
-                pill
-                color="danger"
-                value={value.key}
-                onClick={() => this.deactivateAccount(value.key)}
+              <Popconfirm
+                title="Do you want to delete this user?"
+                onConfirm={() => this.deactivateAccount(this.state.selectedKey)}
+                okText="Delete"
+                cancelText="Cancel"
               >
-                Deactivate
-              </Button>
+                <Button
+                  icon="trash"
+                  size="sm"
+                  pill
+                  color="danger"
+                  value={value.key}
+                  onClick={() => this.setState({ selectedKey: value.key })}
+                >
+                  Delete
+                </Button>
+              </Popconfirm>
             ) : (
               <React.Fragment></React.Fragment>
             )}
@@ -138,7 +150,7 @@ export class AdminActivateAccount extends Component {
     return (
       <div className="app-admin-activate-account card">
         <Card.Body>
-          <Card.Title>Activate/Deactivate an account</Card.Title>
+          <Card.Title>Accounts List</Card.Title>
           <Grid.Row>
             <Grid.Col sm={12} md={12} xs={12}>
               <Form.Group>
@@ -159,7 +171,17 @@ export class AdminActivateAccount extends Component {
                     <Table.ColHeader>Position</Table.ColHeader>
                     <Table.ColHeader>Action</Table.ColHeader>
                   </Table.Header>
-                  <Table.Body>{DisplayData}</Table.Body>
+                  <Table.Body>
+                    {DisplayData.length !== 0 ? (
+                      DisplayData
+                    ) : (
+                      <Table.Row>
+                        <Table.Col colSpan={5} alignContent="center">
+                          No data to display.
+                        </Table.Col>
+                      </Table.Row>
+                    )}
+                  </Table.Body>
                 </Table>
                 <Pagination
                   size="large"

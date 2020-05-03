@@ -23,6 +23,14 @@ import {
   TeacherSummaryPerQuarterView,
   TeacherEditRecordView,
   TeacherSummaryView,
+  RegistrarIndividualDeliberationView,
+  RegistrarGroupDeliberationView,
+  RegistrarIndividualDeliberationInfoView,
+  RegistrarManageGradesView,
+  RegistrarComponentView,
+  RegistrarSubcomponentView,
+  RegistrarEditRecordView,
+  RegistrarAddRecordView,
 } from './';
 
 export default {
@@ -117,5 +125,43 @@ export default {
       component: TeacherEditRecordView,
     },
     { path: '/summaryreportall/:id', name: 'Teacher summary view', component: TeacherSummaryView },
+    {
+      path: 'individualdeliberation',
+      name: 'Registrar individual deliberation view',
+      component: RegistrarIndividualDeliberationView,
+    },
+    {
+      path: 'groupdeliberation',
+      name: 'Registrar group deliberation view',
+      component: RegistrarGroupDeliberationView,
+    },
+    {
+      path: 'individualdeliberation/:id',
+      name: 'Registrar individual deliberation info view',
+      component: RegistrarIndividualDeliberationInfoView,
+    },
+    {
+      path: 'individualdeliberation/:id/managegrade/:classRecordID/quarter/:Q',
+      name: 'Registrar manage grades view',
+      component: RegistrarManageGradesView,
+    },
+    {
+      path: 'individualdeliberation/:id/managegrade/:classRecordID/quarter/:Q/comp/:comp',
+      name: 'Registrar component view',
+      component: RegistrarComponentView,
+    },
+    {
+      path:
+        'individualdeliberation/:id/managegrade/:classRecordID/quarter/:Q/comp/:comp/subcomp/:subcomp',
+      name: 'Registrar subcomponent view',
+      component: RegistrarSubcomponentView,
+    },
+    {
+      path:
+        '/individualdeliberation/:id/managegrade/:classRecordID/quarter/:Q/comp/:comp/subcomp/:subcomp/editrecord/:rec',
+      name: 'Registrar edit record view',
+      component: RegistrarEditRecordView,
+    },
+    { path: '/individualdeliberation/:id/managegrade/:classRecordID/quarter/:Q/comp/:comp/subcomp/:subcomp/addrecord', name: 'Registrar add record view', component: RegistrarAddRecordView },
   ],
 };

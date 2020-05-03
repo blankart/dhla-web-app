@@ -55,6 +55,8 @@ export class TeacherSummaryPerQuarter extends Component {
       subsectID: 0,
       transmutation: '50',
       trans: '50',
+      subjectType: '',
+      locked: true,
     };
 
     this.changeTransmutation = this.changeTransmutation.bind(this);
@@ -70,52 +72,76 @@ export class TeacherSummaryPerQuarter extends Component {
 
   componentWillReceiveProps() {
     this.setState({ isLoading: true });
-    axios
-      .post('api/teacher/getquartersummary', {
-        subsectID: this.props.subsectID,
-        quarter: this.props.quarter,
-      })
-      .then(res => {
-        this.setState({
-          isLoading: false,
-          subjectName: res.data.subjectName,
-          subjectCode: res.data.subjectCode,
-          sectionName: res.data.sectionName,
-          schoolYearID: res.data.schoolYearID,
-          schoolYear: res.data.schoolYear,
-          data: res.data.data,
-          quarter: this.props.quarter,
+    axios.post('api/teacher/getsubjecttype', { subsectID: this.props.subsectID }).then(res2 => {
+      axios
+        .post('api/teacher/getquartersummary', {
           subsectID: this.props.subsectID,
-          transmutation: res.data.transmutation,
-          trans: res.data.transmutation,
+          quarter: this.props.quarter,
+        })
+        .then(res => {
+          axios
+            .post('api/teacher/ifclassrecordlocked', {
+              classRecordID: res.data.classRecordID,
+              quarter: this.props.quarter,
+            })
+            .then(res3 => {
+              this.setState({
+                isLoading: false,
+                subjectName: res.data.subjectName,
+                subjectCode: res.data.subjectCode,
+                sectionName: res.data.sectionName,
+                schoolYearID: res.data.schoolYearID,
+                schoolYear: res.data.schoolYear,
+                data: res.data.data,
+                quarter: this.props.quarter,
+                subsectID: this.props.subsectID,
+                transmutation: res.data.transmutation,
+                trans: res.data.transmutation,
+                subjectType: res2.data.subjectType,
+                locked: res3.data.locked,
+              });
+            });
         });
-      });
+    });
   }
 
   componentDidMount() {
-    axios
-      .post('api/teacher/getquartersummary', {
-        subsectID: this.props.subsectID,
-        quarter: this.props.quarter,
-      })
-      .then(res => {
-        this.setState({
-          isLoading: false,
-          subjectName: res.data.subjectName,
-          subjectCode: res.data.subjectCode,
-          sectionName: res.data.sectionName,
-          schoolYearID: res.data.schoolYearID,
-          schoolYear: res.data.schoolYear,
-          data: res.data.data,
-          quarter: this.props.quarter,
+    this.setState({ isLoading: true });
+    axios.post('api/teacher/getsubjecttype', { subsectID: this.props.subsectID }).then(res2 => {
+      axios
+        .post('api/teacher/getquartersummary', {
           subsectID: this.props.subsectID,
-          transmutation: res.data.transmutation,
-          trans: res.data.transmutation,
+          quarter: this.props.quarter,
+        })
+        .then(res => {
+          axios
+            .post('api/teacher/ifclassrecordlocked', {
+              classRecordID: res.data.classRecordID,
+              quarter: this.props.quarter,
+            })
+            .then(res3 => {
+              this.setState({
+                isLoading: false,
+                subjectName: res.data.subjectName,
+                subjectCode: res.data.subjectCode,
+                sectionName: res.data.sectionName,
+                schoolYearID: res.data.schoolYearID,
+                schoolYear: res.data.schoolYear,
+                data: res.data.data,
+                quarter: this.props.quarter,
+                subsectID: this.props.subsectID,
+                transmutation: res.data.transmutation,
+                trans: res.data.transmutation,
+                subjectType: res2.data.subjectType,
+                locked: res3.data.locked,
+              });
+            });
         });
-      });
+    });
   }
 
   render() {
+    const { locked } = this.state;
     const color = this.state.trans == 50 ? 'yellow' : this.state.trans == 55 ? 'orange' : 'green';
     let displayData = [];
     for (const [index, value] of this.state.data.entries()) {
@@ -213,7 +239,13 @@ export class TeacherSummaryPerQuarter extends Component {
                 </Card.Title>
                 <Card.Title>
                   <Text.Small>
-                    {this.state.sectionName} {this.props.quarter} S.Y. {this.state.schoolYear}
+                    {this.state.sectionName}{' '}
+                    {this.state.subjectType == 'NON_SHS'
+                      ? this.props.quarter
+                      : this.props.quarter == 'Q1' || this.props.quarter == 'Q2'
+                      ? 'FIRST SEMESTER'
+                      : 'SECOND SEMESTER'}{' '}
+                    S.Y. {this.state.schoolYear}
                   </Text.Small>
                   <Grid.Row>
                     <Grid.Col xs={12} sm={12} md={3}>
@@ -223,41 +255,54 @@ export class TeacherSummaryPerQuarter extends Component {
                         }}
                         value={this.state.quarter}
                       >
-                        <option>Q1</option>
-                        <option>Q2</option>
-                        <option>Q3</option>
-                        <option>Q4</option>
+                        {this.state.subjectType == 'NON_SHS' ? (
+                          <React.Fragment>
+                            <option>Q1</option>
+                            <option>Q2</option>
+                            <option>Q3</option>
+                            <option>Q4</option>
+                          </React.Fragment>
+                        ) : (
+                          <React.Fragment>
+                            <option value={'Q1'}>Midterm</option>
+                            <option value={'Q2'}>Finals</option>
+                          </React.Fragment>
+                        )}
                       </Form.Select>
                     </Grid.Col>
                     <Grid.Col xs={12} sm={12} md={3}>
                       <a href={`/summaryreport/${this.props.subsectID}/${this.state.quarter}`}>
                         <Button block color="primary">
-                          Change Quarter
+                          Change
                         </Button>
                       </a>
                     </Grid.Col>
                     <Grid.Col xs={12} sm={12} md={3}>
-                      <Form.Select
-                        onChange={e => {
-                          this.setState({ transmutation: e.target.value });
-                        }}
-                        value={this.state.transmutation}
-                      >
-                        <option value="50">50% (Yellow)</option>
-                        <option value="55">55% (Orange)</option>
-                        <option value="60">60% (Green)</option>
-                      </Form.Select>
+                      {!locked && (
+                        <Form.Select
+                          onChange={e => {
+                            this.setState({ transmutation: e.target.value });
+                          }}
+                          value={this.state.transmutation}
+                        >
+                          <option value="50">50% (Yellow)</option>
+                          <option value="55">55% (Orange)</option>
+                          <option value="60">60% (Green)</option>
+                        </Form.Select>
+                      )}
                     </Grid.Col>
                     <Grid.Col xs={12} sm={12} md={3}>
-                      <Button
-                        color="primary"
-                        block
-                        onClick={() => {
-                          this.changeTransmutation();
-                        }}
-                      >
-                        Change Transmutation
-                      </Button>
+                      {!locked && (
+                        <Button
+                          color="primary"
+                          block
+                          onClick={() => {
+                            this.changeTransmutation();
+                          }}
+                        >
+                          Change Transmutation
+                        </Button>
+                      )}
                     </Grid.Col>
                   </Grid.Row>
                   <Grid.Row>

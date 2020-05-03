@@ -76,16 +76,19 @@ export class TeacherEditRecord extends Component {
       studList,
     } = this.state;
     const payload = studList;
-    this.props.actions.editRecord({
-      description,
-      dateGiven,
-      total,
-      subsectID,
-      subcompID,
-      componentID,
-      quarter,
-      payload,
-    });
+    this.props.actions.editRecord(
+      {
+        description,
+        dateGiven,
+        total,
+        subsectID,
+        subcompID,
+        componentID,
+        quarter,
+        payload,
+      },
+      'Teacher',
+    );
   }
 
   componentDidMount() {
@@ -152,8 +155,9 @@ export class TeacherEditRecord extends Component {
 
                   if (
                     (!isNaN(e.target.value) && reg.test(e.target.value)) ||
-                    e.target.value === '' ||
-                    e.target.value === '-'
+                    (e.target.value === '' && e.target.value !== '-') ||
+                    e.target.value == 'A' ||
+                    e.target.value == 'E'
                   ) {
                     temparr[index].score = e.target.value;
                     this.setState({ studList: temparr });
@@ -284,6 +288,19 @@ export class TeacherEditRecord extends Component {
                 <Card>
                   <Card.Body>
                     <Card.Title>Student Scores</Card.Title>
+                    <Container>
+                      <Alert type="primary">
+                        <b>Note:</b> Scores with value of <b>E</b> are considered{' '}
+                        <i>
+                          <b>excused</b>
+                        </i>
+                        . Enter a value of <b>A</b> for students who are{' '}
+                        <i>
+                          <b>absent</b>
+                        </i>
+                        .
+                      </Alert>
+                    </Container>
                     <Table highlightRowOnHover={true} responsive={true}>
                       <Table.Header>
                         <Table.ColHeader colSpan={2}>Student Name</Table.ColHeader>

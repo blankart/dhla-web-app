@@ -11,6 +11,7 @@ import { Pagination, Spin, Tooltip } from 'antd';
 import { Modal, Popconfirm, Search, Breadcrumb, AutoComplete, Input, message } from 'antd';
 import placeholder from '../../images/placeholder.jpg';
 import { getImageUrl } from '../../utils';
+import { Table as AntdTable } from 'antd';
 const { Option } = AutoComplete;
 
 export class RegistrarViewEnrolled extends Component {
@@ -37,23 +38,44 @@ export class RegistrarViewEnrolled extends Component {
       sectionName: '',
       schoolYear: '',
       schoolYearID: 0,
+      showModal: false,
+      subsectList: [],
+      selectedSubsect: [],
+      selectedStudSectID: -1,
     };
 
     this.handleSearch = this.handleSearch.bind(this);
     this.onSelect = this.onSelect.bind(this);
     this.enrollStudent = this.enrollStudent.bind(this);
     this.unenrollStudent = this.unenrollStudent.bind(this);
+    this.studentAddSubject = this.studentAddSubject.bind(this);
   }
 
   enrollStudent() {
     if (this.state.selectedKey == -1) {
       message.error('You must select a student');
     } else {
-      this.props.actions.createStudentSection({
-        sectionID: this.props.id,
-        schoolYearID: this.state.schoolYearID,
-        studentID: this.state.selectedKey,
+      this.props.actions.createStudentSection(
+        {
+          sectionID: this.props.id,
+          schoolYearID: this.state.schoolYearID,
+          studentID: this.state.selectedKey,
+        },
+        s => this.setState(s),
+        this.state.subsectList,
+      );
+    }
+  }
+
+  studentAddSubject() {
+    if (this.state.selectedSubsect.length == 0) {
+      message.error('You must select a student');
+    } else {
+      this.props.actions.addSubjectSectionStudentBulk({
+        studsectID: this.state.selectedStudSectID,
+        subsectIDs: this.state.selectedSubsect,
       });
+      this.setState({ showModal: false });
     }
   }
 
@@ -93,10 +115,15 @@ export class RegistrarViewEnrolled extends Component {
             pageSize: this.state.pageSize,
           })
           .then(res3 => {
-            this.setState({ gradeLevel: res3.data.gradeLevel });
-            this.setState({ numOfPages: res3.data.numOfPages });
-            this.setState({ data: res3.data.studentList });
-            this.setState({ isLoadingTable: false });
+            axios
+              .post('api/registrar/listsubjectsection', { sectionID: this.props.id })
+              .then(res4 => {
+                this.setState({ gradeLevel: res3.data.gradeLevel });
+                this.setState({ numOfPages: res3.data.numOfPages });
+                this.setState({ data: res3.data.studentList });
+                this.setState({ isLoadingTable: false });
+                this.setState({ subsectList: res4.data.subjectList });
+              });
           })
           .catch(err => {
             this.setState({ isLoadingTable: false });
@@ -212,6 +239,47 @@ export class RegistrarViewEnrolled extends Component {
     }
     return (
       <div className="app-registrar-view-enrolled my-3 my-md-5 card">
+        <Modal
+          title="Enroll to subjects"
+          visible={this.state.showModal}
+          onOk={this.studentAddSubject}
+          onCancel={() =>
+            this.setState({ showModal: false, selectedSubsect: [], selectedStudSectID: -1 })
+          }
+          okText="Enroll student"
+          confirmLoading={this.props.app.showLoading}
+          cancelText="Close"
+        >
+          <Container>
+            <Grid.Row>
+              <Grid.Col sm={12} xs={12} md={12}>
+                Do you want to enroll this student to the following subjects?
+              </Grid.Col>
+              <Grid.Col sm={12} xs={12} md={12}>
+                <AntdTable
+                  columns={[
+                    {
+                      title: 'Subject',
+                      dataIndex: 'subjectName',
+                      render: text => text,
+                    },
+                    {
+                      title: 'Teacher',
+                      dataIndex: 'teacher',
+                      render: text => text,
+                    },
+                  ]}
+                  rowSelection={{
+                    onChange: (selectedRowKeys, selectedRows) => {
+                      this.setState({ selectedSubsect: selectedRows });
+                    },
+                  }}
+                  dataSource={this.state.subsectList}
+                />
+              </Grid.Col>
+            </Grid.Row>
+          </Container>
+        </Modal>
         <Card.Body>
           {this.state.isLoading ? (
             ''

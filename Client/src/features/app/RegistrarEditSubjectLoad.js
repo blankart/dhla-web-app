@@ -203,7 +203,7 @@ export class RegistrarEditSubjectLoad extends Component {
           <Table.Col>{displayGradeLevel(value.gradeLevel)}</Table.Col>
           <Table.Col alignContent="center">
             <Popconfirm
-              title="Do you want to remove this subject load?"
+              title="Do you want to drop this student?"
               onConfirm={() => this.deleteStudent(value.key)}
               okText="Delete"
               cancelText="Cancel"

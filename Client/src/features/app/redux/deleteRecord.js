@@ -7,20 +7,35 @@ import * as actions from './actions';
 import axios from 'axios';
 import { message } from 'antd';
 
-export const deleteRecord = data => dispatch => {
+export const deleteRecord = (data, position) => dispatch => {
   dispatch(actions.setLoading(true));
-  axios
-    .post('api/teacher/deleterecord', data)
-    .then(res => {
-      message.success(res.data.msg);
-      dispatch(actions.setLoading(false));
-      dispatch({ type: APP_GET_ERRORS, payload: {} });
-    })
-    .catch(err => {
-      dispatch({ type: APP_GET_ERRORS, payload: err.response.data });
-      dispatch(actions.setLoading(false));
-      message.error(err.response.data.msg);
-    });
+  if (position == 'Teacher') {
+    axios
+      .post('api/teacher/deleterecord', data)
+      .then(res => {
+        message.success(res.data.msg);
+        dispatch(actions.setLoading(false));
+        dispatch({ type: APP_GET_ERRORS, payload: {} });
+      })
+      .catch(err => {
+        dispatch({ type: APP_GET_ERRORS, payload: err.response.data });
+        dispatch(actions.setLoading(false));
+        message.error(err.response.data.msg);
+      });
+  } else if (position == 'Registrar') {
+    axios
+      .post('api/registrar/deleterecord', data)
+      .then(res => {
+        message.success(res.data.msg);
+        dispatch(actions.setLoading(false));
+        dispatch({ type: APP_GET_ERRORS, payload: {} });
+      })
+      .catch(err => {
+        dispatch({ type: APP_GET_ERRORS, payload: err.response.data });
+        dispatch(actions.setLoading(false));
+        message.error(err.response.data.msg);
+      });
+  }
 };
 
 export function reducer(state, action) {

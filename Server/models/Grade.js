@@ -1,5 +1,7 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../config/db/database");
+// const LogDetails = require("../models/LogDetails");
+// const utils = require("../utils");
 
 const Grade = sequelize.define(
   "grade",
@@ -44,9 +46,14 @@ const Grade = sequelize.define(
     },
     quarter: {
       type: Sequelize.ENUM("Q1", "Q2", "Q3", "Q4")
+    },
+    attendance: {
+      type: Sequelize.ENUM("A", "E", "P")
     }
   },
-  { freezeTableName: true }
+  {
+    freezeTableName: true
+  }
 );
 
 module.exports = Grade;

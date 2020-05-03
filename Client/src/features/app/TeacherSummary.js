@@ -56,37 +56,41 @@ export class TeacherSummary extends Component {
       q2Transmu: '',
       q3Transmu: '',
       q4Transmu: '',
+      subjectType: '',
     };
   }
 
   componentDidMount() {
     this.setState({ isLoading: true });
-    axios.post('api/teacher/getsummary', { subsectID: this.props.subsectID }).then(res => {
-      const {
-        subjectName,
-        subjectCode,
-        sectionName,
-        schoolYear,
-        schoolYearID,
-        data,
-        q1Transmu,
-        q2Transmu,
-        q3Transmu,
-        q4Transmu,
-      } = res.data;
-      this.setState({
-        subjectName,
-        subjectCode,
-        sectionName,
-        schoolYear,
-        schoolYearID,
-        data,
-        q1Transmu,
-        q2Transmu,
-        q3Transmu,
-        q4Transmu,
-        isLoading: false,
-        subsectID: this.props.subsectID,
+    axios.post('api/teacher/getsubjecttype', { subsectID: this.props.subsectID }).then(res2 => {
+      axios.post('api/teacher/getsummary', { subsectID: this.props.subsectID }).then(res => {
+        const {
+          subjectName,
+          subjectCode,
+          sectionName,
+          schoolYear,
+          schoolYearID,
+          data,
+          q1Transmu,
+          q2Transmu,
+          q3Transmu,
+          q4Transmu,
+        } = res.data;
+        this.setState({
+          subjectName,
+          subjectCode,
+          sectionName,
+          schoolYear,
+          schoolYearID,
+          data,
+          q1Transmu,
+          q2Transmu,
+          q3Transmu,
+          q4Transmu,
+          isLoading: false,
+          subsectID: this.props.subsectID,
+          subjectType: res2.data.subjectType,
+        });
       });
     });
   }
@@ -112,47 +116,85 @@ export class TeacherSummary extends Component {
     };
     let displayData = [];
     for (const [index, value] of this.state.data.entries()) {
-      displayData.push(
-        <Table.Row>
-          <Table.Col className="w-1">
-            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)} />
-          </Table.Col>
-          <Table.Col>{value.name}</Table.Col>
-          <Table.Col alignContent="center">
-            <b>
-              {value.q1FinalGrade == -1
-                ? 'Not yet available'
-                : Number(Math.round(value.q1FinalGrade + 'e2') + 'e-2')}
-            </b>
-          </Table.Col>
-          <Table.Col alignContent="center">
-            <b>
-              {value.q2FinalGrade == -1
-                ? 'Not yet available'
-                : Number(Math.round(value.q2FinalGrade + 'e2') + 'e-2')}
-            </b>
-          </Table.Col>
-          <Table.Col alignContent="center">
-            <b>
-              {value.q3FinalGrade == -1
-                ? 'Not yet available'
-                : Number(Math.round(value.q3FinalGrade + 'e2') + 'e-2')}
-            </b>
-          </Table.Col>
-          <Table.Col alignContent="center">
-            <b>
-              {value.q4FinalGrade == -1
-                ? 'Not yet available'
-                : Number(Math.round(value.q4FinalGrade + 'e2') + 'e-2')}
-            </b>
-          </Table.Col>
-          <Table.Col alignContent="center">
-            <b>
-              {value.ave == -1 ? 'Not yet available' : Number(Math.round(value.ave + 'e2') + 'e-2')}
-            </b>
-          </Table.Col>
-        </Table.Row>,
-      );
+      if (this.state.subjectType == 'NON_SHS') {
+        displayData.push(
+          <Table.Row>
+            <Table.Col className="w-1">
+              <Avatar
+                imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)}
+              />
+            </Table.Col>
+            <Table.Col>{value.name}</Table.Col>
+            <Table.Col alignContent="center">
+              <b>
+                {value.q1FinalGrade == -1
+                  ? 'Not yet available'
+                  : Number(Math.round(value.q1FinalGrade + 'e2') + 'e-2')}
+              </b>
+            </Table.Col>
+            <Table.Col alignContent="center">
+              <b>
+                {value.q2FinalGrade == -1
+                  ? 'Not yet available'
+                  : Number(Math.round(value.q2FinalGrade + 'e2') + 'e-2')}
+              </b>
+            </Table.Col>
+            <Table.Col alignContent="center">
+              <b>
+                {value.q3FinalGrade == -1
+                  ? 'Not yet available'
+                  : Number(Math.round(value.q3FinalGrade + 'e2') + 'e-2')}
+              </b>
+            </Table.Col>
+            <Table.Col alignContent="center">
+              <b>
+                {value.q4FinalGrade == -1
+                  ? 'Not yet available'
+                  : Number(Math.round(value.q4FinalGrade + 'e2') + 'e-2')}
+              </b>
+            </Table.Col>
+            <Table.Col alignContent="center">
+              <b>
+                {value.ave == -1
+                  ? 'Not yet available'
+                  : Number(Math.round(value.ave + 'e2') + 'e-2')}
+              </b>
+            </Table.Col>
+          </Table.Row>,
+        );
+      } else {
+        displayData.push(
+          <Table.Row>
+            <Table.Col className="w-1">
+              <Avatar
+                imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)}
+              />
+            </Table.Col>
+            <Table.Col>{value.name}</Table.Col>
+            <Table.Col alignContent="center">
+              <b>
+                {value.q1FinalGrade == -1
+                  ? 'Not yet available'
+                  : Number(Math.round(value.q1FinalGrade + 'e2') + 'e-2')}
+              </b>
+            </Table.Col>
+            <Table.Col alignContent="center">
+              <b>
+                {value.q2FinalGrade == -1
+                  ? 'Not yet available'
+                  : Number(Math.round(value.q2FinalGrade + 'e2') + 'e-2')}
+              </b>
+            </Table.Col>
+            <Table.Col alignContent="center">
+              <b>
+                {value.ave == -1
+                  ? 'Not yet available'
+                  : Number(Math.round(value.ave + 'e2') + 'e-2')}
+              </b>
+            </Table.Col>
+          </Table.Row>,
+        );
+      }
     }
     return (
       <div className="app-teacher-summary my-3 my-md-5">
@@ -280,7 +322,14 @@ export class TeacherSummary extends Component {
                         bordered
                         title="Average"
                       >
-                        <Descriptions.Item span={3} label="Quarter 1 Grade">
+                        <Descriptions.Item
+                          span={3}
+                          label={
+                            this.state.subjectType == 'NON_SHS'
+                              ? 'Quarter 1 Grade'
+                              : 'Midterm Grade'
+                          }
+                        >
                           {this.state.data.length != 0 &&
                           parseFloat(
                             this.state.data.reduce((sum, val) => {
@@ -300,7 +349,12 @@ export class TeacherSummary extends Component {
                               ) / this.state.data.length
                             : 'Not yet available'}
                         </Descriptions.Item>
-                        <Descriptions.Item span={3} label="Quarter 2 Grade">
+                        <Descriptions.Item
+                          span={3}
+                          label={
+                            this.state.subjectType == 'NON_SHS' ? 'Quarter 2 Grade' : 'Finals Grade'
+                          }
+                        >
                           {this.state.data.length != 0 &&
                           parseFloat(
                             this.state.data.reduce((sum, val) => {
@@ -320,46 +374,50 @@ export class TeacherSummary extends Component {
                               ) / this.state.data.length
                             : 'Not yet available'}
                         </Descriptions.Item>
-                        <Descriptions.Item span={3} label="Quarter 3 Grade">
-                          {this.state.data.length != 0 &&
-                          parseFloat(
-                            this.state.data.reduce((sum, val) => {
-                              const tempobj = JSON.parse(JSON.stringify(sum));
-                              tempobj.q3FinalGrade = sum.q3FinalGrade + val.q3FinalGrade;
-                              return tempobj;
-                            }).q3FinalGrade,
-                          ) /
-                            this.state.data.length !=
-                            -1
-                            ? parseFloat(
-                                this.state.data.reduce((sum, val) => {
-                                  const tempobj = JSON.parse(JSON.stringify(sum));
-                                  tempobj.q3FinalGrade = sum.q3FinalGrade + val.q3FinalGrade;
-                                  return tempobj;
-                                }).q3FinalGrade,
-                              ) / this.state.data.length
-                            : 'Not yet available'}
-                        </Descriptions.Item>
-                        <Descriptions.Item span={3} label="Quarter 4 Grade">
-                          {this.state.data.length != 0 &&
-                          parseFloat(
-                            this.state.data.reduce((sum, val) => {
-                              const tempobj = JSON.parse(JSON.stringify(sum));
-                              tempobj.q4FinalGrade = sum.q4FinalGrade + val.q4FinalGrade;
-                              return tempobj;
-                            }).q4FinalGrade,
-                          ) /
-                            this.state.data.length !=
-                            -1
-                            ? parseFloat(
-                                this.state.data.reduce((sum, val) => {
-                                  const tempobj = JSON.parse(JSON.stringify(sum));
-                                  tempobj.q4FinalGrade = sum.q4FinalGrade + val.q4FinalGrade;
-                                  return tempobj;
-                                }).q4FinalGrade,
-                              ) / this.state.data.length
-                            : 'Not yet available'}
-                        </Descriptions.Item>
+                        {this.state.subjectType == 'NON_SHS' && (
+                          <Descriptions.Item span={3} label="Quarter 3 Grade">
+                            {this.state.data.length != 0 &&
+                            parseFloat(
+                              this.state.data.reduce((sum, val) => {
+                                const tempobj = JSON.parse(JSON.stringify(sum));
+                                tempobj.q3FinalGrade = sum.q3FinalGrade + val.q3FinalGrade;
+                                return tempobj;
+                              }).q3FinalGrade,
+                            ) /
+                              this.state.data.length !=
+                              -1
+                              ? parseFloat(
+                                  this.state.data.reduce((sum, val) => {
+                                    const tempobj = JSON.parse(JSON.stringify(sum));
+                                    tempobj.q3FinalGrade = sum.q3FinalGrade + val.q3FinalGrade;
+                                    return tempobj;
+                                  }).q3FinalGrade,
+                                ) / this.state.data.length
+                              : 'Not yet available'}
+                          </Descriptions.Item>
+                        )}
+                        {this.state.subjectType == 'NON_SHS' && (
+                          <Descriptions.Item span={3} label="Quarter 4 Grade">
+                            {this.state.data.length != 0 &&
+                            parseFloat(
+                              this.state.data.reduce((sum, val) => {
+                                const tempobj = JSON.parse(JSON.stringify(sum));
+                                tempobj.q4FinalGrade = sum.q4FinalGrade + val.q4FinalGrade;
+                                return tempobj;
+                              }).q4FinalGrade,
+                            ) /
+                              this.state.data.length !=
+                              -1
+                              ? parseFloat(
+                                  this.state.data.reduce((sum, val) => {
+                                    const tempobj = JSON.parse(JSON.stringify(sum));
+                                    tempobj.q4FinalGrade = sum.q4FinalGrade + val.q4FinalGrade;
+                                    return tempobj;
+                                  }).q4FinalGrade,
+                                ) / this.state.data.length
+                              : 'Not yet available'}
+                          </Descriptions.Item>
+                        )}
                         <Descriptions.Item span={3} label="Final Grade">
                           {this.state.data.length != 0 &&
                           parseFloat(
@@ -401,29 +459,34 @@ export class TeacherSummary extends Component {
                     <Table.ColHeader alignContent="center">Performance Tasks</Table.ColHeader>
                     <Table.ColHeader alignContent="center">Quarterly Assessment</Table.ColHeader> */}
                       <Table.ColHeader alignContent="center">
-                        Q1 Final Grade{' '}
+                        {this.state.subjectType == 'NON_SHS' ? 'Q1' : 'Midterm'} Final Grade{' '}
                         <Tag color={color(this.state.q1Transmu).toLowerCase()}>
                           {color(this.state.q1Transmu)}
                         </Tag>
                       </Table.ColHeader>
                       <Table.ColHeader alignContent="center">
-                        Q2 Final Grade{' '}
+                        {this.state.subjectType == 'NON_SHS' ? 'Q2' : 'Finals'} Final Grade{' '}
                         <Tag color={color(this.state.q2Transmu).toLowerCase()}>
                           {color(this.state.q2Transmu)}
                         </Tag>
                       </Table.ColHeader>
-                      <Table.ColHeader alignContent="center">
-                        Q3 Final Grade{' '}
-                        <Tag color={color(this.state.q3Transmu).toLowerCase()}>
-                          {color(this.state.q3Transmu)}
-                        </Tag>
-                      </Table.ColHeader>
-                      <Table.ColHeader alignContent="center">
-                        Q4 Final Grade{' '}
-                        <Tag color={color(this.state.q4Transmu).toLowerCase()}>
-                          {color(this.state.q4Transmu)}
-                        </Tag>
-                      </Table.ColHeader>
+                      {this.state.subjectType == 'NON_SHS' && (
+                        <React.Fragment>
+                          {' '}
+                          <Table.ColHeader alignContent="center">
+                            Q3 Final Grade{' '}
+                            <Tag color={color(this.state.q3Transmu).toLowerCase()}>
+                              {color(this.state.q3Transmu)}
+                            </Tag>
+                          </Table.ColHeader>
+                          <Table.ColHeader alignContent="center">
+                            Q4 Final Grade{' '}
+                            <Tag color={color(this.state.q4Transmu).toLowerCase()}>
+                              {color(this.state.q4Transmu)}
+                            </Tag>
+                          </Table.ColHeader>
+                        </React.Fragment>
+                      )}
                       <Table.ColHeader alignContent="center">Final Grade</Table.ColHeader>
                     </Table.Header>
                     <Table.Body>{displayData}</Table.Body>

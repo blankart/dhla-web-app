@@ -14,6 +14,10 @@ const SchoolYear = sequelize.define(
     },
     isActive: {
       type: Sequelize.BOOLEAN
+    },
+    quarter: {
+      type: Sequelize.ENUM("Q1", "Q2", "Q3", "Q4"),
+      defaultValue: "Q1"
     }
   },
   { freezeTableName: true }

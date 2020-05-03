@@ -61,6 +61,7 @@ export class TeacherSubcomponent extends Component {
       selectedDescription: '',
       deleteText: '',
       subsectID: 0,
+      locked: false,
     };
 
     this.deleteRecord = this.deleteRecord.bind(this);
@@ -75,14 +76,17 @@ export class TeacherSubcomponent extends Component {
     if (this.state.deleteText != 'DELETE') {
       message.error('You must type DELETE to confirm');
     } else {
-      this.props.actions.deleteRecord({
-        subsectID: this.props.subsectID,
-        description: this.state.selectedDescription,
-        dateGiven: this.state.selectedDateGiven,
-        subcompID: this.state.subcompID,
-        componentID: this.state.componentID,
-        quarter: this.state.quarter,
-      });
+      this.props.actions.deleteRecord(
+        {
+          subsectID: this.props.subsectID,
+          description: this.state.selectedDescription,
+          dateGiven: this.state.selectedDateGiven,
+          subcompID: this.state.subcompID,
+          componentID: this.state.componentID,
+          quarter: this.state.quarter,
+        },
+        'Teacher',
+      );
     }
   }
 
@@ -108,16 +112,24 @@ export class TeacherSubcomponent extends Component {
             subcompID: this.props.subcompID,
           })
           .then(res2 => {
-            this.setState({
-              isLoading: false,
-              componentID: this.props.componentID,
-              component: res2.data.component,
-              subcompName: res2.data.subcompName,
-              subcompID: this.props.subcompID,
-              data: res2.data.data,
-              ave: res2.data.ave,
-              quarter: this.props.quarter,
-            });
+            axios
+              .post('api/teacher/ifclassrecordlocked', {
+                quarter: this.props.quarter,
+                classRecordID: res.data.classRecordID,
+              })
+              .then(res3 => {
+                this.setState({
+                  isLoading: false,
+                  componentID: this.props.componentID,
+                  component: res2.data.component,
+                  subcompName: res2.data.subcompName,
+                  subcompID: this.props.subcompID,
+                  data: res2.data.data,
+                  ave: res2.data.ave,
+                  quarter: this.props.quarter,
+                  locked: res3.data.locked,
+                });
+              });
           });
       });
   }
@@ -144,22 +156,31 @@ export class TeacherSubcomponent extends Component {
             subcompID: this.props.subcompID,
           })
           .then(res2 => {
-            this.setState({
-              isLoading: false,
-              componentID: this.props.componentID,
-              component: res2.data.component,
-              subcompName: res2.data.subcompName,
-              subcompID: this.props.subcompID,
-              data: res2.data.data,
-              ave: res2.data.ave,
-              quarter: this.props.quarter,
-              subsectID: this.props.subsectID,
-            });
+            axios
+              .post('api/teacher/ifclassrecordlocked', {
+                quarter: this.props.quarter,
+                classRecordID: res.data.classRecordID,
+              })
+              .then(res3 => {
+                this.setState({
+                  isLoading: false,
+                  componentID: this.props.componentID,
+                  component: res2.data.component,
+                  subcompName: res2.data.subcompName,
+                  subcompID: this.props.subcompID,
+                  data: res2.data.data,
+                  ave: res2.data.ave,
+                  quarter: this.props.quarter,
+                  subsectID: this.props.subsectID,
+                  locked: res3.data.locked,
+                });
+              });
           });
       });
   }
 
   render() {
+    const { locked } = this.state;
     let headerData = [];
     let tableData = [];
     headerData.push(<Table.ColHeader colSpan={2}>Student Name</Table.ColHeader>);
@@ -185,35 +206,37 @@ export class TeacherSubcomponent extends Component {
             >
               Item #{index + 1}
             </Popover>
-            <span style={{ marginLeft: '15px' }}>
-              <Button.List>
-                <Button
-                  icon="edit"
-                  size="sm"
-                  outline
-                  color="primary"
-                  onClick={() => {
-                    this.props.history.push(
-                      `/managegrades/${this.props.subsectID}/${this.state.quarter}/${this.state.componentID}/subcomp/${this.state.subcompID}/editrecord/${value.gradeID}`,
-                    );
-                  }}
-                ></Button>
-                <Button
-                  icon="trash"
-                  size="sm"
-                  color="danger"
-                  onClick={() => {
-                    this.setState({
-                      deleteText: '',
-                      showConfirmDelete: true,
-                      selectedDescription: value.description,
-                      selectedDateGiven: value.dateGiven,
-                    });
-                  }}
-                  outline
-                ></Button>
-              </Button.List>
-            </span>
+            {!locked && (
+              <span style={{ marginLeft: '15px' }}>
+                <Button.List>
+                  <Button
+                    icon="edit"
+                    size="sm"
+                    outline
+                    color="primary"
+                    onClick={() => {
+                      this.props.history.push(
+                        `/managegrades/${this.props.subsectID}/${this.state.quarter}/${this.state.componentID}/subcomp/${this.state.subcompID}/editrecord/${value.gradeID}`,
+                      );
+                    }}
+                  ></Button>
+                  <Button
+                    icon="trash"
+                    size="sm"
+                    color="danger"
+                    onClick={() => {
+                      this.setState({
+                        deleteText: '',
+                        showConfirmDelete: true,
+                        selectedDescription: value.description,
+                        selectedDateGiven: value.dateGiven,
+                      });
+                    }}
+                    outline
+                  ></Button>
+                </Button.List>
+              </span>
+            )}
           </Table.ColHeader>,
         );
       }
@@ -242,7 +265,11 @@ export class TeacherSubcomponent extends Component {
                   </div>
                 }
               >
-                {value2.score}/{value2.total}
+                {value2.attendance == 'A'
+                  ? 'Absent'
+                  : value2.attendance == 'E'
+                  ? 'Excused'
+                  : `${value2.score}/${value2.total}`}
               </Popover>
             </Table.Col>,
           );
@@ -342,11 +369,13 @@ export class TeacherSubcomponent extends Component {
                         <Link
                           to={`/managegrades/${this.props.subsectID}/${this.props.quarter}/${this.props.componentID}/subcomp/${this.props.subcompID}/addrecord`}
                         >
-                          <Button.List align="right">
-                            <Button style={{ margin: '20px' }} icon="plus" color="primary">
-                              Add New Record
-                            </Button>
-                          </Button.List>
+                          {!locked && (
+                            <Button.List align="right">
+                              <Button style={{ margin: '20px' }} icon="plus" color="primary">
+                                Add New Record
+                              </Button>
+                            </Button.List>
+                          )}
                         </Link>
                       </Grid.Col>
                     </Grid.Row>

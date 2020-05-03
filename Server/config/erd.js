@@ -21,6 +21,9 @@ const SchoolYear = require("../models/SchoolYear");
 const StudentSection = require("../models/StudentSection");
 const StudentGrades = require("../models/StudentGrades");
 const ActivityLog = require("../models/ActivityLog");
+const LogDetails = require("../models/LogDetails");
+const ClassRecordStatus = require("../models/ClassRecordStatus");
+const utils = require("../utils");
 
 const useraccountERD = async function() {
   // user account ERD
@@ -104,6 +107,9 @@ const gradeERD = async function() {
     await SubjectSectionStudent.hasMany(StudentGrades, {
       foreignKey: "subsectstudID"
     });
+    await ClassRecord.hasOne(ClassRecordStatus, {
+      foreignKey: "classRecordID"
+    });
     await ClassRecord.hasMany(Grade, { foreignKey: "classRecordID" });
     await ClassRecord.hasMany(Subcomponent, { foreignKey: "classRecordID" });
     await Component.hasMany(Subcomponent, { foreignKey: "componentID" });
@@ -117,6 +123,9 @@ const gradeERD = async function() {
           });
           await Grade.sync({ force: false }).then(async function() {
             console.log("grade table created/synced");
+          });
+          await ClassRecordStatus.sync({ force: false }).then(async () => {
+            console.log("class record status created/synced");
           });
         });
       });
@@ -161,12 +170,66 @@ const studentnoticeERD = async function() {
 };
 
 const activitylogERD = async function() {
-  await Teacher.hasMany(ActivityLog, { foreignKey: "teacherID" });
-  await Section.hasMany(ActivityLog, { foreignKey: "sectionID" });
-  await SchoolYear.hasMany(ActivityLog, { foreignKey: "schoolYearID" });
-  await ActivityLog.sync({ force: false }).then(() => {
-    console.log("Activity log table created/synced");
+  await ClassRecord.hasMany(ActivityLog, { foreignKey: "classRecordID" });
+  await ActivityLog.sync({ force: false }).then(async () => {
+    await ActivityLog.hasOne(LogDetails, { foreignKey: "logID" });
+    await LogDetails.sync({ force: false }).then(() => {
+      console.log("Activity log table created/synced");
+    });
   });
+};
+
+const hooks = async function() {
+  ClassRecordStatus.addHook(
+    "afterUpdate",
+    async (classrecordstatus, options) => {
+      const {
+        position,
+        classRecordID,
+        type,
+        accountID,
+        sectionID,
+        subjectID,
+        oldVal,
+        newVal,
+        quarter
+      } = options;
+      const name = await utils.getAccountName(accountID);
+      const section = await utils.getSectionName(sectionID);
+      const subject = await utils.getSubjectCode(subjectID);
+      const oldValText =
+        oldVal == "L"
+          ? "Locked"
+          : oldVal == "E"
+          ? "Encoding"
+          : oldVal == "D"
+          ? "For deliberation"
+          : "Posted";
+      const newValText =
+        newVal == "L"
+          ? "Locked"
+          : newVal == "E"
+          ? "Encoding"
+          : newVal == "D"
+          ? "For deliberation"
+          : "Posted";
+      ActivityLog.create({
+        type,
+        classRecordID,
+        position,
+        name,
+        section,
+        subject,
+        quarter,
+        timestamp: new Date()
+      }).then(async al => {
+        LogDetails.create({
+          logID: al.logID,
+          description: `Changed class record status from \'${oldValText}\' to \'${newValText}\'`
+        });
+      });
+    }
+  );
 };
 
 exports.init = async function() {
@@ -180,4 +243,5 @@ exports.init = async function() {
   await submissiondeadlineERD();
   await studentnoticeERD();
   await activitylogERD();
+  await hooks();
 };
