@@ -3,6 +3,38 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from './redux/actions';
+import axios from 'axios';
+import { Pagination, Spin, Tooltip } from 'antd';
+import {
+  Modal,
+  Popconfirm,
+  Search,
+  Breadcrumb,
+  AutoComplete,
+  Input,
+  message,
+  Descriptions,
+} from 'antd';
+import cn from 'classnames';
+import placeholder from '../../images/placeholder.jpg';
+import {
+  Card,
+  Button,
+  Grid,
+  Avatar,
+  Table,
+  Form,
+  Header,
+  Container,
+  Text,
+  Alert,
+  Tag,
+  Badge,
+} from 'tabler-react';
+import { Link } from 'react-router-dom';
+import { getImageUrl } from '../../utils';
+import ViewEditLog from './ViewEditLog';
+const { Option } = AutoComplete;
 
 export class RegistrarSummaryReport extends Component {
   static propTypes = {
@@ -10,10 +42,453 @@ export class RegistrarSummaryReport extends Component {
     actions: PropTypes.object.isRequired,
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoading: true,
+      subjectName: '',
+      subjectCode: '',
+      sectionName: '',
+      schoolYearID: 0,
+      schoolYear: '',
+      data: [],
+      quarter: 'Q1',
+      subsectID: 0,
+      transmutation: '50',
+      trans: '50',
+      subjectType: '',
+      locked: false,
+    };
+
+    this.changeTransmutation = this.changeTransmutation.bind(this);
+  }
+
+  changeTransmutation() {
+    this.props.actions.changeTransmutation(
+      {
+        classRecordID: this.props.classRecordID,
+        quarter: this.state.quarter,
+        transmutation: this.state.transmutation,
+      },
+      'Registrar',
+    );
+  }
+
+  componentDidMount() {
+    this.setState({ isLoading: true });
+    axios
+      .post('api/registrar/getquartersummary', {
+        classRecordID: this.props.classRecordID,
+        quarter: this.props.quarter,
+      })
+      .then(res => {
+        this.setState({
+          isLoading: false,
+          subjectName: res.data.subjectName,
+          subjectCode: res.data.subjectCode,
+          sectionName: res.data.sectionName,
+          schoolYearID: res.data.schoolYearID,
+          schoolYear: res.data.schoolYear,
+          data: res.data.data,
+          quarter: this.props.quarter,
+          classRecordID: this.props.classRecordID,
+          transmutation: res.data.transmutation,
+          trans: res.data.transmutation,
+        });
+      });
+  }
+
+  componentWillReceiveProps() {
+    this.setState({ isLoading: true });
+    axios
+      .post('api/registrar/getquartersummary', {
+        classRecordID: this.props.classRecordID,
+        quarter: this.props.quarter,
+      })
+      .then(res => {
+        this.setState({
+          isLoading: false,
+          subjectName: res.data.subjectName,
+          subjectCode: res.data.subjectCode,
+          sectionName: res.data.sectionName,
+          schoolYearID: res.data.schoolYearID,
+          schoolYear: res.data.schoolYear,
+          data: res.data.data,
+          quarter: this.props.quarter,
+          classRecordID: this.props.classRecordID,
+          transmutation: res.data.transmutation,
+          trans: res.data.transmutation,
+        });
+      });
+  }
+
   render() {
+    const { locked } = this.props;
+    const color = this.state.trans == 50 ? 'yellow' : this.state.trans == 55 ? 'orange' : 'green';
+    let displayData = [];
+    for (const [index, value] of this.state.data.entries()) {
+      displayData.push(
+        <Table.Row>
+          <Table.Col className="w-1">
+            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)} />
+          </Table.Col>
+          <Table.Col>{value.name}</Table.Col>
+          {/* <Table.Col alignContent="center">
+            {value.faWS == -1 ? 'Not yet available' : Number(Math.round(value.faWS + 'e2') + 'e-2')}
+          </Table.Col>
+          <Table.Col alignContent="center">
+            {value.wwWS == -1 ? 'Not yet available' : Number(Math.round(value.wwWS + 'e2') + 'e-2')}
+          </Table.Col>
+          <Table.Col alignContent="center">
+            {value.ptWS == -1 ? 'Not yet available' : Number(Math.round(value.ptWS + 'e2') + 'e-2')}
+          </Table.Col>
+          <Table.Col alignContent="center">
+            {value.qeWS == -1 ? 'Not yet available' : Number(Math.round(value.qeWS + 'e2') + 'e-2')}
+          </Table.Col> */}
+          <Table.Col alignContent="center">
+            <b>
+              {value.actualGrade == -1
+                ? 'Not yet available'
+                : Number(Math.round(value.actualGrade + 'e2') + 'e-2')}
+            </b>
+          </Table.Col>
+          <Table.Col alignContent="center">
+            <span className="status-icon bg-yellow" />
+            {value.transmutedGrade50 == -1
+              ? 'Not yet available'
+              : Number(Math.round(value.transmutedGrade50 + 'e2') + 'e-2')}
+          </Table.Col>
+          <Table.Col alignContent="center">
+            <span className="status-icon bg-orange" />
+            {value.transmutedGrade55 == -1
+              ? 'Not yet available'
+              : Number(Math.round(value.transmutedGrade55 + 'e2') + 'e-2')}
+          </Table.Col>
+          <Table.Col alignContent="center">
+            <span className="status-icon bg-green" />
+            {value.transmutedGrade60 == -1
+              ? 'Not yet available'
+              : Number(Math.round(value.transmutedGrade60 + 'e2') + 'e-2')}
+          </Table.Col>
+          <Table.Col style={{ color: 'red' }} alignContent="center">
+            <b>
+              <Text color={value.finalGrade < 75 ? 'red' : 'black'}>
+                <span className={`status-icon bg-${color} `} />
+                {value.finalGrade == -1
+                  ? 'Not yet available'
+                  : Number(Math.round(value.finalGrade + 'e2') + 'e-2')}
+              </Text>
+            </b>
+          </Table.Col>
+        </Table.Row>,
+      );
+    }
     return (
-      <div className="app-registrar-summary-report">
-        Page Content: app/RegistrarSummaryReport
+      <div className="app-teacher-summary-per-quarter my-3 my-md-5">
+        <Card>
+          <Card.Body>
+            {this.state.isLoading ? (
+              <Spin spinning={true}></Spin>
+            ) : (
+              <div>
+                <Card.Title>
+                  <Grid.Row>
+                    <Grid.Col xs={12} sm={12} md={6}>
+                      <Breadcrumb>
+                        <Breadcrumb.Item>Subjects</Breadcrumb.Item>
+                        <Breadcrumb.Item>View Subject Load</Breadcrumb.Item>
+                        <Breadcrumb.Item>Summary Report</Breadcrumb.Item>
+                        <Breadcrumb.Item>
+                          {this.state.sectionName} - {this.state.subjectName}
+                        </Breadcrumb.Item>
+                      </Breadcrumb>
+                    </Grid.Col>
+                    <Grid.Col xs={12} sm={12} md={6}></Grid.Col>
+                  </Grid.Row>
+                </Card.Title>
+                <Card.Title>
+                  <Header.H3>
+                    {this.state.subjectCode} - {this.state.subjectName}
+                  </Header.H3>
+                </Card.Title>
+                <Card.Title>
+                  <Text.Small>S.Y. {this.state.schoolYear}</Text.Small>
+                  <Grid.Row>
+                    <Grid.Col xs={12} sm={12} md={3}></Grid.Col>
+                    <Grid.Col xs={12} sm={12} md={3}></Grid.Col>
+                    <Grid.Col xs={12} sm={12} md={3}>
+                      {!locked && (
+                        <Form.Select
+                          onChange={e => {
+                            this.setState({ transmutation: e.target.value });
+                          }}
+                          value={this.state.transmutation}
+                        >
+                          <option value="50">50% (Yellow)</option>
+                          <option value="55">55% (Orange)</option>
+                          <option value="60">60% (Green)</option>
+                        </Form.Select>
+                      )}
+                    </Grid.Col>
+                    <Grid.Col xs={12} sm={12} md={3}>
+                      {!locked && (
+                        <Button
+                          color="primary"
+                          block
+                          onClick={() => {
+                            this.changeTransmutation();
+                          }}
+                        >
+                          Change Transmutation
+                        </Button>
+                      )}
+                    </Grid.Col>
+                  </Grid.Row>
+                  <Grid.Row>
+                    <Grid.Col xs={12} sm={12} md={6}>
+                      <Descriptions
+                        style={{ marginBottom: '15px', marginTop: '15px' }}
+                        bordered
+                        title="Frequency Destribution"
+                      >
+                        <Descriptions.Item span={3} label="95-100">
+                          {this.state.data.length != 0 &&
+                          parseFloat(
+                            this.state.data.reduce((sum, val) => {
+                              const tempobj = JSON.parse(JSON.stringify(sum));
+                              tempobj.transmutedGrade60 =
+                                sum.transmutedGrade60 + val.transmutedGrade60;
+                              return tempobj;
+                            }).transmutedGrade60,
+                          ) /
+                            this.state.data.length !=
+                            -1
+                            ? this.state.data.filter(
+                                val => val.finalGrade >= 95 && val.finalGrade <= 100,
+                              ).length
+                            : 'Not yet available'}
+                        </Descriptions.Item>
+                        <Descriptions.Item span={3} label="90-94">
+                          {this.state.data.length != 0 &&
+                          parseFloat(
+                            this.state.data.reduce((sum, val) => {
+                              const tempobj = JSON.parse(JSON.stringify(sum));
+                              tempobj.transmutedGrade60 =
+                                sum.transmutedGrade60 + val.transmutedGrade60;
+                              return tempobj;
+                            }).transmutedGrade60,
+                          ) /
+                            this.state.data.length !=
+                            -1
+                            ? this.state.data.filter(
+                                val => val.finalGrade >= 90 && val.finalGrade < 95,
+                              ).length
+                            : 'Not yet available'}
+                        </Descriptions.Item>
+                        <Descriptions.Item span={3} label="85-89">
+                          {this.state.data.length != 0 &&
+                          parseFloat(
+                            this.state.data.reduce((sum, val) => {
+                              const tempobj = JSON.parse(JSON.stringify(sum));
+                              tempobj.transmutedGrade60 =
+                                sum.transmutedGrade60 + val.transmutedGrade60;
+                              return tempobj;
+                            }).transmutedGrade60,
+                          ) /
+                            this.state.data.length !=
+                            -1
+                            ? this.state.data.filter(
+                                val => val.finalGrade >= 85 && val.finalGrade < 90,
+                              ).length
+                            : 'Not yet available'}
+                        </Descriptions.Item>
+                        <Descriptions.Item span={3} label="80-84">
+                          {this.state.data.length != 0 &&
+                          parseFloat(
+                            this.state.data.reduce((sum, val) => {
+                              const tempobj = JSON.parse(JSON.stringify(sum));
+                              tempobj.transmutedGrade60 =
+                                sum.transmutedGrade60 + val.transmutedGrade60;
+                              return tempobj;
+                            }).transmutedGrade60,
+                          ) /
+                            this.state.data.length !=
+                            -1
+                            ? this.state.data.filter(
+                                val => val.finalGrade >= 80 && val.finalGrade < 85,
+                              ).length
+                            : 'Not yet available'}
+                        </Descriptions.Item>
+                        <Descriptions.Item span={3} label="75-79">
+                          {this.state.data.length != 0 &&
+                          parseFloat(
+                            this.state.data.reduce((sum, val) => {
+                              const tempobj = JSON.parse(JSON.stringify(sum));
+                              tempobj.transmutedGrade60 =
+                                sum.transmutedGrade60 + val.transmutedGrade60;
+                              return tempobj;
+                            }).transmutedGrade60,
+                          ) /
+                            this.state.data.length !=
+                            -1
+                            ? this.state.data.filter(
+                                val => val.finalGrade >= 75 && val.finalGrade < 80,
+                              ).length
+                            : 'Not yet available'}
+                        </Descriptions.Item>
+                        <Descriptions.Item span={3} label="Below 75">
+                          {this.state.data.length != 0 &&
+                          parseFloat(
+                            this.state.data.reduce((sum, val) => {
+                              const tempobj = JSON.parse(JSON.stringify(sum));
+                              tempobj.transmutedGrade60 =
+                                sum.transmutedGrade60 + val.transmutedGrade60;
+                              return tempobj;
+                            }).transmutedGrade60,
+                          ) /
+                            this.state.data.length !=
+                            -1
+                            ? this.state.data.filter(val => val.finalGrade < 75).length
+                            : 'Not yet available'}
+                        </Descriptions.Item>
+                      </Descriptions>
+                    </Grid.Col>
+                    <Grid.Col xs={12} sm={12} md={6}>
+                      <Descriptions
+                        style={{ marginBottom: '15px', marginTop: '15px' }}
+                        bordered
+                        title="Average"
+                      >
+                        <Descriptions.Item span={3} label="Actual Grade">
+                          {this.state.data.length != 0 &&
+                          parseFloat(
+                            this.state.data.reduce((sum, val) => {
+                              const tempobj = JSON.parse(JSON.stringify(sum));
+                              tempobj.actualGrade = sum.actualGrade + val.actualGrade;
+                              return tempobj;
+                            }).actualGrade,
+                          ) /
+                            this.state.data.length !=
+                            -1
+                            ? parseFloat(
+                                this.state.data.reduce((sum, val) => {
+                                  const tempobj = JSON.parse(JSON.stringify(sum));
+                                  tempobj.actualGrade = sum.actualGrade + val.actualGrade;
+                                  return tempobj;
+                                }).actualGrade,
+                              ) / this.state.data.length
+                            : 'Not yet available'}
+                        </Descriptions.Item>
+                        <Descriptions.Item span={3} label="Transmutated Grade (50%)">
+                          {this.state.data.length != 0 &&
+                          parseFloat(
+                            this.state.data.reduce((sum, val) => {
+                              const tempobj = JSON.parse(JSON.stringify(sum));
+                              tempobj.transmutedGrade50 =
+                                sum.transmutedGrade50 + val.transmutedGrade50;
+                              return tempobj;
+                            }).transmutedGrade50,
+                          ) /
+                            this.state.data.length !=
+                            -1
+                            ? parseFloat(
+                                this.state.data.reduce((sum, val) => {
+                                  const tempobj = JSON.parse(JSON.stringify(sum));
+                                  tempobj.transmutedGrade50 =
+                                    sum.transmutedGrade50 + val.transmutedGrade50;
+                                  return tempobj;
+                                }).transmutedGrade50,
+                              ) / this.state.data.length
+                            : 'Not yet available'}
+                        </Descriptions.Item>
+                        <Descriptions.Item span={3} label="Transmutated Grade (55%)">
+                          {this.state.data.length != 0 &&
+                          parseFloat(
+                            this.state.data.reduce((sum, val) => {
+                              const tempobj = JSON.parse(JSON.stringify(sum));
+                              tempobj.transmutedGrade55 =
+                                sum.transmutedGrade55 + val.transmutedGrade55;
+                              return tempobj;
+                            }).transmutedGrade55,
+                          ) /
+                            this.state.data.length !=
+                            -1
+                            ? parseFloat(
+                                this.state.data.reduce((sum, val) => {
+                                  const tempobj = JSON.parse(JSON.stringify(sum));
+                                  tempobj.transmutedGrade55 =
+                                    sum.transmutedGrade55 + val.transmutedGrade55;
+                                  return tempobj;
+                                }).transmutedGrade55,
+                              ) / this.state.data.length
+                            : 'Not yet available'}
+                        </Descriptions.Item>
+                        <Descriptions.Item span={3} label="Transmutated Grade (60%)">
+                          {this.state.data.length != 0 &&
+                          parseFloat(
+                            this.state.data.reduce((sum, val) => {
+                              const tempobj = JSON.parse(JSON.stringify(sum));
+                              tempobj.transmutedGrade60 =
+                                sum.transmutedGrade60 + val.transmutedGrade60;
+                              return tempobj;
+                            }).transmutedGrade60,
+                          ) /
+                            this.state.data.length !=
+                            -1
+                            ? parseFloat(
+                                this.state.data.reduce((sum, val) => {
+                                  const tempobj = JSON.parse(JSON.stringify(sum));
+                                  tempobj.transmutedGrade60 =
+                                    sum.transmutedGrade60 + val.transmutedGrade60;
+                                  return tempobj;
+                                }).transmutedGrade60,
+                              ) / this.state.data.length
+                            : 'Not yet available'}
+                        </Descriptions.Item>
+                      </Descriptions>
+                    </Grid.Col>
+                  </Grid.Row>
+                </Card.Title>
+              </div>
+            )}
+          </Card.Body>
+          <Card.Body>
+            <Grid.Row>
+              <Grid.Col xs={12} md={12} sm={12}>
+                <Table responsive={true} highlightRowOnHover={true}>
+                  <Table.Header>
+                    <Table.ColHeader colSpan={2}>Student Name</Table.ColHeader>
+                    {/* <Table.ColHeader alignContent="center">Formative Assessment</Table.ColHeader>
+                    <Table.ColHeader alignContent="center">Written Works</Table.ColHeader>
+                    <Table.ColHeader alignContent="center">Performance Tasks</Table.ColHeader>
+                    <Table.ColHeader alignContent="center">Quarterly Assessment</Table.ColHeader> */}
+                    <Table.ColHeader alignContent="center">Actual Grade</Table.ColHeader>
+                    <Table.ColHeader alignContent="center">
+                      Transmuted Grade (50%) <Tag color="yellow">Yellow</Tag>
+                    </Table.ColHeader>
+                    <Table.ColHeader alignContent="center">
+                      Transmuted Grade (55%) <Tag color="orange">Orange</Tag>
+                    </Table.ColHeader>
+                    <Table.ColHeader alignContent="center">
+                      Transmuted Grade (60%) <Tag color="green">Green</Tag>
+                    </Table.ColHeader>
+                    <Table.ColHeader alignContent="center">Final Grade</Table.ColHeader>
+                  </Table.Header>
+                  <Table.Body>{displayData}</Table.Body>
+                </Table>
+              </Grid.Col>
+            </Grid.Row>
+          </Card.Body>
+          <Card.Footer>
+            <Button.List align="right">
+              <ViewEditLog
+                classRecordID={this.props.classRecordID}
+                quarter={this.state.quarter}
+                position="Registrar"
+              />
+            </Button.List>
+          </Card.Footer>
+        </Card>
       </div>
     );
   }
@@ -29,11 +504,8 @@ function mapStateToProps(state) {
 /* istanbul ignore next */
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({ ...actions }, dispatch)
+    actions: bindActionCreators({ ...actions }, dispatch),
   };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(RegistrarSummaryReport);
+export default connect(mapStateToProps, mapDispatchToProps)(RegistrarSummaryReport);

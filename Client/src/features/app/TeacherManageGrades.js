@@ -561,8 +561,7 @@ export class TeacherManageGrades extends Component {
               <Grid.Row>
                 <Grid.Col sm={12} xs={12} md={12} lg={12}>
                   <Header.H5>
-                    Are you sure you want to delete this subcomponent? Deleting this will delete ALL
-                    STUDENT RECORDS under that subcomponent. Type 'DELETE' to confirm.
+                    Are you sure you want to delete this subcomponent? Type 'DELETE' to confirm.
                   </Header.H5>
                 </Grid.Col>
               </Grid.Row>

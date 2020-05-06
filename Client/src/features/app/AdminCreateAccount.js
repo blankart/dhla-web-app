@@ -65,7 +65,8 @@ export class AdminCreateAccount extends Component {
             <Grid.Row>
               <Grid.Col xs={12} sm={12} md={12}>
                 <Alert icon="bell" type="success">
-                  Default password for user accounts: first name + last name + 123{' '}
+                  Default password for user accounts: first name + last name + 123 (example: Juan
+                  Dela Cruz, password: "juan dela cruz123")
                 </Alert>
               </Grid.Col>
               <Grid.Col xs={12} sm={12} md={7}>

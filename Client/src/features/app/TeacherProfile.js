@@ -238,9 +238,7 @@ export class TeacherProfile extends Component {
             <Grid.Row>
               <Grid.Col sm={12} lg={4}>
                 <Profile
-                  name={`${capitalize(firstName)} ${middleName
-                    .charAt(0)
-                    .toUpperCase()}. ${capitalize(lastName)}`}
+                  name={`${firstName} ${middleName.charAt(0).toUpperCase()}. ${lastName}`}
                   avatarURL={imageUrl == 'NA' ? placeholder : getImageUrl(imageUrl)}
                   backgroundURL={bg}
                 >

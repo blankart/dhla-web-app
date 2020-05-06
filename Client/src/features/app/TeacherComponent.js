@@ -32,7 +32,7 @@ import {
 } from 'tabler-react';
 import { Link } from 'react-router-dom';
 import { getImageUrl } from '../../utils';
-
+import ViewEditLog from './ViewEditLog';
 const { Option } = AutoComplete;
 
 export class TeacherComponent extends Component {
@@ -54,6 +54,7 @@ export class TeacherComponent extends Component {
       subjectName: '',
       schoolYear: '',
       subjectCode: '',
+      classRecordID: -1,
     };
   }
 
@@ -70,6 +71,7 @@ export class TeacherComponent extends Component {
           subjectName: res.data.subjectName,
           schoolYear: res.data.schoolYear,
           subjectCode: res.data.subjectCode,
+          classRecordID: res.data.classRecordID,
         });
         axios
           .post('api/teacher/compinfo', {
@@ -208,6 +210,15 @@ export class TeacherComponent extends Component {
                   </Grid.Row>
                 </Card.Body>
               )}
+              <Card.Footer>
+                <Button.List align="right">
+                  <ViewEditLog
+                    classRecordID={this.state.classRecordID}
+                    quarter={this.state.quarter}
+                    position="Teacher"
+                  />
+                </Button.List>
+              </Card.Footer>
             </Card>
           </Grid.Row>
         </Container>

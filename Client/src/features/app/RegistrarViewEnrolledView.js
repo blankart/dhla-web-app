@@ -25,30 +25,31 @@ export class RegistrarViewEnrolledView extends Component {
     };
   }
 
-  componentWillMount() {
-    axios
-      .get('api/registrar/getsy')
-      .then(res => {
-        this.setState({ locked: false, isLoading: false });
-      })
-      .catch(err => {
-        this.setState({ locked: true, isLoading: false });
-      });
-  }
-
   componentDidMount() {
+    this.props.actions.setLoadingTrue();
     if (!this.props.app.auth.isAuthenticated) {
       this.props.history.push('/login');
     } else {
       if (this.props.app.auth.user.position != 2) {
         this.props.history.push('/page401');
+      } else {
+        axios
+          .get('api/registrar/getsy')
+          .then(res => {
+            this.props.actions.setLoadingFalse();
+            this.setState({ locked: false, isLoading: false });
+          })
+          .catch(err => {
+            this.props.actions.setLoadingFalse();
+            this.setState({ locked: true, isLoading: false });
+          });
       }
     }
   }
 
   render() {
     return (
-      <div className="app-registrar-view-enrolled-view">
+      <div className="app-registrar-view-enrolled-view fh">
         {this.state.isLoading ? (
           ''
         ) : this.state.locked ? (

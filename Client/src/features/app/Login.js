@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from './redux/actions';
 import DHLALogo from '../../images/logo.png';
-import { FormCard, FormTextInput, Site } from 'tabler-react';
+import { FormCard, FormTextInput, Site, Alert } from 'tabler-react';
 import { withRouter } from 'react-router-dom';
 
 function StandaloneFormPage(props) {
@@ -73,6 +73,11 @@ export class Login extends Component {
           <StandaloneFormPage>
             <img src={DHLALogo} style={{ marginBottom: '60px' }} alt="logo" />
             <FormCard buttonText="Login" title="Login to your account" onSubmit={this.onSubmit}>
+              {errors.notice && (
+                <Alert icon="info" type="warning">
+                  Message from the Cashier: {errors.notice}
+                </Alert>
+              )}
               <FormTextInput
                 name="email"
                 label="Email Address"

@@ -68,34 +68,35 @@ export class ParentProfile extends Component {
     this.onDateChange = this.onDateChange.bind(this);
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      email: nextProps.app.auth.user.email,
-      position: nextProps.app.auth.user.position,
-      firstName: nextProps.app.profile.firstName,
-      lastName: nextProps.app.profile.lastName,
-      middleName: nextProps.app.profile.middleName,
-      suffix: nextProps.app.profile.suffix,
-      nickname: nextProps.app.profile.nickname,
-      imageUrl: nextProps.app.profile.imageUrl,
-      contactNum: nextProps.app.profile.contactNum,
-      address: nextProps.app.profile.address,
-      province: nextProps.app.profile.province,
-      city: nextProps.app.profile.city,
-      region: nextProps.app.profile.region,
-      zipcode: nextProps.app.profile.zipcode,
-      civilStatus: nextProps.app.profile.civilStatus,
-      sex: nextProps.app.profile.sex,
-      citizenship: nextProps.app.profile.citizenship,
-      birthDate: nextProps.app.profile.birthDate,
-      birthPlace: nextProps.app.profile.birthPlace,
-      religion: nextProps.app.profile.religion,
-      emergencyName: nextProps.app.profile.emergencyName,
-      emergencyAddress: nextProps.app.profile.emergencyAddress,
-      emergencyTelephone: nextProps.app.profile.emergencyTelephone,
-      emergencyCellphone: nextProps.app.profile.emergencyCellphone,
-      emergencyEmail: nextProps.app.profile.emergencyEmail,
-      emergencyRelationship: nextProps.app.profile.emergencyRelationship,
-    });
+    if (!nextProps.app.showLoading && Object.keys(nextProps.app.errors).length == 0)
+      this.setState({
+        email: nextProps.app.auth.user.email,
+        position: nextProps.app.auth.user.position,
+        firstName: nextProps.app.profile.firstName,
+        lastName: nextProps.app.profile.lastName,
+        middleName: nextProps.app.profile.middleName,
+        suffix: nextProps.app.profile.suffix,
+        nickname: nextProps.app.profile.nickname,
+        imageUrl: nextProps.app.profile.imageUrl,
+        contactNum: nextProps.app.profile.contactNum,
+        address: nextProps.app.profile.address,
+        province: nextProps.app.profile.province,
+        city: nextProps.app.profile.city,
+        region: nextProps.app.profile.region,
+        zipcode: nextProps.app.profile.zipcode,
+        civilStatus: nextProps.app.profile.civilStatus,
+        sex: nextProps.app.profile.sex,
+        citizenship: nextProps.app.profile.citizenship,
+        birthDate: nextProps.app.profile.birthDate,
+        birthPlace: nextProps.app.profile.birthPlace,
+        religion: nextProps.app.profile.religion,
+        emergencyName: nextProps.app.profile.emergencyName,
+        emergencyAddress: nextProps.app.profile.emergencyAddress,
+        emergencyTelephone: nextProps.app.profile.emergencyTelephone,
+        emergencyCellphone: nextProps.app.profile.emergencyCellphone,
+        emergencyEmail: nextProps.app.profile.emergencyEmail,
+        emergencyRelationship: nextProps.app.profile.emergencyRelationship,
+      });
   }
 
   onChange(event) {
@@ -220,9 +221,7 @@ export class ParentProfile extends Component {
           <Grid.Row>
             <Grid.Col sm={12} lg={4}>
               <Profile
-                name={`${capitalize(firstName)} ${middleName.charAt(0).toUpperCase()}. ${capitalize(
-                  lastName,
-                )}`}
+                name={`${firstName} ${middleName.charAt(0).toUpperCase()}. ${lastName}`}
                 avatarURL={imageUrl}
                 backgroundURL={imageUrl}
               >
@@ -621,7 +620,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ParentProfile);
+export default connect(mapStateToProps, mapDispatchToProps)(ParentProfile);

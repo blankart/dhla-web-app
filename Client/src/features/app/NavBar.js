@@ -21,6 +21,7 @@ const showNavBarItems = position => {
           value: 'Dashboard',
           to: '/dashboard',
           icon: 'home',
+          LinkComponent: withRouter(NavLink),
         },
       ];
     case true:
@@ -30,6 +31,7 @@ const showNavBarItems = position => {
           value: 'Home',
           to: '/dashboard',
           icon: 'home',
+          LinkComponent: withRouter(NavLink),
         },
       ];
     case 2:
@@ -94,13 +96,11 @@ const showNavBarItems = position => {
           icon: 'book',
           subItems: [
             {
-              value: 'View Past Records',
+              value: 'View Student Records',
+              to: '/viewstudentrecord',
+              LinkComponent: withRouter(NavLink),
             },
           ],
-        },
-        {
-          value: 'Report Cards',
-          icon: 'file-text',
         },
         {
           value: 'School Information',
@@ -114,6 +114,7 @@ const showNavBarItems = position => {
           value: 'Home',
           to: '/dashboard',
           icon: 'home',
+          LinkComponent: withRouter(NavLink),
         },
         {
           value: 'Subjects',
@@ -150,6 +151,7 @@ const showNavBarItems = position => {
           value: 'Home',
           to: '/dashboard',
           icon: 'home',
+          LinkComponent: withRouter(NavLink),
         },
       ];
     case 5:
@@ -159,6 +161,7 @@ const showNavBarItems = position => {
           value: 'Home',
           to: '/dashboard',
           icon: 'home',
+          LinkComponent: withRouter(NavLink),
         },
       ];
     case 6:
@@ -168,6 +171,7 @@ const showNavBarItems = position => {
           value: 'Home',
           to: '/dashboard',
           icon: 'home',
+          LinkComponent: withRouter(NavLink),
         },
       ];
     default:
@@ -251,6 +255,7 @@ export class NavBar extends Component {
   }
 
   logoutClick() {
+    this.props.actions.setLoadingTrue();
     this.props.actions.logoutUser().then((window.location.href = '/login'));
   }
 
@@ -283,7 +288,7 @@ export class NavBar extends Component {
     };
     const accountDropdownProps = {
       avatarURL: imageUrl === 'NA' ? placeholder : getImageUrl(imageUrl),
-      name: capitalize(firstName) + ' ' + capitalize(lastName),
+      name: firstName + ' ' + lastName,
       description: displayPosition(position),
       options: [
         {

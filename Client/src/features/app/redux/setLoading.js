@@ -2,23 +2,29 @@
 // putting related actions and reducers in one file. See more at:
 // https://medium.com/@nate_wang/a-new-approach-for-managing-redux-actions-91c26ce8b5da
 
-import {
-  APP_SET_LOADING,
-} from './constants';
+import { APP_SET_LOADING } from './constants';
 
 export function setLoading(input) {
   return {
     type: APP_SET_LOADING,
-    payload: input
+    payload: input,
   };
 }
+
+export const setLoadingTrue = () => dispatch => {
+  dispatch({ type: APP_SET_LOADING, payload: true });
+};
+
+export const setLoadingFalse = () => dispatch => {
+  dispatch({ type: APP_SET_LOADING, payload: false });
+};
 
 export function reducer(state, action) {
   switch (action.type) {
     case APP_SET_LOADING:
       return {
         ...state,
-        showLoading: action.payload
+        showLoading: action.payload,
       };
 
     default:

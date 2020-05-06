@@ -76,9 +76,24 @@ export class ViewEditLog extends Component {
             ]}
             onCancel={() => this.setState({ showModal2: false })}
           >
-            {this.state.selectedType == 'CHANGE_STATUS' && (
+            {(this.state.selectedType == 'CHANGE_STATUS' ||
+              this.state.selectedType == 'SUBCOMP_UPDATE' ||
+              this.state.selectedType == 'SUBCOMP_DELETE' ||
+              this.state.selectedType == 'SUBCOMP_ADD' ||
+              this.state.selectedType == 'TRANSMU_UPDATE') && (
               <Table
                 columns={[{ title: 'Description', dataIndex: 'description', render: text => text }]}
+                dataSource={this.state.logDetails}
+              />
+            )}
+            {(this.state.selectedType == 'TOTAL_UPDATE' ||
+              this.state.selectedType == 'DESC_UPDATE') && (
+              <Table
+                columns={[
+                  { title: 'Description', dataIndex: 'description', render: text => text },
+                  { title: 'Component', dataIndex: 'component', render: text => text },
+                  { title: 'Subcomponent', dataIndex: 'subcomponent', render: text => text },
+                ]}
                 dataSource={this.state.logDetails}
               />
             )}
@@ -91,8 +106,16 @@ export class ViewEditLog extends Component {
                   { title: 'Component', dataIndex: 'component', render: text => text },
                   { title: 'Subcomponent', dataIndex: 'subcomponent', render: text => text },
                   { title: 'Description', dataIndex: 'description', render: text => text },
-                  { title: 'Old Value', dataIndex: 'oldValue', render: text => text },
-                  { title: 'New Value', dataIndex: 'newValue', render: text => text },
+                  {
+                    title: 'Old Value',
+                    dataIndex: 'oldValue',
+                    render: text => (text == -1 ? 'N/A' : text),
+                  },
+                  {
+                    title: 'New Value',
+                    dataIndex: 'newValue',
+                    render: text => (text == -1 ? 'DELETED' : text),
+                  },
                 ]}
                 dataSource={this.state.logDetails}
               />
@@ -113,7 +136,19 @@ export class ViewEditLog extends Component {
                       ? 'Grade/s Updated'
                       : text == 'DELETE'
                       ? 'Grade/s Deleted'
-                      : 'Record Status Updated',
+                      : text == 'CHANGE_STATUS'
+                      ? 'Record Status Updated'
+                      : text == 'SUBCOMP_UPDATE'
+                      ? 'Subcomponent Updated'
+                      : text == 'TRANSMU_UPDATE'
+                      ? 'Transmutation Updated'
+                      : text == 'SUBCOMP_DELETE'
+                      ? 'Subcomponent Deleted'
+                      : text == 'DESC_UPDATE'
+                      ? 'Description Updated'
+                      : text == 'TOTAL_UPDATE'
+                      ? 'Total Items Updated'
+                      : 'Subcomponent Added',
                 },
                 {
                   title: 'Date',

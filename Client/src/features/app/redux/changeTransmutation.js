@@ -7,10 +7,10 @@ import * as actions from './actions';
 import axios from 'axios';
 import { message } from 'antd';
 
-export const changeTransmutation = data => dispatch => {
+export const changeTransmutation = (data, position) => dispatch => {
   dispatch(actions.setLoading(true));
   axios
-    .post('api/teacher/changetransmutation', data)
+    .post(`api/${position.toLowerCase()}/changetransmutation`, data)
     .then(res => {
       message.success(res.data.msg);
       dispatch(actions.setLoading(false));

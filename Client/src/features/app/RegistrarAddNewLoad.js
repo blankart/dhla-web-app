@@ -472,9 +472,12 @@ export class RegistrarAddNewLoad extends Component {
             <Grid.Row>
               <Button
                 disabled={
-                  this.state.studentdata == 0 ||
+                  this.state.studentData.length == 0 ||
                   this.state.selectedSection == 0 ||
-                  this.state.selectedsubject == 0
+                  this.state.selectedsubject == 0 ||
+                  this.state.isLoadingTable ||
+                  this.state.isSectionLoading ||
+                  this.state.isSubjectLoading
                 }
                 icon="file"
                 block

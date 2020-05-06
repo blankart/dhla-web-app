@@ -52,6 +52,26 @@ export class ClassRecordInformation extends Component {
     });
   };
 
+  handleRevertToDeliberation = () => {
+    Modal.confirm({
+      title: 'Revert to Deliberation Status',
+      content:
+        'Do you want to revert the class record status? It will not longer be accessed by the students enrolled in the subject.',
+      okText: 'Revert',
+      cancelText: 'Cancel',
+      onCancel: () => {},
+      onOk: () => {
+        this.props.actions.revertClassRecord(
+          {
+            classRecordID: this.props.classRecordID,
+            quarter: this.props.quarter,
+          },
+          () => this.props.resetClassRecordInfo(),
+        );
+      },
+    });
+  };
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.classRecordID != -1) {
       this.setState({ isLoading: true });
@@ -146,9 +166,6 @@ export class ClassRecordInformation extends Component {
                       <Descriptions.Item span={3} label="Deadline">
                         {this.props.deadline}
                       </Descriptions.Item>
-                      <Descriptions.Item span={3} label="Number of students">
-                        {this.state.data.length}
-                      </Descriptions.Item>
                     </Descriptions>
                   </Grid.Col>
                   <Table highlightRowOnHover={true} responsive={true}>
@@ -176,26 +193,65 @@ export class ClassRecordInformation extends Component {
                     total={this.state.pageSize * this.state.numOfPages}
                     onChange={this.paginate}
                   />
-                  <Grid.Col sm={12} xs={12} md={12}>
-                    <Button.List align="right">
-                      <Button icon="file" color="primary">
-                        <Link
-                          style={{ color: 'white' }}
-                          to={`/individualdeliberation/${this.props.id}/managegrade/${this.props.classRecordID}/quarter/${this.props.quarter}`}
-                        >
-                          Edit Grade
-                        </Link>
-                      </Button>
-                      <Button icon="check" color="success" onClick={() => this.handlePostGrade()}>
-                        Post Grades
-                      </Button>
-                    </Button.List>
-                  </Grid.Col>
                 </Grid.Row>
               </Container>
             )}
           </Spin>
         </Card.Body>
+        {!this.state.isLoading ? (
+          this.state.hasData ? (
+            <Card.Footer>
+              <Grid.Col sm={12} xs={12} md={12}>
+                {this.props.status == 'deliberation' && (
+                  <Button.List align="right">
+                    <Button icon="file" color="primary">
+                      <Link
+                        style={{ color: 'white' }}
+                        to={`/individualdeliberation/${this.props.id}/managegrade/${this.props.classRecordID}/quarter/${this.props.quarter}`}
+                        target="_blank"
+                      >
+                        Edit Class Record
+                      </Link>
+                    </Button>
+                    <Button icon="check" color="success" onClick={() => this.handlePostGrade()}>
+                      Post Grades
+                    </Button>
+                  </Button.List>
+                )}
+              </Grid.Col>
+              <Grid.Col sm={12} xs={12} md={12}>
+                <Grid.Row>
+                  <Container>
+                    {this.props.status == 'final' && (
+                      <Button.List align="right">
+                        <Button icon="eye" color="primary">
+                          <Link
+                            style={{ color: 'white' }}
+                            to={`/viewstudentrecord/classrecord/${this.props.classRecordID}/q/${this.props.quarter}`}
+                            target="_blank"
+                          >
+                            View Class Record
+                          </Link>
+                        </Button>
+                        <Button
+                          icon="arrow-left-circle"
+                          color="danger"
+                          onClick={() => this.handleRevertToDeliberation()}
+                        >
+                          Revert to Deliberation Status
+                        </Button>
+                      </Button.List>
+                    )}
+                  </Container>
+                </Grid.Row>
+              </Grid.Col>
+            </Card.Footer>
+          ) : (
+            ''
+          )
+        ) : (
+          ''
+        )}
       </Card>
     );
   }

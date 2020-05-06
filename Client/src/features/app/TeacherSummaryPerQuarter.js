@@ -33,6 +33,7 @@ import {
 } from 'tabler-react';
 import { Link } from 'react-router-dom';
 import { getImageUrl } from '../../utils';
+import ViewEditLog from './ViewEditLog';
 const { Option } = AutoComplete;
 
 export class TeacherSummaryPerQuarter extends Component {
@@ -57,17 +58,21 @@ export class TeacherSummaryPerQuarter extends Component {
       trans: '50',
       subjectType: '',
       locked: true,
+      classRecordID: -1,
     };
 
     this.changeTransmutation = this.changeTransmutation.bind(this);
   }
 
   changeTransmutation() {
-    this.props.actions.changeTransmutation({
-      subsectID: this.state.subsectID,
-      quarter: this.state.quarter,
-      transmutation: this.state.transmutation,
-    });
+    this.props.actions.changeTransmutation(
+      {
+        subsectID: this.state.subsectID,
+        quarter: this.state.quarter,
+        transmutation: this.state.transmutation,
+      },
+      'Teacher',
+    );
   }
 
   componentWillReceiveProps() {
@@ -99,6 +104,7 @@ export class TeacherSummaryPerQuarter extends Component {
                 trans: res.data.transmutation,
                 subjectType: res2.data.subjectType,
                 locked: res3.data.locked,
+                classRecordID: res.data.classRecordID,
               });
             });
         });
@@ -134,6 +140,7 @@ export class TeacherSummaryPerQuarter extends Component {
                 trans: res.data.transmutation,
                 subjectType: res2.data.subjectType,
                 locked: res3.data.locked,
+                classRecordID: res.data.classRecordID,
               });
             });
         });
@@ -540,6 +547,15 @@ export class TeacherSummaryPerQuarter extends Component {
               </Grid.Col>
             </Grid.Row>
           </Card.Body>
+          <Card.Footer>
+            <Button.List align="right">
+              <ViewEditLog
+                classRecordID={this.state.classRecordID}
+                quarter={this.state.quarter}
+                position="Teacher"
+              />
+            </Button.List>
+          </Card.Footer>
         </Card>
       </div>
     );

@@ -26,12 +26,6 @@ export class AdminDashboard extends Component {
               <AdminActivateAccount />
             </Grid.Col>
           </Grid.Row>
-          <Grid.Row>
-            <Grid.Col sm={12} md={12}>
-              <AdminViewUpdateLog />
-            </Grid.Col>
-            <Grid.Col sm={12} md={12}></Grid.Col>
-          </Grid.Row>
         </Container>
       </div>
     );
@@ -52,7 +46,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(AdminDashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(AdminDashboard);

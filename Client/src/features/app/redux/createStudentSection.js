@@ -16,8 +16,14 @@ export const createStudentSection = (data, setState, subsect) => dispatch => {
       dispatch(actions.setLoading(false));
       message.success(`Student added successfully!`);
       dispatch({ type: APP_GET_ERRORS, payload: {} });
-      if (subsect.length != 0) {
-        setState({ showModal: true, selectedStudSectID: res.data.studsectID, selectedSubsect: [] });
+      if (typeof setState !== 'undefined' && typeof subsect !== 'undefined') {
+        if (subsect.length != 0) {
+          setState({
+            showModal: true,
+            selectedStudSectID: res.data.studsectID,
+            selectedSubsect: [],
+          });
+        }
       }
     })
     .catch(err => {

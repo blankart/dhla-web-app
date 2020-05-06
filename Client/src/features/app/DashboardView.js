@@ -10,6 +10,7 @@ import RegistrarDashboard from './RegistrarDashboard';
 import TeacherDashboard from './TeacherDashboard';
 import StudentDashboard from './StudentDashboard';
 import ParentDashboard from './ParentDashboard';
+import CashierDashboard from './CashierDashboard';
 import { withRouter } from 'react-router-dom';
 
 function DashboardComponent(props) {
@@ -27,6 +28,8 @@ function DashboardComponent(props) {
       return <StudentDashboard />;
     case 5:
       return <ParentDashboard />;
+    case 6:
+      return <CashierDashboard />;
     default:
       return <div></div>;
   }

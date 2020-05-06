@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from './redux/actions';
 import { Card, Button, Grid, Avatar, Table, Form } from 'tabler-react';
-import { Pagination, Spin, Popconfirm } from 'antd';
+import { Pagination, Spin, Popconfirm, Modal } from 'antd';
 import { getImageUrl } from '../../utils';
 import placeholder from '../../images/placeholder.jpg';
 import axios from 'axios';
@@ -76,6 +76,13 @@ export class AdminActivateAccount extends Component {
     this.props.actions.deactivateAccount({ accountID });
   }
 
+  handleDeleteAccount = () => {
+    Modal.confirm({
+      title: 'Delete an Account',
+      content: 'Do you want to delete this account?',
+      onOk: () => this.deactivateAccount(this.state.selectedKey),
+    });
+  };
   componentWillReceiveProps() {
     this.setState({ isLoading: true });
     axios
@@ -120,29 +127,18 @@ export class AdminActivateAccount extends Component {
           <Table.Col>{value.email}</Table.Col>
           <Table.Col>{value.position}</Table.Col>
           <Table.Col>
-            {value.isActive == 0 ? (
-              ''
-            ) : value.isActive == 1 ? (
-              <Popconfirm
-                title="Do you want to delete this user?"
-                onConfirm={() => this.deactivateAccount(this.state.selectedKey)}
-                okText="Delete"
-                cancelText="Cancel"
-              >
-                <Button
-                  icon="trash"
-                  size="sm"
-                  pill
-                  color="danger"
-                  value={value.key}
-                  onClick={() => this.setState({ selectedKey: value.key })}
-                >
-                  Delete
-                </Button>
-              </Popconfirm>
-            ) : (
-              <React.Fragment></React.Fragment>
-            )}
+            <Button
+              icon="trash"
+              size="sm"
+              pill
+              color="danger"
+              value={value.key}
+              onClick={() =>
+                this.setState({ selectedKey: value.key }, () => this.handleDeleteAccount())
+              }
+            >
+              Delete
+            </Button>
           </Table.Col>
         </Table.Row>,
       );

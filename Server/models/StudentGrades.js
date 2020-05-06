@@ -4,36 +4,22 @@ const sequelize = require("../config/db/database");
 const StudentGrades = sequelize.define(
   "student grades",
   {
-    studentGradesID: {
+    studentgradesID: {
       type: Sequelize.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
-    subsectstudID: {
+    studsectID: {
       type: Sequelize.INTEGER
     },
-    classRecordID: {
+    schoolYearID: {
       type: Sequelize.INTEGER
     },
-    q1FinalGrade: {
-      type: Sequelize.FLOAT,
-      defaultValue: -1
+    quarter: {
+      type: Sequelize.ENUM("Q1", "Q2", "Q3", "Q4")
     },
-    q2FinalGrade: {
-      type: Sequelize.FLOAT,
-      defaultValue: -1
-    },
-    q3FinalGrade: {
-      type: Sequelize.FLOAT,
-      defaultValue: -1
-    },
-    q4FinalGrade: {
-      type: Sequelize.FLOAT,
-      defaultValue: -1
-    },
-    ave: {
-      type: Sequelize.FLOAT,
-      defaultValue: -1
+    grade: {
+      type: Sequelize.FLOAT
     }
   },
   { freezeTableName: true }

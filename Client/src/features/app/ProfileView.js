@@ -10,6 +10,7 @@ import RegistrarProfile from './RegistrarProfile';
 import TeacherProfile from './TeacherProfile';
 import StudentProfile from './StudentProfile';
 import ParentProfile from './ParentProfile';
+import CashierProfile from './CashierProfile';
 
 function ProfileComponent(props) {
   const { position } = props;
@@ -26,6 +27,8 @@ function ProfileComponent(props) {
       return <StudentProfile />;
     case 5:
       return <ParentProfile />;
+    case 6:
+      return <CashierProfile />;
     default:
       return <div></div>;
   }
@@ -73,7 +76,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ProfileView);
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileView);

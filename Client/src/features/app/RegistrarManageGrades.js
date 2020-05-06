@@ -299,7 +299,7 @@ export class RegistrarManageGrades extends Component {
   }
 
   render() {
-    const { locked } = this.state;
+    const { locked } = this.props;
     let displayFaData = [];
     let displayWwData = [];
     let displayPtData = [];
@@ -559,8 +559,7 @@ export class RegistrarManageGrades extends Component {
               <Grid.Row>
                 <Grid.Col sm={12} xs={12} md={12} lg={12}>
                   <Header.H5>
-                    Are you sure you want to delete this subcomponent? Deleting this will delete ALL
-                    STUDENT RECORDS under that subcomponent. Type 'DELETE' to confirm.
+                    Are you sure you want to delete this subcomponent? Type 'DELETE' to confirm.
                   </Header.H5>
                 </Grid.Col>
               </Grid.Row>
@@ -641,7 +640,27 @@ export class RegistrarManageGrades extends Component {
                         <Grid.Col xs={12} sm={12} md={6}>
                           <Button.List align="right">
                             <Link
-                              to={`/summaryreport/${this.props.subsectID}/${this.state.quarter}`}
+                              to={
+                                !locked
+                                  ? `/individualdeliberation/${this.props.id}/managegrade/${
+                                      this.props.classRecordID
+                                    }/quarter/${
+                                      this.state.subjectType == 'NON_SHS' ||
+                                      this.state.subjectType == '1ST_SEM'
+                                        ? this.props.quarter
+                                        : this.props.quarter == 'Q3'
+                                        ? 'Q1'
+                                        : 'Q2'
+                                    }/summaryreport`
+                                  : `/viewstudentrecord/classrecord/${this.props.classRecordID}/q/${
+                                      this.state.subjectType == 'NON_SHS' ||
+                                      this.state.subjectType == '1ST_SEM'
+                                        ? this.props.quarter
+                                        : this.props.quarter == 'Q3'
+                                        ? 'Q1'
+                                        : 'Q2'
+                                    }/summaryreport`
+                              }
                             >
                               <Button color="success" icon="file">
                                 View{' '}
@@ -691,16 +710,29 @@ export class RegistrarManageGrades extends Component {
                                     <Button color="info" size="sm">
                                       <Link
                                         style={{ color: 'white' }}
-                                        to={`/individualdeliberation/${this.props.id}/managegrade/${
-                                          this.props.classRecordID
-                                        }/quarter/${
-                                          this.state.subjectType == 'NON_SHS' ||
-                                          this.state.subjectType == '1ST_SEM'
-                                            ? this.props.quarter
-                                            : this.props.quarter == 'Q3'
-                                            ? 'Q1'
-                                            : 'Q2'
-                                        }/comp/${this.state.faData.componentID}`}
+                                        to={
+                                          !locked
+                                            ? `/individualdeliberation/${
+                                                this.props.id
+                                              }/managegrade/${this.props.classRecordID}/quarter/${
+                                                this.state.subjectType == 'NON_SHS' ||
+                                                this.state.subjectType == '1ST_SEM'
+                                                  ? this.props.quarter
+                                                  : this.props.quarter == 'Q3'
+                                                  ? 'Q1'
+                                                  : 'Q2'
+                                              }/comp/${this.state.faData.componentID}`
+                                            : `/viewstudentrecord/classrecord/${
+                                                this.props.classRecordID
+                                              }/q/${
+                                                this.state.subjectType == 'NON_SHS' ||
+                                                this.state.subjectType == '1ST_SEM'
+                                                  ? this.props.quarter
+                                                  : this.props.quarter == 'Q3'
+                                                  ? 'Q1'
+                                                  : 'Q2'
+                                              }/comp/${this.state.faData.componentID}`
+                                        }
                                       >
                                         View
                                       </Link>
@@ -790,16 +822,29 @@ export class RegistrarManageGrades extends Component {
                                     <Button color="info" size="sm">
                                       <Link
                                         style={{ color: 'white' }}
-                                        to={`/individualdeliberation/${this.props.id}/managegrade/${
-                                          this.props.classRecordID
-                                        }/quarter/${
-                                          this.state.subjectType == 'NON_SHS' ||
-                                          this.state.subjectType == '1ST_SEM'
-                                            ? this.props.quarter
-                                            : this.props.quarter == 'Q3'
-                                            ? 'Q1'
-                                            : 'Q2'
-                                        }/comp/${this.state.wwData.componentID}`}
+                                        to={
+                                          !locked
+                                            ? `/individualdeliberation/${
+                                                this.props.id
+                                              }/managegrade/${this.props.classRecordID}/quarter/${
+                                                this.state.subjectType == 'NON_SHS' ||
+                                                this.state.subjectType == '1ST_SEM'
+                                                  ? this.props.quarter
+                                                  : this.props.quarter == 'Q3'
+                                                  ? 'Q1'
+                                                  : 'Q2'
+                                              }/comp/${this.state.wwData.componentID}`
+                                            : `/viewstudentrecord/classrecord/${
+                                                this.props.classRecordID
+                                              }/q/${
+                                                this.state.subjectType == 'NON_SHS' ||
+                                                this.state.subjectType == '1ST_SEM'
+                                                  ? this.props.quarter
+                                                  : this.props.quarter == 'Q3'
+                                                  ? 'Q1'
+                                                  : 'Q2'
+                                              }/comp/${this.state.wwData.componentID}`
+                                        }
                                       >
                                         View
                                       </Link>
@@ -891,16 +936,29 @@ export class RegistrarManageGrades extends Component {
                                     <Button color="info" size="sm">
                                       <Link
                                         style={{ color: 'white' }}
-                                        to={`/individualdeliberation/${this.props.id}/managegrade/${
-                                          this.props.classRecordID
-                                        }/quarter/${
-                                          this.state.subjectType == 'NON_SHS' ||
-                                          this.state.subjectType == '1ST_SEM'
-                                            ? this.props.quarter
-                                            : this.props.quarter == 'Q3'
-                                            ? 'Q1'
-                                            : 'Q2'
-                                        }/comp/${this.state.ptData.componentID}`}
+                                        to={
+                                          !locked
+                                            ? `/individualdeliberation/${
+                                                this.props.id
+                                              }/managegrade/${this.props.classRecordID}/quarter/${
+                                                this.state.subjectType == 'NON_SHS' ||
+                                                this.state.subjectType == '1ST_SEM'
+                                                  ? this.props.quarter
+                                                  : this.props.quarter == 'Q3'
+                                                  ? 'Q1'
+                                                  : 'Q2'
+                                              }/comp/${this.state.ptData.componentID}`
+                                            : `/viewstudentrecord/classrecord/${
+                                                this.props.classRecordID
+                                              }/q/${
+                                                this.state.subjectType == 'NON_SHS' ||
+                                                this.state.subjectType == '1ST_SEM'
+                                                  ? this.props.quarter
+                                                  : this.props.quarter == 'Q3'
+                                                  ? 'Q1'
+                                                  : 'Q2'
+                                              }/comp/${this.state.ptData.componentID}`
+                                        }
                                       >
                                         View
                                       </Link>
@@ -988,16 +1046,29 @@ export class RegistrarManageGrades extends Component {
                                 <Button color="info" size="sm">
                                   <Link
                                     style={{ color: 'white' }}
-                                    to={`/individualdeliberation/${this.props.id}/managegrade/${
-                                      this.props.classRecordID
-                                    }/quarter/${
-                                      this.state.subjectType == 'NON_SHS' ||
-                                      this.state.subjectType == '1ST_SEM'
-                                        ? this.props.quarter
-                                        : this.props.quarter == 'Q3'
-                                        ? 'Q1'
-                                        : 'Q2'
-                                    }/comp/${this.state.qeData.componentID}`}
+                                    to={
+                                      !locked
+                                        ? `/individualdeliberation/${this.props.id}/managegrade/${
+                                            this.props.classRecordID
+                                          }/quarter/${
+                                            this.state.subjectType == 'NON_SHS' ||
+                                            this.state.subjectType == '1ST_SEM'
+                                              ? this.props.quarter
+                                              : this.props.quarter == 'Q3'
+                                              ? 'Q1'
+                                              : 'Q2'
+                                          }/comp/${this.state.qeData.componentID}`
+                                        : `/viewstudentrecord/classrecord/${
+                                            this.props.classRecordID
+                                          }/q/${
+                                            this.state.subjectType == 'NON_SHS' ||
+                                            this.state.subjectType == '1ST_SEM'
+                                              ? this.props.quarter
+                                              : this.props.quarter == 'Q3'
+                                              ? 'Q1'
+                                              : 'Q2'
+                                          }/comp/${this.state.qeData.componentID}`
+                                    }
                                   >
                                     View
                                   </Link>

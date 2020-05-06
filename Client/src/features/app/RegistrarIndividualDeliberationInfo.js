@@ -44,17 +44,22 @@ export class RegistrarIndividualDeliberationInfo extends Component {
     this.state = {
       isLoading: true,
       isLoadingTable: true,
+      isLoadingTable2: true,
       name: '',
       email: '',
       accountID: '',
       imageUrl: '',
       data: [],
+      data2: [],
       schoolYearID: 0,
       schoolYear: '',
       page: 1,
+      page2: 1,
       keyword: '',
       pageSize: 10,
+      pageSize2: 10,
       numOfPages: 1,
+      numOfPages2: 1,
       deadline: '',
       selectedClassRecordID: -1,
       selectedSubjectCode: '',
@@ -107,6 +112,24 @@ export class RegistrarIndividualDeliberationInfo extends Component {
           .catch(err => {
             this.setState({ data: [], numOfPages: 1, isLoadingTable: false });
           });
+        axios
+          .post('api/registrar/getnotsubmittedsubsect', {
+            accountID: this.props.id,
+            page: this.state.page2,
+            pageSize: this.state.pageSize2,
+            quarter: res.data.quarter,
+          })
+          .then(res3 => {
+            this.setState({
+              data2: res3.data.classRecordList,
+              deadline: res3.data.deadline,
+              numOfPages2: res3.data.numOfPages,
+              isLoadingTable2: false,
+            });
+          })
+          .catch(err => {
+            this.setState({ data: [], numOfPages2: 1, isLoadingTable2: false });
+          });
       });
     });
   }
@@ -130,6 +153,23 @@ export class RegistrarIndividualDeliberationInfo extends Component {
       .catch(err => {
         this.setState({ data: [], numOfPages: 1, isLoadingTable: false });
       });
+    axios
+      .post('api/registrar/getnotsubmittedsubsect', {
+        accountID: this.props.id,
+        page: this.state.page2,
+        pageSize: this.state.pageSize2,
+        quarter: this.state.quarter,
+      })
+      .then(res3 => {
+        this.setState({
+          data2: res3.data.classRecordList,
+          numOfPages2: res3.data.numOfPages,
+          isLoadingTable2: false,
+        });
+      })
+      .catch(err => {
+        this.setState({ data: [], numOfPages2: 1, isLoadingTable2: false });
+      });
   }
 
   paginate = page => {
@@ -139,6 +179,7 @@ export class RegistrarIndividualDeliberationInfo extends Component {
           accountID: this.props.id,
           page: page,
           pageSize: this.state.pageSize,
+          quarter: this.state.quarter,
         })
         .then(res3 => {
           this.setState({
@@ -151,8 +192,70 @@ export class RegistrarIndividualDeliberationInfo extends Component {
     });
   };
 
+  paginate2 = page => {
+    this.setState({ page2: page, isLoadingTable2: true }, async () => {
+      axios
+        .post('api/registrar/getnotsubmittedsubsect', {
+          accountID: this.props.id,
+          page: page,
+          pageSize: this.state.pageSize2,
+          quarter: this.state.quarter,
+        })
+        .then(res3 => {
+          this.setState({
+            data2: res3.data.classRecordList,
+            numOfPages2: res3.data.numOfPages,
+            isLoadingTable2: false,
+          });
+        })
+        .catch(err => {
+          this.setState({ data: [], numOfPages2: 1, isLoadingTable2: false });
+        });
+    });
+  };
+
+  handleQuarterChange = () => {
+    this.setState({ isLoadingTable: true, isLoadingTable2: true });
+    axios
+      .post('api/registrar/getsubmittedsubsect', {
+        accountID: this.props.id,
+        page: this.state.page,
+        pageSize: this.state.pageSize,
+        quarter: this.state.quarter,
+      })
+      .then(res3 => {
+        this.setState({
+          data: res3.data.classRecordList,
+          numOfPages: res3.data.numOfPages,
+          deadline: res3.data.deadline,
+          isLoadingTable: false,
+        });
+      })
+      .catch(err => {
+        this.setState({ data: [], numOfPages: 1, isLoadingTable: false });
+      });
+    axios
+      .post('api/registrar/getnotsubmittedsubsect', {
+        accountID: this.props.id,
+        page: this.state.page2,
+        pageSize: this.state.pageSize2,
+        quarter: this.state.quarter,
+      })
+      .then(res3 => {
+        this.setState({
+          data2: res3.data.classRecordList,
+          numOfPages2: res3.data.numOfPages,
+          isLoadingTable2: false,
+        });
+      })
+      .catch(err => {
+        this.setState({ data: [], numOfPages2: 1, isLoadingTable2: false });
+      });
+  };
+
   render() {
     const DisplayData = [];
+    const DisplayData2 = [];
     for (const [index, value] of this.state.data.entries()) {
       const dateSubmitted = new Date(value.dateSubmitted);
       let status = '';
@@ -165,7 +268,7 @@ export class RegistrarIndividualDeliberationInfo extends Component {
         let m = s / 60;
         let h = m / 60;
         let d = h / 24;
-        let overDueText = Math.floor(d) == 0 ? '' : Math.floor(d) + ' day/s';
+        let overDueText = Math.floor(d) == 0 ? '' : Math.floor(d) + ' day/s ';
         overDueText =
           overDueText +
           Math.floor(h % 24) +
@@ -205,36 +308,76 @@ export class RegistrarIndividualDeliberationInfo extends Component {
         </Table.Row>,
       );
     }
+
+    for (const [index, value] of this.state.data2.entries()) {
+      let displayDate = 'NOT SET';
+      if (this.state.deadline != 'NOT SET') {
+        displayDate = new Date(this.state.deadline);
+        displayDate = displayDate.toDateString();
+      }
+      DisplayData2.push(
+        <Table.Row>
+          <Table.Col>{value.subjectCode}</Table.Col>
+          <Table.Col>{value.subjectName}</Table.Col>
+          <Table.Col>{value.section}</Table.Col>
+          <Table.Col>{displayDate}</Table.Col>
+        </Table.Row>,
+      );
+    }
+
     return (
       <div className="app-registrar-individual-deliberation-info my-3 my-md-5">
         <Container>
           <Grid.Row>
             <Grid.Col sm={12} lg={6}>
-              <Container>
-                <Grid.Row>
-                  {this.state.isLoading ? (
-                    <Spin spinning={this.state.isLoading}>
+              <Spin spinning={this.state.isLoading}>
+                <Container>
+                  <Grid.Row>
+                    {this.state.isLoading ? (
                       <Profile name="" avatarURL={placeholder} backgroundUrl=""></Profile>
-                    </Spin>
-                  ) : (
-                    <Profile
-                      name={this.state.name}
-                      avatarURL={
-                        this.state.imageUrl === 'NA'
-                          ? placeholder
-                          : getImageUrl(this.state.imageUrl)
-                      }
-                      backgroundURL={bg}
-                    ></Profile>
-                  )}
-                </Grid.Row>
-              </Container>
+                    ) : (
+                      <Profile
+                        name={this.state.name}
+                        avatarURL={
+                          this.state.imageUrl === 'NA'
+                            ? placeholder
+                            : getImageUrl(this.state.imageUrl)
+                        }
+                        backgroundURL={bg}
+                      >
+                        <Container>
+                          <Grid.Row>
+                            <Grid.Col sm={12} xs={12} md={12}>
+                              <Form.Group>
+                                <Form.Label>Select Quarter</Form.Label>
+                                <Form.Select
+                                  value={this.state.quarter}
+                                  onChange={e =>
+                                    this.setState({ quarter: e.target.value }, () =>
+                                      this.handleQuarterChange(),
+                                    )
+                                  }
+                                >
+                                  <option value="Q1">Quarter 1</option>
+                                  <option value="Q2">Quarter 2</option>
+                                  <option value="Q3">Quarter 3</option>
+                                  <option value="Q4">Quarter 4</option>
+                                </Form.Select>
+                              </Form.Group>
+                            </Grid.Col>
+                          </Grid.Row>
+                        </Container>
+                      </Profile>
+                    )}
+                  </Grid.Row>
+                </Container>
+              </Spin>
               <Grid.Row>
                 <Container>
                   {this.state.isLoading ? (
                     ''
                   ) : (
-                    <Card>
+                    <Card statusColor="warning">
                       <Card.Body>
                         <Card.Title>
                           Class Record of {this.state.name} S.Y. {this.state.schoolYear}
@@ -253,7 +396,7 @@ export class RegistrarIndividualDeliberationInfo extends Component {
                                   {DisplayData.length == 0 ? (
                                     <Table.Row>
                                       <Table.Col colSpan={5} alignContent="center">
-                                        No active subjects for this teacher.
+                                        No submitted class record.
                                       </Table.Col>
                                     </Table.Row>
                                   ) : (
@@ -267,6 +410,55 @@ export class RegistrarIndividualDeliberationInfo extends Component {
                                 pageSize={this.state.pageSize}
                                 total={this.state.pageSize * this.state.numOfPages}
                                 onChange={this.paginate}
+                              />
+                            </Spin>
+                          </Grid.Col>
+                        </Grid.Row>
+                      </Card.Body>
+                    </Card>
+                  )}
+                </Container>
+                <Container>
+                  {this.state.isLoading ? (
+                    ''
+                  ) : (
+                    <Card statusColor="danger">
+                      <Card.Body>
+                        <Card.Title>
+                          List of subjects which are{' '}
+                          <b>
+                            <i>not</i>
+                          </b>{' '}
+                          yet submitted for deliberation
+                        </Card.Title>
+                        <Grid.Row>
+                          <Grid.Col sm={12} md={12} xs={12}>
+                            <Spin spinning={this.state.isLoadingTable}>
+                              <Table highlightRowOnHover={true} responsive={true}>
+                                <Table.Header>
+                                  <Table.ColHeader>Code</Table.ColHeader>
+                                  <Table.ColHeader>Subject</Table.ColHeader>
+                                  <Table.ColHeader>Section</Table.ColHeader>
+                                  <Table.ColHeader>Deadline</Table.ColHeader>
+                                </Table.Header>
+                                <Table.Body>
+                                  {DisplayData2.length == 0 ? (
+                                    <Table.Row>
+                                      <Table.Col colSpan={5} alignContent="center">
+                                        No entries.
+                                      </Table.Col>
+                                    </Table.Row>
+                                  ) : (
+                                    DisplayData2
+                                  )}
+                                </Table.Body>
+                              </Table>
+                              <Pagination
+                                size="large"
+                                current={this.state.page2}
+                                pageSize={this.state.pageSize2}
+                                total={this.state.pageSize2 * this.state.numOfPages2}
+                                onChange={this.paginate2}
                               />
                             </Spin>
                           </Grid.Col>
@@ -289,6 +481,7 @@ export class RegistrarIndividualDeliberationInfo extends Component {
                     deadline={this.state.selectedDeadline}
                     resetClassRecordInfo={this.resetClassRecordInfo}
                     id={this.props.id}
+                    status="deliberation"
                   />
                 </Container>
               </Grid.Row>

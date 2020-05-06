@@ -32,6 +32,7 @@ import {
 } from 'tabler-react';
 import { Link } from 'react-router-dom';
 import { getImageUrl } from '../../utils';
+import ViewEditLog from './ViewEditLog';
 const { Option } = AutoComplete;
 
 export class TeacherSubcomponent extends Component {
@@ -61,6 +62,7 @@ export class TeacherSubcomponent extends Component {
       deleteText: '',
       subsectID: 0,
       locked: false,
+      classRecordID: -1,
     };
 
     this.deleteRecord = this.deleteRecord.bind(this);
@@ -102,6 +104,7 @@ export class TeacherSubcomponent extends Component {
           subjectName: res.data.subjectName,
           schoolYear: res.data.schoolYear,
           subjectCode: res.data.subjectCode,
+          classRecordID: res.data.classRecordID,
         });
         axios
           .post('api/teacher/subcompinfo', {
@@ -418,6 +421,15 @@ export class TeacherSubcomponent extends Component {
                   </Grid.Row>
                 </Card.Body>
               )}
+              <Card.Footer>
+                <Button.List align="right">
+                  <ViewEditLog
+                    classRecordID={this.state.classRecordID}
+                    quarter={this.state.quarter}
+                    position="Teacher"
+                  />
+                </Button.List>
+              </Card.Footer>
             </Card>
           </Grid.Row>
         </Container>

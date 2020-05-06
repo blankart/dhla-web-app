@@ -2,7 +2,8 @@ const Sequelize = require("sequelize");
 const sequelize = require("../config/db/database");
 
 const ActivityLog = sequelize.define(
-  "activity log", {
+  "activity log",
+  {
     logID: {
       type: Sequelize.INTEGER,
       primaryKey: true,
@@ -15,7 +16,11 @@ const ActivityLog = sequelize.define(
         "DELETE",
         "CHANGE_STATUS",
         "SUBCOMP_UPDATE",
-        "TRANSMU_UPDATE"
+        "TRANSMU_UPDATE",
+        "SUBCOMP_ADD",
+        "SUBCOMP_DELETE",
+        "DESC_UPDATE",
+        "TOTAL_UPDATE"
       )
     },
     classRecordID: {
@@ -39,7 +44,8 @@ const ActivityLog = sequelize.define(
     quarter: {
       type: Sequelize.STRING
     }
-  }, {
+  },
+  {
     freezeTableName: true
   }
 );

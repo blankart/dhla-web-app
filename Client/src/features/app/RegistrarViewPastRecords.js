@@ -55,7 +55,7 @@ export class RegistrarViewPastRecords extends Component {
       .post('api/registrar/getpastrecords', {
         page: 1,
         pageSize: this.state.pageSize,
-        keyword: this.state.keyword,
+        keyword: event.target.value,
         gradeLevel: this.state.gradeLevel,
       })
       .then(res => {

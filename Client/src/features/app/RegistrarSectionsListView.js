@@ -7,7 +7,7 @@ import NavBar from './NavBar';
 import RegistrarSectionsList from './RegistrarSectionsList';
 import { Container, Grid } from 'tabler-react';
 import { withRouter } from 'react-router-dom';
-import { Result, Button } from 'antd';
+import { Result, Button, Spin } from 'antd';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
@@ -26,29 +26,30 @@ export class RegistrarSectionsListView extends Component {
   }
 
   componentDidMount() {
+    this.props.actions.setLoadingTrue();
     if (!this.props.app.auth.isAuthenticated) {
       this.props.history.push('/login');
     } else {
       if (this.props.app.auth.user.position != 2) {
         this.props.history.push('/page401');
+      } else {
+        axios
+          .get('api/registrar/getsy')
+          .then(res => {
+            this.props.actions.setLoadingFalse();
+            this.setState({ locked: false, isLoading: false });
+          })
+          .catch(err => {
+            this.props.actions.setLoadingFalse();
+            this.setState({ locked: true, isLoading: false });
+          });
       }
     }
   }
 
-  componentWillMount() {
-    axios
-      .get('api/registrar/getsy')
-      .then(res => {
-        this.setState({ locked: false, isLoading: false });
-      })
-      .catch(err => {
-        this.setState({ locked: true, isLoading: false });
-      });
-  }
-
   render() {
     return (
-      <div className="app-registrar-add-section-view">
+      <div className="app-registrar-add-section-view fh">
         {this.state.isLoading ? (
           ''
         ) : this.state.locked ? (

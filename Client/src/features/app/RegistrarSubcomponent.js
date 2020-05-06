@@ -32,6 +32,7 @@ import {
 } from 'tabler-react';
 import { Link } from 'react-router-dom';
 import { getImageUrl } from '../../utils';
+import ViewEditLog from './ViewEditLog';
 const { Option } = AutoComplete;
 
 export class RegistrarSubcomponent extends Component {
@@ -162,7 +163,7 @@ export class RegistrarSubcomponent extends Component {
   }
 
   render() {
-    const { locked } = this.state;
+    const { locked } = this.props;
     let headerData = [];
     let tableData = [];
     headerData.push(<Table.ColHeader colSpan={2}>Student Name</Table.ColHeader>);
@@ -401,6 +402,15 @@ export class RegistrarSubcomponent extends Component {
                   </Grid.Row>
                 </Card.Body>
               )}
+              <Card.Footer>
+                <Button.List align="right">
+                  <ViewEditLog
+                    classRecordID={this.props.classRecordID}
+                    quarter={this.state.quarter}
+                    position="Registrar"
+                  />
+                </Button.List>
+              </Card.Footer>
             </Card>
           </Grid.Row>
         </Container>

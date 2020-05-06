@@ -128,8 +128,8 @@ export class RegistrarIndividualDeliberation extends Component {
             <div>
               <Card.Title>
                 <Breadcrumb>
-                  <Breadcrumb.Item>Teachers</Breadcrumb.Item>
-                  <Breadcrumb.Item>Assign Subject Load</Breadcrumb.Item>
+                  <Breadcrumb.Item>Individual Deliberation</Breadcrumb.Item>
+                  <Breadcrumb.Item>Teachers List</Breadcrumb.Item>
                 </Breadcrumb>
               </Card.Title>
               <Card.Title>Individual Deliberation for S.Y. {this.state.schoolYear}</Card.Title>

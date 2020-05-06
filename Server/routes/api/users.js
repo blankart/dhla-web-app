@@ -28,8 +28,14 @@ const utils = require("../../utils");
 // @access Private
 
 router.post("/createAdmin", (req, res) => {
-  const { email, password } = req.body;
-  const { errors, isValid } = validateAdminCreateInput(req.body);
+  const {
+    email,
+    password
+  } = req.body;
+  const {
+    errors,
+    isValid
+  } = validateAdminCreateInput(req.body);
 
   // Validation Process
   if (!isValid) {
@@ -48,7 +54,6 @@ router.post("/createAdmin", (req, res) => {
       bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(password, salt, (err, hash) => {
           if (err) throw err;
-          console.log(hash);
           utils
             .createUser({
               email,
@@ -62,7 +67,9 @@ router.post("/createAdmin", (req, res) => {
                   accountID: user.accountID
                 })
                 .then(user => {
-                  res.json({ msg: "Account created successfully!" });
+                  res.json({
+                    msg: "Account created successfully!"
+                  });
                 });
             });
         });
@@ -76,8 +83,14 @@ router.post("/createAdmin", (req, res) => {
 // @access Public
 
 router.post("/login", (req, res) => {
-  const { email, password } = req.body;
-  const { errors, isValid } = validateLoginInput(req.body);
+  const {
+    email,
+    password
+  } = req.body;
+  const {
+    errors,
+    isValid
+  } = validateLoginInput(req.body);
 
   if (!isValid) {
     return res.status(400).json(errors);
@@ -98,9 +111,12 @@ router.post("/login", (req, res) => {
               case false:
               case true:
               case 2:
+              case 6:
                 Nonacademic.findOne({
-                  where: { accountID: user.accountID }
-                }).then(user2 => {
+                  where: {
+                    accountID: user.accountID
+                  }
+                }).then(async user2 => {
                   const payload = {
                     accountID: user.accountID,
                     email: user.email,
@@ -110,15 +126,17 @@ router.post("/login", (req, res) => {
 
                   if (!user.isActive) {
                     errors.isActive =
-                      "Account is disabled. Please contact your system administrator.";
+                      "Account is disabled. Please contact your school cashier for details.";
+                    errors.notice = await utils.getAccountNoticeByAccountID(user.accountID)
                     res.status(400).json(errors);
                   }
 
                   // Sign Nonacademic Token
                   jwt.sign(
                     payload,
-                    key.secretKey,
-                    { expiresIn: 100000 },
+                    key.secretKey, {
+                      expiresIn: "2 days"
+                    },
                     (err, token) => {
                       res.json({
                         token: "Bearer " + token
@@ -129,8 +147,10 @@ router.post("/login", (req, res) => {
                 break;
               case 3:
                 Teacher.findOne({
-                  where: { accountID: user.accountID }
-                }).then(user2 => {
+                  where: {
+                    accountID: user.accountID
+                  }
+                }).then(async user2 => {
                   const payload = {
                     accountID: user.accountID,
                     email: user.email,
@@ -141,15 +161,17 @@ router.post("/login", (req, res) => {
 
                   if (!user.isActive) {
                     errors.isActive =
-                      "Account is disabled. Please contact your system administrator.";
+                      "Account is disabled. Please contact your school cashier for details.";
+                    errors.notice = await utils.getAccountNoticeByAccountID(user.accountID)
                     res.status(400).json(errors);
                   }
 
                   // Sign Teacher Token
                   jwt.sign(
                     payload,
-                    key.secretKey,
-                    { expiresIn: "2 days" },
+                    key.secretKey, {
+                      expiresIn: "2 days"
+                    },
                     (err, token) => {
                       res.json({
                         token: "Bearer " + token
@@ -160,8 +182,10 @@ router.post("/login", (req, res) => {
                 break;
               case 4:
                 Student.findOne({
-                  where: { accountID: user.accountID }
-                }).then(user2 => {
+                  where: {
+                    accountID: user.accountID
+                  }
+                }).then(async user2 => {
                   const payload = {
                     accountID: user.accountID,
                     email: user.email,
@@ -171,15 +195,17 @@ router.post("/login", (req, res) => {
 
                   if (!user.isActive) {
                     errors.isActive =
-                      "Account is disabled. Please contact your system administrator.";
+                      "Account is disabled. Please contact your school cashier for details.";
+                    errors.notice = await utils.getAccountNoticeByAccountID(user.accountID)
                     res.status(400).json(errors);
                   }
 
                   // Sign Student Token
                   jwt.sign(
                     payload,
-                    key.secretKey,
-                    { expiresIn: 3600 },
+                    key.secretKey, {
+                      expiresIn: "2 days"
+                    },
                     (err, token) => {
                       res.json({
                         token: "Bearer " + token
@@ -190,8 +216,10 @@ router.post("/login", (req, res) => {
                 break;
               case 5:
                 ParentGuardian.findOne({
-                  where: { accountID: user.accountID }
-                }).then(user2 => {
+                  where: {
+                    accountID: user.accountID
+                  }
+                }).then(async user2 => {
                   const payload = {
                     accountID: user.accountID,
                     email: user.email,
@@ -201,15 +229,17 @@ router.post("/login", (req, res) => {
 
                   if (!user.isActive) {
                     errors.isActive =
-                      "Account is disabled. Please contact your system administrator.";
+                      "Account is disabled. Please contact your school cashier for details.";
+                    errors.notice = await utils.getAccountNoticeByAccountID(user.accountID)
                     res.status(400).json(errors);
                   }
 
                   // Sign ParentGuardian Token
                   jwt.sign(
                     payload,
-                    key.secretKey,
-                    { expiresIn: 3600 },
+                    key.secretKey, {
+                      expiresIn: "2 days"
+                    },
                     (err, token) => {
                       res.json({
                         token: "Bearer " + token
@@ -237,10 +267,19 @@ router.post("/login", (req, res) => {
 
 router.get(
   "/profile",
-  passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", {
+    session: false
+  }),
   (req, res) => {
-    const { accountID, position } = req.user;
-    UserAccount.findOne({ where: { accountID } }).then(user => {
+    const {
+      accountID,
+      position
+    } = req.user;
+    UserAccount.findOne({
+      where: {
+        accountID
+      }
+    }).then(user => {
       const payload = {
         firstName: user.firstName,
         lastName: user.lastName,
@@ -267,14 +306,29 @@ router.get(
         emergencyEmail: user.emergencyEmail,
         emergencyRelationship: user.emergencyRelationship
       };
-      if (position == false || position == true || position == 2) {
+      if (
+        position == false ||
+        position == true ||
+        position == 2 ||
+        position == 6
+      ) {
         // Get Nonacademic's Profile
-        Nonacademic.findOne({ where: { accountID } }).then(user2 => {
-          res.json({ ...payload, facultyID: user2.faultyID });
+        Nonacademic.findOne({
+          where: {
+            accountID
+          }
+        }).then(user2 => {
+          res.json({...payload,
+            facultyID: user2.faultyID
+          });
         });
       } else if (position == 3) {
         // Get Teacher's Profile
-        Teacher.findOne({ where: { accountID } }).then(user2 => {
+        Teacher.findOne({
+          where: {
+            accountID
+          }
+        }).then(user2 => {
           res.json({
             ...payload,
             teacherID: user2.teacherID,
@@ -283,7 +337,11 @@ router.get(
         });
       } else if (position == 4) {
         // Get Student's Profile
-        Student.findOne({ where: { accountID } }).then(user2 => {
+        Student.findOne({
+          where: {
+            accountID
+          }
+        }).then(user2 => {
           res.json({
             ...payload,
             studentID: user2.studentID,
@@ -305,7 +363,11 @@ router.get(
         });
       } else {
         // Get Parent's Profile
-        ParentGuardian.findOne({ where: { accountID } }).then(user2 => {
+        ParentGuardian.findOne({
+          where: {
+            accountID
+          }
+        }).then(user2 => {
           res.json({
             ...payload,
             parentID: user2.parentID,
@@ -326,7 +388,6 @@ const storage = multer.diskStorage({
     cb(null, "./public/images");
   },
   filename: (req, file, cb) => {
-    console.log(file);
     var filetype = "";
     if (file.mimetype === "image/gif") {
       filetype = "gif";
@@ -341,7 +402,9 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({ storage });
+const upload = multer({
+  storage
+});
 router.post(
   "/upload",
   upload.single("file"),
@@ -352,18 +415,27 @@ router.post(
     if (!req.file) {
       res.status(500);
     } else {
-      console.log(req.user.accountID);
-      const { accountID } = req.user;
-      UserAccount.findOne({ where: { accountID } }).then(user => {
+      const {
+        accountID
+      } = req.user;
+      UserAccount.findOne({
+        where: {
+          accountID
+        }
+      }).then(user => {
         try {
           fs.unlinkSync(`./public/${user.imageUrl}`);
         } catch (err) {
           console.log(err);
         }
         user
-          .update({ imageUrl: "images/" + req.file.filename })
+          .update({
+            imageUrl: "images/" + req.file.filename
+          })
           .then(result => {
-            res.status(200).json({ msg: "Success" });
+            res.status(200).json({
+              msg: "Success"
+            });
           });
       });
     }
@@ -376,10 +448,18 @@ router.post(
 
 router.post(
   "/changepassword",
-  passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", {
+    session: false
+  }),
   (req, res) => {
-    const { password, currentPassword } = req.body;
-    const { errors, isValid } = validateChangePassword(req.body);
+    const {
+      password,
+      currentPassword
+    } = req.body;
+    const {
+      errors,
+      isValid
+    } = validateChangePassword(req.body);
 
     UserAccount.findOne({
       where: {
@@ -394,15 +474,19 @@ router.post(
           bcrypt.genSalt(10, (err, salt) => {
             bcrypt.hash(password, salt, (err, hash) => {
               if (err) throw err;
-              user.update({ password: hash }).then(() => {
-                res.status(200).json({ msg: "Password updated successfully!" });
+              user.update({
+                password: hash
+              }).then(() => {
+                res.status(200).json({
+                  msg: "Password updated successfully!"
+                });
               });
             });
           });
         } else {
-          errors.currentPassword = isEmpty(currentPassword)
-            ? "Current password field is required"
-            : "Password incorrect";
+          errors.currentPassword = isEmpty(currentPassword) ?
+            "Current password field is required" :
+            "Password incorrect";
           return res.status(400).json(errors);
         }
       });

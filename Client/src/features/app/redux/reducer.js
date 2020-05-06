@@ -43,6 +43,13 @@ import { reducer as endSchoolYearReducer } from './endSchoolYear';
 import { reducer as addSubjectSectionStudentBulkReducer } from './addSubjectSectionStudentBulk';
 import { reducer as submitClassRecordReducer } from './submitClassRecord';
 import { reducer as postClassRecordReducer } from './postClassRecord';
+import { reducer as revertClassRecordReducer } from './revertClassRecord';
+import { reducer as generatePdfStudentReducer } from './generatePdfStudent';
+import { reducer as generatePdfSectionReducer } from './generatePdfSection';
+import { reducer as restrictAccountReducer } from './restrictAccount';
+import { reducer as unrestrictAccountReducer } from './unrestrictAccount';
+import { reducer as updateCashierProfileReducer } from './updateCashierProfile';
+import { reducer as updateStudentProfileReducer } from './updateStudentProfile';
 
 const reducers = [
   setCurrentUserReducer,
@@ -89,6 +96,13 @@ const reducers = [
   addSubjectSectionStudentBulkReducer,
   submitClassRecordReducer,
   postClassRecordReducer,
+  revertClassRecordReducer,
+  generatePdfStudentReducer,
+  generatePdfSectionReducer,
+  restrictAccountReducer,
+  unrestrictAccountReducer,
+  updateCashierProfileReducer,
+  updateStudentProfileReducer,
 ];
 
 export default function reducer(state = initialState, action) {

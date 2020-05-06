@@ -2,8 +2,7 @@ const Sequelize = require("sequelize");
 const sequelize = require("../config/db/database");
 
 const UserAccount = sequelize.define(
-  "user account",
-  {
+  "user account", {
     accountID: {
       type: Sequelize.INTEGER,
       primaryKey: true,
@@ -93,8 +92,10 @@ const UserAccount = sequelize.define(
     emergencyRelationship: {
       type: Sequelize.STRING(15)
     }
-  },
-  { freezeTableName: true }
+  }, {
+    freezeTableName: true,
+    paranoid: true
+  }
 );
 
 module.exports = UserAccount;

@@ -25,6 +25,7 @@ export class TeacherSummaryPerQuarterView extends Component {
   }
 
   componentDidMount() {
+    this.props.actions.setLoadingTrue();
     if (!this.props.app.auth.isAuthenticated) {
       this.props.history.push('/login');
     } else {
@@ -33,25 +34,25 @@ export class TeacherSummaryPerQuarterView extends Component {
       } else {
         if (!['Q1', 'Q2', 'Q3', 'Q4'].includes(this.props.match.params.q)) {
           this.props.history.push('/page404');
+        } else {
+          axios
+            .get('api/teacher/getsy')
+            .then(res => {
+              this.props.actions.setLoadingFalse();
+              this.setState({ locked: false, isLoading: false });
+            })
+            .catch(err => {
+              this.props.actions.setLoadingFalse();
+              this.setState({ locked: true, isLoading: false });
+            });
         }
       }
     }
   }
 
-  componentWillMount() {
-    axios
-      .get('api/teacher/getsy')
-      .then(res => {
-        this.setState({ locked: false, isLoading: false });
-      })
-      .catch(err => {
-        this.setState({ locked: true, isLoading: false });
-      });
-  }
-
   render() {
     return (
-      <div className="app-teacher-summary-per-quarter-view">
+      <div className="app-teacher-summary-per-quarter-view fh">
         {this.state.isLoading ? (
           ''
         ) : this.state.locked ? (

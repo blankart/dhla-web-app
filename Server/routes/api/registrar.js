@@ -1,4 +1,5 @@
 const express = require("express");
+const PDFDocument = require("pdfkit");
 const router = express.Router();
 const UserAccount = require("../../models/UserAccount");
 const passport = require("passport");
@@ -16,12 +17,14 @@ const TeacherSection = require("../../models/TeacherSection");
 const Subject = require("../../models/Subject");
 const Component = require("../../models/Component");
 const Subcomponent = require("../../models/Subcomponent");
-const StudentGrades = require("../../models/StudentGrades");
+const StudentSubjectGrades = require("../../models/StudentSubjectGrades");
 const SchoolYear = require("../../models/SchoolYear");
 const Grade = require("../../models/Grade");
 const ClassRecordStatus = require("../../models/ClassRecordStatus");
 const ActivityLog = require("../../models/ActivityLog");
 const LogDetails = require("../../models/LogDetails");
+const StudentGrades = require("../../models/StudentGrades");
+const StudentFinalGrade = require("../../models/StudentFinalGrade");
 const Op = Sequelize.Op;
 
 //Import Utility Functions
@@ -68,12 +71,8 @@ router.post(
       emergencyRelationship
     } = req.body;
 
-    console.log(req.body.firstName);
 
-    const {
-      errors,
-      isValid
-    } = validateEditProfileNonacademic(req.body);
+    const { errors, isValid } = validateEditProfileNonacademic(req.body);
 
     if (!isValid) {
       return res.status(400).json(errors);
@@ -131,17 +130,13 @@ router.post(
     session: false
   }),
   (req, res) => {
-    let {
-      deadline
-    } = req.body;
+    let { deadline } = req.body;
     const deadlineDate = utils.getPHTime(new Date(deadline));
     const dateSet = utils.getPHTime();
     if (deadlineDate.getTime() <= dateSet.getTime()) {
-      res
-        .status(400)
-        .json({
-          msg: "Invalid date. Date must be greater than current date."
-        });
+      res.status(400).json({
+        msg: "Invalid date. Date must be greater than current date."
+      });
     } else {
       Teacher.findAll().then(teachers => {
         if (teachers.length != 0) {
@@ -167,11 +162,9 @@ router.post(
               }
             });
           }
-          res
-            .status(200)
-            .json({
-              msg: "Successfully updated the submission deadline!"
-            });
+          res.status(200).json({
+            msg: "Successfully updated the submission deadline!"
+          });
         } else {
           res.status(404).json({
             msg: "No active teachers found."
@@ -196,24 +189,22 @@ router.get(
       where: {
         isActive: true
       }
-    }).then(
-      submissiondeadline => {
-        if (submissiondeadline.length == 0) {
-          res.status(404).json({
-            msg: "There is no active submission deadline."
+    }).then(submissiondeadline => {
+      if (submissiondeadline.length == 0) {
+        res.status(404).json({
+          msg: "There is no active submission deadline."
+        });
+      } else {
+        submissiondeadline.forEach(async (entry, key, arr) => {
+          await entry.update({
+            isActive: 0
           });
-        } else {
-          submissiondeadline.forEach(async(entry, key, arr) => {
-            await entry.update({
-              isActive: 0
-            });
-          });
-          res.status(200).json({
-            msg: "Disabled successfully!"
-          });
-        }
+        });
+        res.status(200).json({
+          msg: "Disabled successfully!"
+        });
       }
-    );
+    });
   }
 );
 
@@ -226,10 +217,8 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      deadlineID
-    } = req.body;
+  async (req, res) => {
+    const { deadlineID } = req.body;
     if (deadlineID != 0) {
       SubmissionDeadline.findOne({
         where: {
@@ -240,11 +229,9 @@ router.post(
           sd.update({
             isActive: 0
           }).then(() => {
-            res
-              .status(200)
-              .json({
-                msg: "Submission deadline removed successfully."
-              });
+            res.status(200).json({
+              msg: "Submission deadline removed successfully."
+            });
           });
         } else {
           res.status(404).json({
@@ -260,11 +247,9 @@ router.post(
               isActive: 0
             });
           }
-          res
-            .status(200)
-            .json({
-              msg: "Submission deadline removed successfully."
-            });
+          res.status(200).json({
+            msg: "Submission deadline removed successfully."
+          });
         }
       });
     }
@@ -280,47 +265,38 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      teacherID,
-      deadline
-    } = req.body;
+  async (req, res) => {
+    const { teacherID, deadline } = req.body;
     const deadlineDate = utils.getPHTime(new Date(deadline));
     const dateSet = utils.getPHTime();
     if (deadlineDate.getTime() <= dateSet.getTime()) {
-      res
-        .status(400)
-        .json({
-          msg: "Invalid date. Date must be greater than current date."
-        });
+      res.status(400).json({
+        msg: "Invalid date. Date must be greater than current date."
+      });
     } else {
       SubmissionDeadline.findOne({
         where: {
           teacherID,
           isActive: 1
         }
-      }).then(
-        sd => {
-          if (sd) {
-            sd.update({
-              deadline: deadlineDate,
-              dateSet
-            });
-          } else {
-            SubmissionDeadline.create({
-              deadline: deadlineDate,
-              dateSet,
-              teacherID,
-              isActive: 1
-            });
-          }
-          res
-            .status(200)
-            .json({
-              msg: "Successfully updated the submission deadline!"
-            });
+      }).then(sd => {
+        if (sd) {
+          sd.update({
+            deadline: deadlineDate,
+            dateSet
+          });
+        } else {
+          SubmissionDeadline.create({
+            deadline: deadlineDate,
+            dateSet,
+            teacherID,
+            isActive: 1
+          });
         }
-      );
+        res.status(200).json({
+          msg: "Successfully updated the submission deadline!"
+        });
+      });
     }
   }
 );
@@ -334,18 +310,12 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    let {
-      page,
-      pageSize,
-      keyword
-    } = req.body;
+  async (req, res) => {
+    let { page, pageSize, keyword } = req.body;
     page = page - 1;
     let offset = page * pageSize;
     let limit = offset + pageSize;
     Section.findAll({
-      limit,
-      offset,
       where: {
         sectionName: {
           [Op.like]: `%${keyword}%`
@@ -355,7 +325,7 @@ router.post(
     }).then(sections => {
       let sectionData = [];
       if (sections.length != 0) {
-        sections.slice(0, pageSize).forEach(async(section, key, arr) => {
+        sections.forEach(async (section, key, arr) => {
           const keyID = section.sectionID;
           const name = section.sectionName;
           const gradeLevel = section.gradeLevel;
@@ -366,18 +336,23 @@ router.post(
           });
           if (key == arr.length - 1) {
             Section.findAndCountAll({
-                where: {
-                  sectionName: {
-                    [Op.like]: `%${keyword}%`
-                  },
-                  archived: 0
-                }
-              })
+              where: {
+                sectionName: {
+                  [Op.like]: `%${keyword}%`
+                },
+                archived: 0
+              }
+            })
               .then(count => {
-                sectionData.sort((a, b) => (a.key > b.key ? 1 : -1));
+                sectionData.sort((a, b) =>
+                  a.gradeLevel > b.gradeLevel ? 1 : -1
+                );
                 res.status(200).json({
                   numOfPages: Math.ceil(count.count / pageSize),
-                  sectionList: sectionData
+                  sectionList: sectionData.slice(
+                    pageSize * page,
+                    pageSize * (page + 1)
+                  )
                 });
               })
               .catch(err => {
@@ -403,10 +378,8 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      sectionID
-    } = req.body;
+  async (req, res) => {
+    const { sectionID } = req.body;
     let gradeLevel = await utils.getGradeLevelBySectionID(sectionID);
     if (gradeLevel === "") {
       res.status(404).json({
@@ -430,9 +403,7 @@ router.post(
     session: false
   }),
   (req, res) => {
-    const {
-      gradeLevel
-    } = req.body;
+    const { gradeLevel } = req.body;
     const gradeLevels = [
       "N",
       "K1",
@@ -472,15 +443,9 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      sectionName,
-      gradeLevel
-    } = req.body;
-    const {
-      errors,
-      isValid
-    } = validateAddSection({
+  async (req, res) => {
+    const { sectionName, gradeLevel } = req.body;
+    const { errors, isValid } = validateAddSection({
       sectionName
     });
 
@@ -521,16 +486,9 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      sectionID,
-      sectionName,
-      gradeLevel
-    } = req.body;
-    const {
-      errors,
-      isValid
-    } = validateAddSection({
+  async (req, res) => {
+    const { sectionID, sectionName, gradeLevel } = req.body;
+    const { errors, isValid } = validateAddSection({
       sectionName
     });
     if (!isValid) {
@@ -542,14 +500,16 @@ router.post(
       }
     }).then(section => {
       if (section) {
-        section.update({
-          sectionName,
-          gradeLevel
-        }).then(section2 => {
-          res.status(200).json({
-            msg: "Section updated successfully!"
+        section
+          .update({
+            sectionName,
+            gradeLevel
+          })
+          .then(section2 => {
+            res.status(200).json({
+              msg: "Section updated successfully!"
+            });
           });
-        });
       } else {
         res.status(404).json({
           msg: "Section not found"
@@ -568,20 +528,15 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      sectionID
-    } = req.body;
+  async (req, res) => {
+    const { sectionID } = req.body;
     Section.findOne({
-        where: {
-          sectionID
-        }
-      })
+      where: {
+        sectionID
+      }
+    })
       .then(async section => {
-        let {
-          schoolYearID,
-          quarter
-        } = await utils.getActiveSY();
+        let { schoolYearID, quarter } = await utils.getActiveSY();
         await StudentSection.findAll({
           where: {
             sectionID,
@@ -589,12 +544,13 @@ router.post(
           }
         }).then(async studentsections => {
           let hasData = [];
-          studentsections.forEach(async(studentsection, key, arr) => {
+          studentsections.forEach(async (studentsection, key, arr) => {
             hasData.push(studentsection.studsectID);
           });
           if (hasData.length != 0) {
             res.status(400).json({
-              msg: "Operation could not be completed. Remove all students under this section first."
+              msg:
+                "Operation could not be completed. Remove all students under this section first."
             });
           } else {
             await SubjectSection.findAll({
@@ -604,13 +560,14 @@ router.post(
               }
             }).then(async ubjectsections => {
               let hasData2 = [];
-              subjectsections.forEach(async(subjectsection, key, arr) => {
+              subjectsections.forEach(async (subjectsection, key, arr) => {
                 hasData.push(subjectsection.subsectID);
               });
 
               if (hasData2.length != 0) {
                 res.status(400).json({
-                  msg: "Operation could not be completed. There are active subjects in this section."
+                  msg:
+                    "Operation could not be completed. There are active subjects in this section."
                 });
               } else {
                 await TeacherSection.findOne({
@@ -628,11 +585,9 @@ router.post(
                     archived: 1
                   })
                   .then(() => {
-                    res
-                      .status(200)
-                      .json({
-                        msg: "Section deleted successfully!"
-                      });
+                    res.status(200).json({
+                      msg: "Section deleted successfully!"
+                    });
                   })
                   .catch(err => res.status(404));
               }
@@ -653,37 +608,37 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    let {
-      page,
-      pageSize,
-      keyword
-    } = req.body;
+  async (req, res) => {
+    let { page, pageSize, keyword } = req.body;
     page = page - 1;
     let offset = page * pageSize;
     let limit = offset + pageSize;
 
     UserAccount.findAll({
-        limit,
-        offset,
-        where: {
-          position: 4,
-          [Op.or]: [{
+      limit,
+      offset,
+      where: {
+        position: 4,
+        [Op.or]: [
+          {
             firstName: {
               [Op.like]: `%${keyword}%`
             }
-          }, {
+          },
+          {
             lastName: {
               [Op.like]: `%${keyword}%`
             }
-          }]
-        }
-      })
+          }
+        ]
+      }
+    })
       .then(users => {
         let accountData = [];
         if (users.length != 0) {
-          users.slice(0, pageSize).forEach(async(user, key, arr) => {
+          users.slice(0, pageSize).forEach(async (user, key, arr) => {
             const keyID = user.accountID;
+            const studentID = await utils.getStudentID(user.accountID);
             const email = user.email;
             const name = `${utils.capitalize(
               user.lastName
@@ -695,28 +650,31 @@ router.post(
             const isActive = user.isActive;
             accountData.push({
               key: keyID,
+              studentID,
               email,
               name,
               position,
               imageUrl,
               isActive
             });
-            console.log(key + " User account");
             if (key == arr.length - 1) {
               UserAccount.findAndCountAll({
-                  where: {
-                    position: 4,
-                    [Op.or]: [{
+                where: {
+                  position: 4,
+                  [Op.or]: [
+                    {
                       firstName: {
                         [Op.like]: `%${keyword}%`
                       }
-                    }, {
+                    },
+                    {
                       lastName: {
                         [Op.like]: `%${keyword}%`
                       }
-                    }]
-                  }
-                })
+                    }
+                  ]
+                }
+              })
                 .then(count => {
                   accountData.sort((a, b) =>
                     a.accountID > b.accountID ? 1 : -1
@@ -727,18 +685,16 @@ router.post(
                   });
                 })
                 .catch(err => {
-                  res.status(404);
+                  res.status(200).json({ numOfPages: 1, accountList: [] });
                 });
             }
           });
         } else {
-          res.status(404).json({
-            msg: "Not found"
-          });
+          res.status(200).json({ numOfPages: 1, accountList: [] });
         }
       })
       .catch(err => {
-        res.status(404);
+        res.status(200).json({ numOfPages: 1, accountList: [] });
       });
   }
 );
@@ -752,35 +708,34 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    let {
-      page,
-      pageSize,
-      keyword
-    } = req.body;
+  async (req, res) => {
+    let { page, pageSize, keyword } = req.body;
     page = page - 1;
     let offset = page * pageSize;
     let limit = offset + pageSize;
     UserAccount.findAll({
-        limit,
-        offset,
-        where: {
-          position: 3,
-          [Op.or]: [{
+      limit,
+      offset,
+      where: {
+        position: 3,
+        [Op.or]: [
+          {
             firstName: {
               [Op.like]: `%${keyword}%`
             }
-          }, {
+          },
+          {
             lastName: {
               [Op.like]: `%${keyword}%`
             }
-          }]
-        }
-      })
+          }
+        ]
+      }
+    })
       .then(async users => {
         let accountData = [];
         if (users.length != 0) {
-          users.slice(0, pageSize).forEach(async(user, key, arr) => {
+          users.slice(0, pageSize).forEach(async (user, key, arr) => {
             const keyID = user.accountID;
             const teacherID = await utils.getTeacherID(user.accountID);
             const email = user.email;
@@ -792,20 +747,14 @@ router.post(
             const position = utils.displayPosition(user.position);
             const imageUrl = user.imageUrl;
             const isActive = user.isActive;
-            const {
-              deadline,
-              deadlineID
-            } = await SubmissionDeadline.findOne({
+            const { deadline, deadlineID } = await SubmissionDeadline.findOne({
               where: {
                 teacherID,
                 isActive: 1
               }
             }).then(sd => {
               if (sd) {
-                const {
-                  deadline,
-                  deadlineID
-                } = sd;
+                const { deadline, deadlineID } = sd;
                 return {
                   deadline,
                   deadlineID
@@ -830,19 +779,22 @@ router.post(
             });
             if (key == arr.length - 1) {
               UserAccount.findAndCountAll({
-                  where: {
-                    position: 3,
-                    [Op.or]: [{
+                where: {
+                  position: 3,
+                  [Op.or]: [
+                    {
                       firstName: {
                         [Op.like]: `%${keyword}%`
                       }
-                    }, {
+                    },
+                    {
                       lastName: {
                         [Op.like]: `%${keyword}%`
                       }
-                    }]
-                  }
-                })
+                    }
+                  ]
+                }
+              })
                 .then(count => {
                   accountData.sort((a, b) =>
                     a.accountID > b.accountID ? 1 : -1
@@ -853,23 +805,180 @@ router.post(
                   });
                 })
                 .catch(err => {
-                  res.status(404).json({
-                    msg: "Not found"
-                  });
+                  res.status(200).json({ numOfPages: 1, accountList: [] });
                 });
             }
           });
         } else {
-          res.status(404).json({
-            msg: "Not found"
-          });
+          res.status(200).json({ numOfPages: 1, accountList: [] });
         }
       })
       .catch(err => {
-        res.status(404).json({
-          msg: "Not found"
-        });
+        res.status(200).json({ numOfPages: 1, accountList: [] });
       });
+  }
+);
+// @route POST api/registrar/getfinalsubsect
+// @desc Get subject section where class record status = 'F'
+// @access Private
+
+router.post(
+  "/getfinalsubsect",
+  passport.authenticate("registrar", {
+    session: false
+  }),
+  async (req, res) => {
+    let { teacherID, page, pageSize, quarter } = req.body;
+    page = page - 1;
+    let offset = page * pageSize;
+    let limit = offset + pageSize;
+    const { schoolYearID } = await utils.getActiveSY();
+    const deadline = await SubmissionDeadline.findOne({
+      where: {
+        teacherID,
+        isActive: 1
+      }
+    }).then(sd => {
+      if (sd) {
+        return sd.deadline;
+      } else {
+        return "NOT SET";
+      }
+    });
+    const classRecordIDs = await SubjectSection.findAll({
+      where: {
+        teacherID,
+        schoolYearID,
+        subjectType: {
+          [Op.in]:
+            quarter == "Q1" || quarter == "Q2"
+              ? ["NON_SHS", "1ST_SEM"]
+              : ["NON_SHS", "2ND_SEM"]
+        }
+      }
+    }).then(async ss => {
+      if (ss) {
+        let data = [];
+        for (const [i, v] of ss.entries()) {
+          const crs = await ClassRecordStatus.findOne({
+            where: {
+              classRecordID: v.classRecordID
+            }
+          });
+          if (quarter == "Q1" || quarter == "Q2") {
+            if (crs[quarter.toLowerCase()] == "F") {
+              data.push(v.classRecordID);
+            }
+          } else {
+            if (quarter == "Q3") {
+              if (v.subjectType == "NON_SHS") {
+                if (crs[quarter.toLowerCase()] == "F") {
+                  data.push(v.classRecordID);
+                }
+              } else {
+                if (crs["q1"] == "F") {
+                  data.push(v.classRecordID);
+                }
+              }
+            } else {
+              if (v.subjectType == "NON_SHS") {
+                if (crs[quarter.toLowerCase()] == "F") {
+                  data.push(v.classRecordID);
+                }
+              } else {
+                if (crs["q2"] == "F") {
+                  data.push(v.classRecordID);
+                }
+              }
+            }
+          }
+        }
+        return data;
+      }
+    });
+    if (classRecordIDs.length == 0) {
+      res.status(404).json({
+        msg: "Class Record not found!"
+      });
+    } else {
+      let condition = {};
+      condition["classRecordID"] = {
+        [Op.in]: classRecordIDs
+      };
+      await ClassRecordStatus.findAll({
+        limit,
+        offset,
+        where: condition
+      }).then(async crs => {
+        if (crs) {
+          if (crs.length == 0) {
+            res.status(404).json({
+              msg: "No class record for deliberation found"
+            });
+          } else {
+            let data2 = [];
+            let numOfPages = 1;
+            crs.slice(0, pageSize).forEach(async (v, k, r) => {
+              const { classRecordID } = v;
+              const subjectType = await utils.getSubjectTypeByClassRecordID(
+                classRecordID
+              );
+              let dateSubmitted = v[`${quarter.toLowerCase()}DateSubmitted`];
+              if (subjectType == "2ND_SEM") {
+                if (quarter == "Q3") {
+                  dateSubmitted = v.q1DateSubmitted;
+                } else if (quarter == "Q4") {
+                  dateSubmitted = v.q2DateSubmitted;
+                }
+              }
+              const {
+                subjectCode,
+                subjectName,
+                section,
+                subsectID
+              } = await SubjectSection.findOne({
+                where: {
+                  classRecordID
+                }
+              }).then(async cr => {
+                if (cr) {
+                  const subjectCode = await utils.getSubjectCode(cr.subjectID);
+                  const { subsectID } = cr;
+                  const subjectName = await utils.getSubjectName(cr.subjectID);
+                  const section = await utils.getSectionName(cr.sectionID);
+                  return {
+                    subjectCode,
+                    subsectID,
+                    subjectName,
+                    section
+                  };
+                }
+              });
+              data2.push({
+                classRecordID,
+                dateSubmitted,
+                subjectCode,
+                subjectName,
+                section,
+                subsectID
+              });
+              if (k == r.length - 1) {
+                numOfPages = await ClassRecordStatus.findAndCountAll({
+                  where: condition
+                }).then(count => {
+                  return Math.ceil(count.count / pageSize);
+                });
+                res.status(200).json({
+                  classRecordList: data2,
+                  numOfPages,
+                  deadline
+                });
+              }
+            });
+          }
+        }
+      });
+    }
   }
 );
 
@@ -882,15 +991,9 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    let {
-      page,
-      pageSize,
-      keyword
-    } = req.body;
-    const {
-      gradeLevel
-    } = req.body;
+  async (req, res) => {
+    let { page, pageSize, keyword } = req.body;
+    const { gradeLevel } = req.body;
     let pastSY = await utils.getPastSY();
     let pastSYID = await utils.getSYID(pastSY);
     const gradeLevels = [
@@ -912,9 +1015,9 @@ router.post(
     ];
     const gradeLevelIndex = gradeLevels.indexOf(gradeLevel);
     let pastGradeLevel =
-      gradeLevelIndex == 0 ?
-      gradeLevels[gradeLevelIndex] :
-      gradeLevels[gradeLevelIndex - 1];
+      gradeLevelIndex == 0
+        ? gradeLevels[gradeLevelIndex]
+        : gradeLevels[gradeLevelIndex - 1];
     let sectionsID = await utils.getSectionsIDByGradeLevel(pastGradeLevel);
     let recordsData = {
       numOfPages: 1,
@@ -946,35 +1049,36 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      keyword
-    } = req.body;
+  async (req, res) => {
+    const { keyword } = req.body;
     let page = 1;
     let pageSize = 5;
     page = page - 1;
     let offset = page * pageSize;
     let limit = offset + pageSize;
     UserAccount.findAll({
-        limit,
-        offset,
-        where: {
-          position: 4,
-          [Op.or]: [{
+      limit,
+      offset,
+      where: {
+        position: 4,
+        [Op.or]: [
+          {
             firstName: {
               [Op.like]: `%${keyword}%`
             }
-          }, {
+          },
+          {
             lastName: {
               [Op.like]: `%${keyword}%`
             }
-          }]
-        }
-      })
+          }
+        ]
+      }
+    })
       .then(users => {
         let studentData = [];
         if (users.length != 0) {
-          users.slice(0, pageSize).forEach(async(user, key, arr) => {
+          users.slice(0, pageSize).forEach(async (user, key, arr) => {
             const keyID = await utils.getStudentID(user.accountID);
             const name = `${utils.capitalize(
               user.lastName
@@ -1017,35 +1121,36 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      keyword
-    } = req.body;
+  async (req, res) => {
+    const { keyword } = req.body;
     let page = 1;
     let pageSize = 5;
     page = page - 1;
     let offset = page * pageSize;
     let limit = offset + pageSize;
     UserAccount.findAll({
-        limit,
-        offset,
-        where: {
-          position: 3,
-          [Op.or]: [{
+      limit,
+      offset,
+      where: {
+        position: 3,
+        [Op.or]: [
+          {
             firstName: {
               [Op.like]: `%${keyword}%`
             }
-          }, {
+          },
+          {
             lastName: {
               [Op.like]: `%${keyword}%`
             }
-          }]
-        }
-      })
+          }
+        ]
+      }
+    })
       .then(users => {
         let teacherData = [];
         if (users.length != 0) {
-          users.slice(0, pageSize).forEach(async(user, key, arr) => {
+          users.slice(0, pageSize).forEach(async (user, key, arr) => {
             const keyID = await utils.getTeacherID(user.accountID);
             const name = `${utils.capitalize(
               user.lastName
@@ -1088,20 +1193,15 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      keyword
-    } = req.body;
+  async (req, res) => {
+    const { keyword } = req.body;
     let page = 1;
     let pageSize = 5;
     page = page - 1;
     let offset = page * pageSize;
     let limit = offset + pageSize;
     let studentsID = await utils.getStudentsIDByKeyword(keyword);
-    let {
-      schoolYearID,
-      quarter
-    } = await utils.getActiveSY();
+    let { schoolYearID, quarter } = await utils.getActiveSY();
     if (studentsID.length == 0) {
       res.status(404).json({
         msg: "Not found!"
@@ -1178,10 +1278,8 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      schoolYear
-    } = req.body;
+  async (req, res) => {
+    const { schoolYear } = req.body;
     let checker = schoolYear.split("-");
     if (checker.length != 2) {
       res.status(400).json({
@@ -1203,19 +1301,23 @@ router.post(
               msg: "Invalid operation. There is an active school year"
             });
           } else {
-            SchoolYear.create({
-              schoolYear,
-              isActive: 1,
-              quarter: "Q1"
-            }).then(
-              () => {
-                res
-                  .status(200)
-                  .json({
+            SchoolYear.findOne({ where: { schoolYear } }).then(sy2 => {
+              if (sy2) {
+                res.status(404).json({
+                  msg: "Invalid operation. School year already exists"
+                });
+              } else {
+                SchoolYear.create({
+                  schoolYear,
+                  isActive: 1,
+                  quarter: "Q1"
+                }).then(() => {
+                  res.status(200).json({
                     msg: "School year created successfully!"
                   });
+                });
               }
-            );
+            });
           }
         });
       }
@@ -1232,10 +1334,8 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      schoolYearID
-    } = req.body;
+  async (req, res) => {
+    const { schoolYearID } = req.body;
     SchoolYear.findOne({
       where: {
         schoolYearID
@@ -1267,14 +1367,9 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      sectionID
-    } = req.body;
-    const {
-      schoolYearID,
-      quarter
-    } = await utils.getActiveSY();
+  async (req, res) => {
+    const { sectionID } = req.body;
+    const { schoolYearID, quarter } = await utils.getActiveSY();
     const data = await SubjectSection.findAll({
       where: {
         sectionID,
@@ -1284,12 +1379,7 @@ router.post(
       if (ss.length != 0) {
         let data = [];
         for (const [index, value] of ss.entries()) {
-          const {
-            subsectID,
-            subjectType,
-            subjectID,
-            teacherID
-          } = value;
+          const { subsectID, subjectType, subjectID, teacherID } = value;
           const subjectName = await utils.getSubjectName(subjectID);
           const teacher = await utils.getTeacherName(teacherID);
           if (subjectType == "NON_SHS") {
@@ -1338,11 +1428,8 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      schoolYearID,
-      quarter
-    } = req.body;
+  async (req, res) => {
+    const { schoolYearID, quarter } = req.body;
     SchoolYear.findOne({
       where: {
         schoolYearID
@@ -1351,7 +1438,7 @@ router.post(
       if (sy) {
         sy.update({
           quarter
-        }).then(async() => {
+        }).then(async () => {
           const classRecordIDs = await SubjectSection.findAll({
             where: {
               schoolYearID
@@ -1364,7 +1451,6 @@ router.post(
               return data;
             }
           });
-          // console.log(classRecordIDs);
           ClassRecordStatus.findAll({
             where: {
               classRecordID: {
@@ -1377,19 +1463,13 @@ router.post(
                 const subjectType = await utils.getSubjectTypeByClassRecordID(
                   value.classRecordID
                 );
-                const {
-                  sectionID,
-                  subjectID
-                } = await SubjectSection.findOne({
+                const { sectionID, subjectID } = await SubjectSection.findOne({
                   where: {
                     classRecordID: value.classRecordID
                   }
                 }).then(ss => {
                   if (ss) {
-                    const {
-                      sectionID,
-                      subjectID
-                    } = ss;
+                    const { sectionID, subjectID } = ss;
                     return {
                       sectionID,
                       subjectID
@@ -1401,98 +1481,116 @@ router.post(
                     value.q1 == "L" &&
                     (subjectType == "NON_SHS" || subjectType == "1ST_SEM")
                   ) {
-                    await value.update({
-                      q1: "E"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "L",
-                      newVal: "E",
-                      quarter: "Q1"
-                    });
+                    await value.update(
+                      {
+                        q1: "E"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "L",
+                        newVal: "E",
+                        quarter: "Q1"
+                      }
+                    );
                   }
                   if (
                     value.q2 == "E" &&
                     (subjectType == "NON_SHS" || subjectType == "1ST_SEM")
                   ) {
-                    await value.update({
-                      q2: "L"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "E",
-                      newVal: "L",
-                      quarter: "Q2"
-                    });
+                    await value.update(
+                      {
+                        q2: "L"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "E",
+                        newVal: "L",
+                        quarter: "Q2"
+                      }
+                    );
                   }
                   if (value.q3 == "E" && subjectType == "NON_SHS") {
-                    await value.update({
-                      q3: "L"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "E",
-                      newVal: "L",
-                      quarter: "Q3"
-                    });
+                    await value.update(
+                      {
+                        q3: "L"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "E",
+                        newVal: "L",
+                        quarter: "Q3"
+                      }
+                    );
                   }
                   if (value.q1 == "E" && subjectType == "2ND_SEM") {
-                    await value.update({
-                      q1: "L"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "E",
-                      newVal: "L",
-                      quarter: "Q1"
-                    });
+                    await value.update(
+                      {
+                        q1: "L"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "E",
+                        newVal: "L",
+                        quarter: "Q1"
+                      }
+                    );
                   }
                   if (value.q4 == "E" && subjectType == "NON_SHS") {
-                    await value.update({
-                      q4: "L"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "E",
-                      newVal: "L",
-                      quarter: "Q4"
-                    });
+                    await value.update(
+                      {
+                        q4: "L"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "E",
+                        newVal: "L",
+                        quarter: "Q4"
+                      }
+                    );
                   }
 
                   if (value.q2 == "E" && subjectType == "2ND_SEM") {
-                    await value.update({
-                      q2: "L"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "E",
-                      newVal: "L",
-                      quarter: "Q2"
-                    });
+                    await value.update(
+                      {
+                        q2: "L"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "E",
+                        newVal: "L",
+                        quarter: "Q2"
+                      }
+                    );
                   }
                 }
 
@@ -1501,295 +1599,349 @@ router.post(
                     value.q2 == "L" &&
                     (subjectType == "NON_SHS" || subjectType == "1ST_SEM")
                   ) {
-                    await value.update({
-                      q2: "E"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "L",
-                      newVal: "E",
-                      quarter: "Q2"
-                    });
+                    await value.update(
+                      {
+                        q2: "E"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "L",
+                        newVal: "E",
+                        quarter: "Q2"
+                      }
+                    );
                   }
                   if (
                     value.q1 == "E" &&
                     (subjectType == "NON_SHS" || subjectType == "1ST_SEM")
                   ) {
-                    await value.update({
-                      q1: "L"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "E",
-                      newVal: "L",
-                      quarter: "Q1"
-                    });
+                    await value.update(
+                      {
+                        q1: "L"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "E",
+                        newVal: "L",
+                        quarter: "Q1"
+                      }
+                    );
                   }
                   if (value.q3 == "E" && subjectType == "NON_SHS") {
-                    await value.update({
-                      q3: "L"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "E",
-                      newVal: "L",
-                      quarter: "Q3"
-                    });
+                    await value.update(
+                      {
+                        q3: "L"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "E",
+                        newVal: "L",
+                        quarter: "Q3"
+                      }
+                    );
                   }
                   if (value.q1 == "E" && subjectType == "2ND_SEM") {
-                    await value.update({
-                      q1: "L"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "E",
-                      newVal: "L",
-                      quarter: "Q1"
-                    });
+                    await value.update(
+                      {
+                        q1: "L"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "E",
+                        newVal: "L",
+                        quarter: "Q1"
+                      }
+                    );
                   }
                   if (value.q4 == "E" && subjectType == "NON_SHS") {
-                    await value.update({
-                      q4: "L"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "E",
-                      newVal: "L",
-                      quarter: "Q4"
-                    });
+                    await value.update(
+                      {
+                        q4: "L"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "E",
+                        newVal: "L",
+                        quarter: "Q4"
+                      }
+                    );
                   }
                   if (value.q2 == "E" && subjectType == "2ND_SEM") {
-                    await value.update({
-                      q2: "L"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "E",
-                      newVal: "L",
-                      quarter: "Q2"
-                    });
+                    await value.update(
+                      {
+                        q2: "L"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "E",
+                        newVal: "L",
+                        quarter: "Q2"
+                      }
+                    );
                   }
                 }
 
                 if (quarter == "Q3") {
                   if (value.q3 == "L" && subjectType == "NON_SHS") {
-                    await value.update({
-                      q3: "E"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "L",
-                      newVal: "E",
-                      quarter: "Q3"
-                    });
+                    await value.update(
+                      {
+                        q3: "E"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "L",
+                        newVal: "E",
+                        quarter: "Q3"
+                      }
+                    );
                   }
                   if (value.q1 == "L" && subjectType == "2ND_SEM") {
-                    await value.update({
-                      q1: "E"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "L",
-                      newVal: "E",
-                      quarter: "Q1"
-                    });
+                    await value.update(
+                      {
+                        q1: "E"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "L",
+                        newVal: "E",
+                        quarter: "Q1"
+                      }
+                    );
                   }
                   if (
                     value.q2 == "E" &&
                     (subjectType == "NON_SHS" || subjectType == "1ST_SEM")
                   ) {
-                    await value.update({
-                      q2: "L"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "E",
-                      newVal: "L",
-                      quarter: "Q2"
-                    });
+                    await value.update(
+                      {
+                        q2: "L"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "E",
+                        newVal: "L",
+                        quarter: "Q2"
+                      }
+                    );
                   }
                   if (
                     value.q1 == "E" &&
                     (subjectType == "NON_SHS" || subjectType == "1ST_SEM")
                   ) {
-                    await value.update({
-                      q1: "L"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "E",
-                      newVal: "L",
-                      quarter: "Q1"
-                    });
+                    await value.update(
+                      {
+                        q1: "L"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "E",
+                        newVal: "L",
+                        quarter: "Q1"
+                      }
+                    );
                   }
                   if (value.q4 == "E" && subjectType == "NON_SHS") {
-                    await value.update({
-                      q4: "L"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "E",
-                      newVal: "L",
-                      quarter: "Q4"
-                    });
+                    await value.update(
+                      {
+                        q4: "L"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "E",
+                        newVal: "L",
+                        quarter: "Q4"
+                      }
+                    );
                   }
                   if (value.q2 == "E" && subjectType == "2ND_SEM") {
-                    await value.update({
-                      q2: "L"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "E",
-                      newVal: "L",
-                      quarter: "Q2"
-                    });
+                    await value.update(
+                      {
+                        q2: "L"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "E",
+                        newVal: "L",
+                        quarter: "Q2"
+                      }
+                    );
                   }
                 }
 
                 if (quarter == "Q4") {
                   if (value.q4 == "L" && subjectType == "NON_SHS") {
-                    await value.update({
-                      q4: "E"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "L",
-                      newVal: "E",
-                      quarter: "Q4"
-                    });
+                    await value.update(
+                      {
+                        q4: "E"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "L",
+                        newVal: "E",
+                        quarter: "Q4"
+                      }
+                    );
                   }
                   if (value.q2 == "L" && subjectType == "2ND_SEM") {
-                    await value.update({
-                      q2: "E"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "L",
-                      newVal: "E",
-                      quarter: "Q2"
-                    });
+                    await value.update(
+                      {
+                        q2: "E"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "L",
+                        newVal: "E",
+                        quarter: "Q2"
+                      }
+                    );
                   }
                   if (
                     value.q2 == "E" &&
                     (subjectType == "NON_SHS" || subjectType == "1ST_SEM")
                   ) {
-                    await value.update({
-                      q2: "L"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "E",
-                      newVal: "L",
-                      quarter: "Q2"
-                    });
+                    await value.update(
+                      {
+                        q2: "L"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "E",
+                        newVal: "L",
+                        quarter: "Q2"
+                      }
+                    );
                   }
                   if (value.q3 == "E" && subjectType == "NON_SHS") {
-                    await value.update({
-                      q3: "L"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "E",
-                      newVal: "L",
-                      quarter: "Q3"
-                    });
+                    await value.update(
+                      {
+                        q3: "L"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "E",
+                        newVal: "L",
+                        quarter: "Q3"
+                      }
+                    );
                   }
                   if (value.q1 == "E" && subjectType == "2ND_SEM") {
-                    await value.update({
-                      q1: "L"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "E",
-                      newVal: "L",
-                      quarter: "Q1"
-                    });
+                    await value.update(
+                      {
+                        q1: "L"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "E",
+                        newVal: "L",
+                        quarter: "Q1"
+                      }
+                    );
                   }
                   if (
                     value.q1 == "E" &&
                     (subjectType == "NON_SHS" || subjectType == "1ST_SEM")
                   ) {
-                    await value.update({
-                      q1: "L"
-                    }, {
-                      position: "Registrar",
-                      classRecordID: value.classRecordID,
-                      type: "CHANGE_STATUS",
-                      accountID: req.user.accountID,
-                      sectionID,
-                      subjectID,
-                      oldVal: "E",
-                      newVal: "L",
-                      quarter: "Q1"
-                    });
+                    await value.update(
+                      {
+                        q1: "L"
+                      },
+                      {
+                        position: "Registrar",
+                        classRecordID: value.classRecordID,
+                        type: "CHANGE_STATUS",
+                        accountID: req.user.accountID,
+                        sectionID,
+                        subjectID,
+                        oldVal: "E",
+                        newVal: "L",
+                        quarter: "Q1"
+                      }
+                    );
                   }
                 }
               }
@@ -1809,6 +1961,20 @@ router.post(
   }
 );
 
+// @route POST api/registrar/getsy
+// @desc Get school year info by schoolYearID
+// @access Private
+
+router.post(
+  "/getsy",
+  passport.authenticate("registrar", { session: false }),
+  async (req, res) => {
+    let { schoolYearID } = req.body;
+    let schoolYear = await utils.getSYname(schoolYearID);
+    res.status(200).json({ schoolYear, schoolYearID });
+  }
+);
+
 // @route GET api/registrar/getsy
 // @desc Get current school year
 // @access Private
@@ -1817,11 +1983,8 @@ router.get(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    let {
-      schoolYearID,
-      quarter
-    } = await utils.getActiveSY();
+  async (req, res) => {
+    let { schoolYearID, quarter } = await utils.getActiveSY();
     if (schoolYearID != 0) {
       let schoolYear = await utils.getSYname(schoolYearID);
       res.status(200).json({
@@ -1837,6 +2000,30 @@ router.get(
   }
 );
 
+// @route GET api/registrar/getallsy
+// @desc Get all school year
+// @access Private
+
+router.get(
+  "/getallsy",
+  passport.authenticate("registrar", { session: false }),
+  async (req, res) => {
+    SchoolYear.findAll().then(async sys => {
+      if (sys) {
+        let data = [];
+        for (const [index, value] of sys.entries()) {
+          data.push({
+            schoolYearID: value.schoolYearID,
+            schoolYear: value.schoolYear
+          });
+        }
+        data.sort((a, b) => (a.schoolYear < b.schoolYear ? 1 : -1));
+        res.status(200).json({ schoolYearList: data });
+      }
+    });
+  }
+);
+
 // @route GET api/registrar/getpastsy
 // @desc Get past school year
 // @access Private
@@ -1846,7 +2033,7 @@ router.get(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
+  async (req, res) => {
     let pastSY = await utils.getPastSY();
     let pastSYID = await utils.getSYID(pastSY);
     res.status(200).json({
@@ -1865,10 +2052,8 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    let {
-      sectionID
-    } = req.body;
+  async (req, res) => {
+    let { sectionID } = req.body;
     let sectionName = await utils.getSectionName(sectionID);
     res.status(200).json({
       sectionName
@@ -1885,30 +2070,22 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    let {
-      page,
-      pageSize
-    } = req.body;
+  async (req, res) => {
+    let { page, pageSize } = req.body;
     page = page - 1;
     let offset = page * pageSize;
     let limit = offset + pageSize;
-    const {
-      sectionID
-    } = req.body;
-    const {
-      schoolYearID,
-      quarter
-    } = await utils.getActiveSY();
+    const { sectionID } = req.body;
+    const { schoolYearID, quarter } = await utils.getActiveSY();
     const gradeLevel = await utils.getGradeLevelBySectionID(sectionID);
     StudentSection.findAll({
-        limit,
-        offset,
-        where: {
-          schoolYearID,
-          sectionID
-        }
-      })
+      limit,
+      offset,
+      where: {
+        schoolYearID,
+        sectionID
+      }
+    })
       .then(studentsections => {
         let studentData = [];
         if (studentsections.length == 0) {
@@ -1920,7 +2097,7 @@ router.post(
         } else {
           studentsections
             .slice(0, pageSize)
-            .forEach(async(studentsection, key, arr) => {
+            .forEach(async (studentsection, key, arr) => {
               const studsectID = studentsection.studsectID;
               const keyID = studentsection.studentID;
               const name = await utils.getStudentName(studentsection.studentID);
@@ -1942,11 +2119,11 @@ router.post(
               });
               if (key == arr.length - 1) {
                 StudentSection.findAndCountAll({
-                    where: {
-                      schoolYearID,
-                      sectionID
-                    }
-                  })
+                  where: {
+                    schoolYearID,
+                    sectionID
+                  }
+                })
                   .then(count => {
                     studentData.sort((a, b) => {
                       a.name > b.name ? 1 : -1;
@@ -1980,11 +2157,7 @@ router.post(
     session: false
   }),
   (req, res) => {
-    const {
-      studentID,
-      sectionID,
-      schoolYearID
-    } = req.body;
+    const { studentID, sectionID, schoolYearID } = req.body;
     if (studentID == -1) {
       res.status(400).json({
         studentName: "You must select a student"
@@ -1997,24 +2170,33 @@ router.post(
       }
     }).then(studentsection => {
       if (studentsection) {
-        res
-          .status(400)
-          .json({
-            studentName: "Student is already enrolled in a section"
-          });
+        res.status(400).json({
+          studentName: "Student is already enrolled in a section"
+        });
       } else {
         StudentSection.create({
           studentID,
           sectionID,
           schoolYearID
-        }).then(
-          studentsection2 => {
-            res.status(200).json({
-              studentName: "Student enrolled successfully!",
-              studsectID: studentsection2.studsectID
+        }).then(async studentsection2 => {
+          await StudentFinalGrade.create({
+            studsectID: studentsection2.studsectID,
+            grade: -1,
+            schoolYearID
+          });
+          for (const [index, value] of ["Q1", "Q2", "Q3", "Q4"].entries()) {
+            await StudentGrades.create({
+              schoolYearID,
+              quarter: value,
+              studsectID: studentsection2.studsectID,
+              grade: -1
             });
           }
-        );
+          res.status(200).json({
+            studentName: "Student enrolled successfully!",
+            studsectID: studentsection2.studsectID
+          });
+        });
       }
     });
   }
@@ -2029,12 +2211,8 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      studentID,
-      sectionID,
-      schoolYearID
-    } = req.body;
+  async (req, res) => {
+    const { studentID, sectionID, schoolYearID } = req.body;
     StudentSection.findOne({
       where: {
         studentID,
@@ -2054,7 +2232,8 @@ router.post(
         }).then(async ss => {
           if (ss.length != 0) {
             res.status(400).json({
-              msg: "Operation could not be completed. This student is actively enrolled in a subject."
+              msg:
+                "Operation could not be completed. This student is actively enrolled in a subject."
             });
           } else {
             studentsection.destroy().then(() => {
@@ -2078,29 +2257,19 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      schoolYearID,
-      quarter
-    } = await utils.getActiveSY();
-    const {
-      payload,
-      sectionID,
-      subjectID,
-      accountID
-    } = req.body;
+  async (req, res) => {
+    const { schoolYearID, quarter } = await utils.getActiveSY();
+    const { payload, sectionID, subjectID, accountID } = req.body;
     const teacherID = await utils.getTeacherID(accountID);
     const subjectType = await Subject.findOne({
       where: {
         subjectID
       }
-    }).then(
-      subj => {
-        if (subj) {
-          return subj.subjectType;
-        }
+    }).then(subj => {
+      if (subj) {
+        return subj.subjectType;
       }
-    );
+    });
     let isSHS = ![
       "N",
       "K1",
@@ -2117,9 +2286,9 @@ router.post(
       "G10"
     ].includes(subjectType);
     let compareIn =
-      quarter == "Q1" || quarter == "Q2" ?
-      ["NON_SHS", "1ST_SEM"] :
-      ["NON_SHS", "2ND_SEM"];
+      quarter == "Q1" || quarter == "Q2"
+        ? ["NON_SHS", "1ST_SEM"]
+        : ["NON_SHS", "2ND_SEM"];
 
     SubjectSection.findOne({
       where: {
@@ -2138,26 +2307,27 @@ router.post(
         });
       } else {
         ClassRecord.create({
-            dateCreated: utils.getPHTime(),
-            dateModified: utils.getPHTime(),
-            isSubmitted: 0,
-            q1Transmu: "50",
-            q2Transmu: "50",
-            q3Transmu: "50",
-            q4Transmu: "50"
-          })
+          dateCreated: utils.getPHTime(),
+          dateModified: utils.getPHTime(),
+          isSubmitted: 0,
+          q1Transmu: "50",
+          q2Transmu: "50",
+          q3Transmu: "50",
+          q4Transmu: "50"
+        })
           .then(classrecord => {
             SubjectSection.create({
-                subjectID,
-                sectionID,
-                teacherID,
-                schoolYearID,
-                classRecordID: classrecord.classRecordID,
-                subjectType: isSHS ?
-                  quarter == "Q1" || quarter == "Q2" ?
-                  "1ST_SEM" :
-                  "2ND_SEM" : "NON_SHS"
-              })
+              subjectID,
+              sectionID,
+              teacherID,
+              schoolYearID,
+              classRecordID: classrecord.classRecordID,
+              subjectType: isSHS
+                ? quarter == "Q1" || quarter == "Q2"
+                  ? "1ST_SEM"
+                  : "2ND_SEM"
+                : "NON_SHS"
+            })
               .then(async subjectsection => {
                 let objectSet = {
                   classRecordID: classrecord.classRecordID,
@@ -2166,11 +2336,11 @@ router.post(
                   q3: "L",
                   q4: "L"
                 };
-                let subjectType = isSHS ?
-                  quarter == "Q1" || quarter == "Q2" ?
-                  "1ST_SEM" :
-                  "2ND_SEM" :
-                  "NON_SHS";
+                let subjectType = isSHS
+                  ? quarter == "Q1" || quarter == "Q2"
+                    ? "1ST_SEM"
+                    : "2ND_SEM"
+                  : "NON_SHS";
                 if (subjectType == "NON_SHS" || subjectType == "1ST_SEM") {
                   objectSet[quarter.toLowerCase()] = "E";
                 } else {
@@ -2198,7 +2368,7 @@ router.post(
                         quarter: q[i]
                       });
                     }
-                    StudentGrades.create({
+                    StudentSubjectGrades.create({
                       subsectstudID: subsectstud.subsectstudID,
                       classRecordID: classrecord.classRecordID
                     });
@@ -2232,9 +2402,9 @@ router.post(
                               }
                             }).then(comp4 => {
                               if (comp4) {
-                                let q = isSHS ?
-                                  ["Q1", "Q2"] :
-                                  ["Q1", "Q2", "Q3", "Q4"];
+                                let q = isSHS
+                                  ? ["Q1", "Q2"]
+                                  : ["Q1", "Q2", "Q3", "Q4"];
                                 let j = 0;
                                 for (j; j < q.length; j++) {
                                   Subcomponent.create({
@@ -2266,33 +2436,25 @@ router.post(
                                     quarter: q[j]
                                   });
                                 }
-                                res
-                                  .status(200)
-                                  .json({
-                                    msg: "Added successfully!"
-                                  });
+                                res.status(200).json({
+                                  msg: "Added successfully!"
+                                });
                               } else {
-                                res
-                                  .status(404)
-                                  .json({
-                                    msg: "QE component not found!"
-                                  });
+                                res.status(404).json({
+                                  msg: "QE component not found!"
+                                });
                               }
                             });
                           } else {
-                            res
-                              .status(404)
-                              .json({
-                                msg: "PT component not found!"
-                              });
+                            res.status(404).json({
+                              msg: "PT component not found!"
+                            });
                           }
                         });
                       } else {
-                        res
-                          .status(404)
-                          .json({
-                            msg: "WW component not found!"
-                          });
+                        res.status(404).json({
+                          msg: "WW component not found!"
+                        });
                       }
                     });
                   } else {
@@ -2327,45 +2489,38 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      subsectID
-    } = req.body;
+  async (req, res) => {
+    const { subsectID } = req.body;
     SubjectSection.findOne({
       where: {
         subsectID
       }
-    }).then(
-      async subjectsection => {
-        if (subjectsection) {
-          SubjectSectionStudent.findAll({
-            where: {
-              subsectID
-            }
-          }).then(
-            async sss => {
-              if (sss.length != 0) {
-                res.status(400).json({
-                  msg: "Operation could not be completed. Remove all students under this subject first."
-                });
-              } else {
-                await subjectsection.destroy().then(() => {
-                  res
-                    .status(200)
-                    .json({
-                      msg: "Subject load deleted successfully!"
-                    });
-                });
-              }
-            }
-          );
-        } else {
-          res.status(400).json({
-            msg: "Error deleting subject load! 2"
-          });
-        }
+    }).then(async subjectsection => {
+      if (subjectsection) {
+        SubjectSectionStudent.findAll({
+          where: {
+            subsectID
+          }
+        }).then(async sss => {
+          if (sss.length != 0) {
+            res.status(400).json({
+              msg:
+                "Operation could not be completed. Remove all students under this subject first."
+            });
+          } else {
+            await subjectsection.destroy().then(() => {
+              res.status(200).json({
+                msg: "Subject load deleted successfully!"
+              });
+            });
+          }
+        });
+      } else {
+        res.status(400).json({
+          msg: "Error deleting subject load! 2"
+        });
       }
-    );
+    });
   }
 );
 
@@ -2378,41 +2533,37 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      studentID
-    } = req.body;
+  async (req, res) => {
+    const { studentID } = req.body;
     Student.findOne({
-        where: {
-          studentID
-        }
-      })
+      where: {
+        studentID
+      }
+    })
       .then(student => {
         UserAccount.findOne({
           where: {
             accountID: student.accountID
           }
-        }).then(
-          user => {
-            const payload = {
-              firstName: user.firstName,
-              lastName: user.lastName,
-              middleName: user.middleName,
-              suffix: user.suffix,
-              nickname: user.nickname,
-              contactNum: user.contactNum,
-              address: user.address,
-              province: user.province,
-              city: user.city,
-              region: user.region,
-              zipcode: user.zipcode,
-              civilStatus: user.civilStatus,
-              sex: user.sex,
-              citizenship: user.citizenship
-            };
-            res.status(200).json(payload);
-          }
-        );
+        }).then(user => {
+          const payload = {
+            firstName: user.firstName,
+            lastName: user.lastName,
+            middleName: user.middleName,
+            suffix: user.suffix,
+            nickname: user.nickname,
+            contactNum: user.contactNum,
+            address: user.address,
+            province: user.province,
+            city: user.city,
+            region: user.region,
+            zipcode: user.zipcode,
+            civilStatus: user.civilStatus,
+            sex: user.sex,
+            citizenship: user.citizenship
+          };
+          res.status(200).json(payload);
+        });
       })
       .catch(err => {
         res.status(404).json({
@@ -2431,18 +2582,12 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    let {
-      page,
-      pageSize,
-      keyword
-    } = req.body;
+  async (req, res) => {
+    let { page, pageSize, keyword } = req.body;
     page = page - 1;
     const offset = page * pageSize;
     const limit = offset + pageSize;
-    const {
-      schoolYearID
-    } = await utils.getActiveSY();
+    const { schoolYearID } = await utils.getActiveSY();
     if (schoolYearID == 0) {
       res.status(404).json({
         msg: "There is no active school year"
@@ -2508,12 +2653,8 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      schoolYearID,
-      sectionID,
-      teacherID
-    } = req.body;
+  async (req, res) => {
+    const { schoolYearID, sectionID, teacherID } = req.body;
     TeacherSection.findOne({
       where: {
         schoolYearID,
@@ -2523,11 +2664,9 @@ router.post(
     }).then(adviser => {
       if (adviser) {
         adviser.destroy().then(() => {
-          res
-            .status(200)
-            .json({
-              msg: "You have successfully unassigned an adviser!"
-            });
+          res.status(200).json({
+            msg: "You have successfully unassigned an adviser!"
+          });
         });
       } else {
         res.status(404).json({
@@ -2547,46 +2686,36 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      schoolYearID,
-      sectionID,
-      teacherID
-    } = req.body;
+  async (req, res) => {
+    const { schoolYearID, sectionID, teacherID } = req.body;
     TeacherSection.findOne({
       where: {
         schoolYearID,
         teacherID
       }
-    }).then(
-      adivser => {
-        if (adivser) {
-          res
-            .status(404)
-            .json({
-              teacherName: "There's already assigned adviser!"
+    }).then(adivser => {
+      if (adivser) {
+        res.status(404).json({
+          teacherName: "There's already assigned adviser!"
+        });
+      } else {
+        TeacherSection.create({
+          schoolYearID,
+          sectionID,
+          teacherID
+        })
+          .then(adivser2 => {
+            res.status(200).json({
+              msg: "You have successfully assigned an adviser"
             });
-        } else {
-          TeacherSection.create({
-              schoolYearID,
-              sectionID,
-              teacherID
+          })
+          .catch(err =>
+            res.status(404).json({
+              teacherName: "Assigning failed"
             })
-            .then(adivser2 => {
-              res
-                .status(200)
-                .json({
-                  msg: "You have successfully assigned an adviser"
-                });
-            })
-            .catch(err =>
-              res.status(404).json({
-                teacherName: "Assigning failed"
-              })
-            );
-        }
+          );
       }
-    );
+    });
   }
 );
 
@@ -2599,34 +2728,26 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    let {
-      page,
-      pageSize,
-      keyword
-    } = req.body;
+  async (req, res) => {
+    let { page, pageSize, keyword } = req.body;
     page = page - 1;
     let offset = page * pageSize;
     let limit = offset + pageSize;
     Subject.findAll({
-        limit,
-        offset,
-        where: {
-          subjectName: {
-            [Op.like]: `%${keyword}%`
-          }
+      limit,
+      offset,
+      where: {
+        subjectName: {
+          [Op.like]: `%${keyword}%`
         }
-      })
+      }
+    })
       .then(subjects => {
         let subjectData = [];
         if (subjects.length != 0) {
-          subjects.slice(0, pageSize).forEach(async(subject, key, arr) => {
+          subjects.slice(0, pageSize).forEach(async (subject, key, arr) => {
             const keyID = subject.subjectID;
-            const {
-              subjectCode,
-              subjectName,
-              subjectType
-            } = subject;
+            const { subjectCode, subjectName, subjectType } = subject;
             subjectData.push({
               key: keyID,
               subjectCode,
@@ -2635,12 +2756,12 @@ router.post(
             });
             if (key == arr.length - 1) {
               Subject.findAndCountAll({
-                  where: {
-                    subjectName: {
-                      [Op.like]: `%${keyword}%`
-                    }
+                where: {
+                  subjectName: {
+                    [Op.like]: `%${keyword}%`
                   }
-                })
+                }
+              })
                 .then(count => {
                   subjectData.sort((a, b) =>
                     a.subjectName > b.subjectName ? 1 : -1
@@ -2671,6 +2792,88 @@ router.post(
   }
 );
 
+// @route POST api/registrar/teacherinfo
+// @desc Get teacher information
+// @access Private
+
+router.post(
+  "/teacherinfo",
+  passport.authenticate("registrar", { session: false }),
+  async (req, res) => {
+    const { teacherID } = req.body;
+    const accountID = await Teacher.findOne({ where: { teacherID } }).then(
+      t => {
+        if (t) {
+          return t.accountID;
+        }
+      }
+    );
+    UserAccount.findOne({
+      where: {
+        accountID
+      }
+    }).then(async user => {
+      if (user) {
+        const { accountID, email, imageUrl } = user;
+        const name = `${utils.capitalize(user.lastName)}, ${utils.capitalize(
+          user.firstName
+        )} ${user.middleName.charAt(0).toUpperCase()}.`;
+        res.status(200).json({
+          accountID,
+          email,
+          imageUrl,
+          name
+        });
+      } else {
+        res.status(404).json({
+          msg: "User not found"
+        });
+      }
+    });
+  }
+);
+
+// @route POST api/registrar/studentinfo
+// @desc Get student info
+// @access Private
+
+router.post(
+  "/studentinfo",
+  passport.authenticate("registrar", { session: false }),
+  async (req, res) => {
+    const { studentID } = req.body;
+    const accountID = await Student.findOne({ where: { studentID } }).then(
+      s => {
+        if (s) {
+          return s.accountID;
+        }
+      }
+    );
+    UserAccount.findOne({
+      where: {
+        accountID
+      }
+    }).then(async user => {
+      if (user) {
+        const { accountID, email, imageUrl } = user;
+        const name = `${utils.capitalize(user.lastName)}, ${utils.capitalize(
+          user.firstName
+        )} ${user.middleName.charAt(0).toUpperCase()}.`;
+        res.status(200).json({
+          accountID,
+          email,
+          imageUrl,
+          name
+        });
+      } else {
+        res.status(404).json({
+          msg: "User not found"
+        });
+      }
+    });
+  }
+);
+
 // @route POST api/registrar/userinfo
 // @desc Get user information
 // @access Private
@@ -2680,21 +2883,15 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      accountID
-    } = req.body;
+  async (req, res) => {
+    const { accountID } = req.body;
     UserAccount.findOne({
       where: {
         accountID
       }
     }).then(async user => {
       if (user) {
-        const {
-          accountID,
-          email,
-          imageUrl
-        } = user;
+        const { accountID, email, imageUrl } = user;
         const name = `${utils.capitalize(user.lastName)}, ${utils.capitalize(
           user.firstName
         )} ${user.middleName.charAt(0).toUpperCase()}.`;
@@ -2722,24 +2919,17 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    let {
-      accountID,
-      page,
-      pageSize
-    } = req.body;
-    let {
-      schoolYearID,
-      quarter
-    } = await utils.getActiveSY();
+  async (req, res) => {
+    let { accountID, page, pageSize } = req.body;
+    let { schoolYearID, quarter } = await utils.getActiveSY();
     page = page - 1;
     let offset = page * pageSize;
     let limit = offset + pageSize;
     let teacherID = await utils.getTeacherID(accountID);
     let compareIn =
-      quarter == "Q1" || quarter == "Q2" ?
-      ["NON_SHS", "1ST_SEM"] :
-      ["NON_SHS", "2ND_SEM"];
+      quarter == "Q1" || quarter == "Q2"
+        ? ["NON_SHS", "1ST_SEM"]
+        : ["NON_SHS", "2ND_SEM"];
     SubjectSection.findAll({
       limit,
       offset,
@@ -2808,10 +2998,8 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      gradeLevel
-    } = req.body;
+  async (req, res) => {
+    const { gradeLevel } = req.body;
     Section.findAll({
       where: {
         gradeLevel,
@@ -2822,10 +3010,7 @@ router.post(
         let sectionsData = [];
         let i = 0;
         for (i; i < sections.length; i++) {
-          const {
-            sectionID,
-            sectionName
-          } = sections[i];
+          const { sectionID, sectionName } = sections[i];
           sectionsData.push({
             sectionID,
             sectionName
@@ -2852,10 +3037,8 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    let {
-      gradeLevel
-    } = req.body;
+  async (req, res) => {
+    let { gradeLevel } = req.body;
     const nonSHSGradeLevel = [
       "G1",
       "G2",
@@ -2885,11 +3068,7 @@ router.post(
           let subjectsData = [];
           let i = 0;
           for (i; i < subjects.length; i++) {
-            const {
-              subjectID,
-              subjectCode,
-              subjectName
-            } = subjects[i];
+            const { subjectID, subjectCode, subjectName } = subjects[i];
             subjectsData.push({
               subjectID,
               subjectCode,
@@ -2916,11 +3095,7 @@ router.post(
           let subjectsData = [];
           let i = 0;
           for (i; i < subjects.length; i++) {
-            const {
-              subjectID,
-              subjectCode,
-              subjectName
-            } = subjects[i];
+            const { subjectID, subjectCode, subjectName } = subjects[i];
             subjectsData.push({
               subjectID,
               subjectCode,
@@ -2945,10 +3120,8 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      subsectID
-    } = req.body;
+  async (req, res) => {
+    const { subsectID } = req.body;
     SubjectSection.findOne({
       where: {
         subsectID
@@ -2959,71 +3132,69 @@ router.post(
           where: {
             subsectID
           }
-        }).then(
-          async subjectsectionstudents => {
-            if (subjectsectionstudents.length == 0) {
-              const sectionName = await utils.getSectionName(
-                subjectsection.sectionID
+        }).then(async subjectsectionstudents => {
+          if (subjectsectionstudents.length == 0) {
+            const sectionName = await utils.getSectionName(
+              subjectsection.sectionID
+            );
+            const gradeLevel = await utils.getSectionGradeLevel(
+              subjectsection.sectionID
+            );
+            const subjectName = await utils.getSubjectName(
+              subjectsection.subjectID
+            );
+            res.status(200).json({
+              sectionName,
+              gradeLevel,
+              subjectName,
+              studentList: []
+            });
+          } else {
+            let i = 0;
+            let studarr = [];
+            const sectionName = await utils.getSectionName(
+              subjectsection.sectionID
+            );
+            const gradeLevel = await utils.getSectionGradeLevel(
+              subjectsection.sectionID
+            );
+            const subjectName = await utils.getSubjectName(
+              subjectsection.subjectID
+            );
+            for (i; i < subjectsectionstudents.length; i++) {
+              let key = subjectsectionstudents[i].subsectstudID;
+              let name = await utils.getStudentNameByStudsectID(
+                subjectsectionstudents[i].studsectID
               );
-              const gradeLevel = await utils.getSectionGradeLevel(
-                subjectsection.sectionID
+              let email = await utils.getStudentEmailByStudsectID(
+                subjectsectionstudents[i].studsectID
               );
-              const subjectName = await utils.getSubjectName(
-                subjectsection.subjectID
+              let sectionName = await utils.getSectionNameByStudsectID(
+                subjectsectionstudents[i].studsectID
               );
-              res.status(200).json({
+              let imageUrl = await utils.getStudentImageUrlByStudsectID(
+                subjectsectionstudents[i].studsectID
+              );
+              let gradeLevel = await utils.getSectionGradeLevelByStudsectID(
+                subjectsectionstudents[i].studsectID
+              );
+              studarr.push({
+                key,
+                name,
+                email,
                 sectionName,
-                gradeLevel,
-                subjectName,
-                studentList: []
-              });
-            } else {
-              let i = 0;
-              let studarr = [];
-              const sectionName = await utils.getSectionName(
-                subjectsection.sectionID
-              );
-              const gradeLevel = await utils.getSectionGradeLevel(
-                subjectsection.sectionID
-              );
-              const subjectName = await utils.getSubjectName(
-                subjectsection.subjectID
-              );
-              for (i; i < subjectsectionstudents.length; i++) {
-                let key = subjectsectionstudents[i].subsectstudID;
-                let name = await utils.getStudentNameByStudsectID(
-                  subjectsectionstudents[i].studsectID
-                );
-                let email = await utils.getStudentEmailByStudsectID(
-                  subjectsectionstudents[i].studsectID
-                );
-                let sectionName = await utils.getSectionNameByStudsectID(
-                  subjectsectionstudents[i].studsectID
-                );
-                let imageUrl = await utils.getStudentImageUrlByStudsectID(
-                  subjectsectionstudents[i].studsectID
-                );
-                let gradeLevel = await utils.getSectionGradeLevelByStudsectID(
-                  subjectsectionstudents[i].studsectID
-                );
-                studarr.push({
-                  key,
-                  name,
-                  email,
-                  sectionName,
-                  imageUrl,
-                  gradeLevel
-                });
-              }
-              res.status(200).json({
-                sectionName,
-                gradeLevel,
-                subjectName,
-                studentList: studarr
+                imageUrl,
+                gradeLevel
               });
             }
+            res.status(200).json({
+              sectionName,
+              gradeLevel,
+              subjectName,
+              studentList: studarr
+            });
           }
-        );
+        });
       } else {
         res.status(404).json({
           msg: "Subject section not found!"
@@ -3042,146 +3213,125 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      studsectID,
-      subsectID
-    } = req.body;
-    const {
-      schoolYearID,
-      quarter
-    } = await utils.getActiveSY();
+  async (req, res) => {
+    const { studsectID, subsectID } = req.body;
+    const { schoolYearID, quarter } = await utils.getActiveSY();
     SubjectSectionStudent.findOne({
       where: {
         studsectID,
         subsectID
       }
-    }).then(
-      async subjectsectionstudent => {
-        if (subjectsectionstudent) {
-          res
-            .status(400)
-            .json({
-              msg: "Student already enrolled in the subject!"
-            });
-        } else {
-          SubjectSectionStudent.create({
-            studsectID,
-            subsectID
-          }).then(
-            async subsectstud => {
-              SubjectSection.findOne({
-                where: {
-                  subsectID
-                }
-              }).then(
-                async ss => {
-                  if (ss) {
-                    const subjectType = await Subject.findOne({
-                      where: {
-                        subjectID: ss.subjectID
-                      }
-                    }).then(subj => {
-                      if (subj) {
-                        return subj.subjectType;
-                      }
-                    });
-                    let isSHS = ![
-                      "N",
-                      "K1",
-                      "K2",
-                      "G1",
-                      "G2",
-                      "G3",
-                      "G4",
-                      "G5",
-                      "G6",
-                      "G7",
-                      "G8",
-                      "G9",
-                      "G10"
-                    ].includes(subjectType);
-                    let q = isSHS ? ["Q1", "Q2"] : ["Q1", "Q2", "Q3", "Q4"];
-                    let i = 0;
-                    for (i = 0; i < q.length; i++) {
-                      StudentWeightedScore.create({
-                        subsectstudID: subsectstud.subsectstudID,
-                        classRecordID: ss.classRecordID,
-                        faWS: -1,
-                        wwWS: -1,
-                        ptWS: -1,
-                        qeWS: -1,
-                        finalGrade: -1,
-                        quarter: q[i]
-                      });
-                    }
-                    StudentGrades.create({
-                      subsectstudID: subsectstud.subsectstudID,
-                      classRecordID: ss.classRecordID
-                    });
-
-                    Grade.findAll({
-                      attributes: [
-                        [
-                          Sequelize.fn(
-                            "DISTINCT",
-                            Sequelize.col("description")
-                          ),
-                          "description"
-                        ],
-                        [Sequelize.col("total"), "total"],
-                        [Sequelize.col("dateGiven"), "dateGiven"],
-                        [Sequelize.col("componentID"), "componentID"],
-                        [Sequelize.col("subcomponentID"), "subcomponentID"],
-                        [Sequelize.col("classRecordID"), "classRecordID"],
-                        [Sequelize.col("quarter"), "quarter"]
-                      ],
-                      where: {
-                        classRecordID: ss.classRecordID
-                      }
-                    }).then(async res => {
-                      if (res.length != 0) {
-                        for (const [index, value] of res.entries()) {
-                          await Grade.create({
-                            description: value.description,
-                            dateGiven: value.dateGiven,
-                            score: 0,
-                            total: value.total,
-                            componentID: value.componentID,
-                            subcomponentID: value.subcomponentID,
-                            date: new Date(),
-                            classRecordID: ss.classRecordID,
-                            subsectstudID: subsectstud.subsectstudID,
-                            quarter: value.quarter,
-                            attendance: "P",
-                            showLog: 0,
-                            isUpdated: 0
-                          });
-                        }
-                        await utils.refreshStudentWeightedScoreBySubsectID(
-                          ss.subsectID
-                        );
-                      }
-                    });
-                    res
-                      .status(200)
-                      .json({
-                        msg: "Student added to subject successfully!"
-                      });
-                  } else {
-                    res
-                      .status(404)
-                      .json({
-                        msg: "Subject section does not exist!"
-                      });
-                  }
-                }
-              );
+    }).then(async subjectsectionstudent => {
+      if (subjectsectionstudent) {
+        res.status(400).json({
+          msg: "Student already enrolled in the subject!"
+        });
+      } else {
+        SubjectSectionStudent.create({
+          studsectID,
+          subsectID
+        }).then(async subsectstud => {
+          SubjectSection.findOne({
+            where: {
+              subsectID
             }
-          );
-        }
+          }).then(async ss => {
+            if (ss) {
+              const subjectType = await Subject.findOne({
+                where: {
+                  subjectID: ss.subjectID
+                }
+              }).then(subj => {
+                if (subj) {
+                  return subj.subjectType;
+                }
+              });
+              let isSHS = ![
+                "N",
+                "K1",
+                "K2",
+                "G1",
+                "G2",
+                "G3",
+                "G4",
+                "G5",
+                "G6",
+                "G7",
+                "G8",
+                "G9",
+                "G10"
+              ].includes(subjectType);
+              let q = isSHS ? ["Q1", "Q2"] : ["Q1", "Q2", "Q3", "Q4"];
+              let i = 0;
+              for (i = 0; i < q.length; i++) {
+                StudentWeightedScore.create({
+                  subsectstudID: subsectstud.subsectstudID,
+                  classRecordID: ss.classRecordID,
+                  faWS: -1,
+                  wwWS: -1,
+                  ptWS: -1,
+                  qeWS: -1,
+                  finalGrade: -1,
+                  quarter: q[i]
+                });
+              }
+              StudentSubjectGrades.create({
+                subsectstudID: subsectstud.subsectstudID,
+                classRecordID: ss.classRecordID
+              });
+
+              Grade.findAll({
+                attributes: [
+                  [
+                    Sequelize.fn("DISTINCT", Sequelize.col("description")),
+                    "description"
+                  ],
+                  [Sequelize.col("total"), "total"],
+                  [Sequelize.col("dateGiven"), "dateGiven"],
+                  [Sequelize.col("componentID"), "componentID"],
+                  [Sequelize.col("subcomponentID"), "subcomponentID"],
+                  [Sequelize.col("classRecordID"), "classRecordID"],
+                  [Sequelize.col("quarter"), "quarter"]
+                ],
+                where: {
+                  classRecordID: ss.classRecordID
+                }
+              }).then(async res => {
+                if (res.length != 0) {
+                  for (const [index, value] of res.entries()) {
+                    await Grade.create({
+                      description: value.description,
+                      dateGiven: value.dateGiven,
+                      score: 0,
+                      total: value.total,
+                      componentID: value.componentID,
+                      subcomponentID: value.subcomponentID,
+                      date: new Date(),
+                      classRecordID: ss.classRecordID,
+                      subsectstudID: subsectstud.subsectstudID,
+                      quarter: value.quarter,
+                      attendance: "P",
+                      showLog: 0,
+                      isUpdated: 0
+                    });
+                  }
+                  await utils.refreshStudentWeightedScoreBySubsectID(
+                    ss.subsectID
+                  );
+                }
+              });
+              res.status(200).json({
+                msg: "Student added to subject successfully!"
+              });
+            } else {
+              res.status(404).json({
+                msg: "Subject section does not exist!"
+              });
+            }
+          });
+        });
       }
-    );
+    });
   }
 );
 
@@ -3194,10 +3344,8 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      subsectstudID
-    } = req.body;
+  async (req, res) => {
+    const { subsectstudID } = req.body;
     SubjectSectionStudent.findOne({
       where: {
         subsectstudID
@@ -3205,11 +3353,9 @@ router.post(
     }).then(data => {
       if (data) {
         data.destroy().then(() => {
-          res
-            .status(200)
-            .json({
-              msg: "Student deleted to subject successfully!"
-            });
+          res.status(200).json({
+            msg: "Student deleted to subject successfully!"
+          });
         });
       } else {
         res.status(404).json({
@@ -3229,20 +3375,14 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    let {
-      accountID,
-      page,
-      pageSize,
-      quarter
-    } = req.body;
+  async (req, res) => {
+    let { accountID, page, pageSize, quarter } = req.body;
     page = page - 1;
     let offset = page * pageSize;
     let limit = offset + pageSize;
-    const {
-      schoolYearID
-    } = await utils.getActiveSY();
+    const { schoolYearID } = await utils.getActiveSY();
     const teacherID = await utils.getTeacherID(accountID);
+    const teacher = await utils.getTeacherName(teacherID);
     const deadline = await SubmissionDeadline.findOne({
       where: {
         teacherID,
@@ -3260,8 +3400,10 @@ router.post(
         teacherID,
         schoolYearID,
         subjectType: {
-          [Op.in]: quarter == "Q1" || quarter == "Q2" ?
-            ["NON_SHS", "1ST_SEM"] : ["NON_SHS", "2ND_SEM"]
+          [Op.in]:
+            quarter == "Q1" || quarter == "Q2"
+              ? ["NON_SHS", "1ST_SEM"]
+              : ["NON_SHS", "2ND_SEM"]
         }
       }
     }).then(async ss => {
@@ -3305,8 +3447,10 @@ router.post(
       }
     });
     if (classRecordIDs.length == 0) {
-      res.status(404).json({
-        msg: "Class Record not found!"
+      res.status(200).json({
+        classRecordList: [],
+        numOfPages: 1,
+        deadline
       });
     } else {
       let condition = {};
@@ -3320,19 +3464,25 @@ router.post(
       }).then(async crs => {
         if (crs) {
           if (crs.length == 0) {
-            res
-              .status(404)
-              .json({
-                msg: "No class record for deliberation found"
-              });
+            res.status(404).json({
+              msg: "No class record for deliberation found"
+            });
           } else {
             let data2 = [];
             let numOfPages = 1;
-            crs.slice(0, pageSize).forEach(async(v, k, r) => {
-              const {
+            crs.slice(0, pageSize).forEach(async (v, k, r) => {
+              const { classRecordID } = v;
+              const subjectType = await utils.getSubjectTypeByClassRecordID(
                 classRecordID
-              } = v;
-              const dateSubmitted = v[`${quarter.toLowerCase()}DateSubmitted`];
+              );
+              let dateSubmitted = v[`${quarter.toLowerCase()}DateSubmitted`];
+              if (subjectType == "2ND_SEM") {
+                if (quarter == "Q3") {
+                  dateSubmitted = v.q1DateSubmitted;
+                } else if (quarter == "Q4") {
+                  dateSubmitted = v.q2DateSubmitted;
+                }
+              }
               const {
                 subjectCode,
                 subjectName,
@@ -3345,9 +3495,535 @@ router.post(
               }).then(async cr => {
                 if (cr) {
                   const subjectCode = await utils.getSubjectCode(cr.subjectID);
-                  const {
-                    subsectID
-                  } = cr;
+                  const { subsectID } = cr;
+                  const subjectName = await utils.getSubjectName(cr.subjectID);
+                  const section = await utils.getSectionName(cr.sectionID);
+                  return {
+                    subjectCode,
+                    subsectID,
+                    subjectName,
+                    section
+                  };
+                }
+              });
+              data2.push({
+                teacher,
+                classRecordID,
+                dateSubmitted,
+                subjectCode,
+                subjectName,
+                section,
+                subsectID
+              });
+              if (k == r.length - 1) {
+                numOfPages = await ClassRecordStatus.findAndCountAll({
+                  where: condition
+                }).then(count => {
+                  return Math.ceil(count.count / pageSize);
+                });
+                res.status(200).json({
+                  classRecordList: data2,
+                  numOfPages,
+                  deadline
+                });
+              }
+            });
+          }
+        }
+      });
+    }
+  }
+);
+
+// @router POST api/registrar/condenseddeliberationgrade
+// @desc Get condensed grade of students by sectionID and quarter
+// @access Private
+
+router.post(
+  "/condenseddeliberationgrade",
+  passport.authenticate("registrar", { session: false }),
+  async (req, res) => {
+    const { sectionID, quarter } = req.body;
+    const { schoolYearID } = await utils.getActiveSY();
+    const studsectIDs = await StudentSection.findAll({
+      where: { sectionID, schoolYearID }
+    }).then(ss => {
+      if (ss) {
+        let data = [];
+        for (const [i, v] of ss.entries()) {
+          data.push(v.studsectID);
+        }
+        return data;
+      }
+    });
+    SubjectSectionStudent.findAll({
+      where: { studsectID: { [Op.in]: studsectIDs } }
+    }).then(async sss => {
+      if (sss) {
+        let data3 = [];
+        for (const [i, x] of sss.entries()) {
+          const grades = await SubjectSectionStudent.findAll({
+            where: { studsectID: x.studsectID }
+          }).then(async sss2 => {
+            if (sss2) {
+              let data2 = [];
+              for (const [i, v] of sss2.entries()) {
+                let name = await utils.getStudentNameBySubsectstudID(
+                  v.subsectstudID
+                );
+                let sex = await utils.getStudentSexBySubsectstudID(
+                  v.subsectstudID
+                );
+                let imageUrl = await utils.getStudentImageUrlBySubsectstudID(
+                  v.subsectstudID
+                );
+                let studsectID = v.studsectID;
+                let {
+                  subjectType,
+                  classRecordID
+                } = await SubjectSection.findOne({
+                  where: { subsectID: v.subsectID }
+                }).then(async ss => {
+                  if (ss) {
+                    return {
+                      subjectType: ss.subjectType,
+                      classRecordID: ss.classRecordID
+                    };
+                  }
+                });
+                let status = await ClassRecordStatus.findOne({
+                  where: { classRecordID }
+                }).then(async crs => {
+                  if (crs) {
+                    if (quarter == "Q1") {
+                      if (
+                        subjectType == "NON_SHS" ||
+                        subjectType == "1ST_SEM"
+                      ) {
+                        return crs.q1;
+                      }
+                    } else if (quarter == "Q2") {
+                      if (
+                        subjectType == "NON_SHS" ||
+                        subjectType == "1ST_SEM"
+                      ) {
+                        return crs.q2;
+                      }
+                    } else if (quarter == "Q3") {
+                      if (subjectType == "NON_SHS") {
+                        return crs.q3;
+                      } else if (subjectType == "2ND_SEM") {
+                        return crs.q1;
+                      }
+                    } else {
+                      if (subjectType == "NON_SHS") {
+                        return crs.q4;
+                      } else if (subjectType == "2ND_SEM") {
+                        return crs.q2;
+                      }
+                    }
+                  }
+                });
+                if (typeof status !== "undefined") {
+                  let {
+                    score,
+                    subjectName
+                  } = await StudentSubjectGrades.findOne({
+                    where: { classRecordID, subsectstudID: v.subsectstudID }
+                  }).then(async ssg => {
+                    if (ssg) {
+                      let score;
+                      let subjectID = await utils.getSubjectIDBySubsectstudID(
+                        ssg.subsectstudID
+                      );
+                      let subjectName = await utils.getSubjectCode(subjectID);
+                      if (status == "F" || status == "D") {
+                        if (quarter == "Q1") {
+                          if (
+                            subjectType == "NON_SHS" ||
+                            subjectType == "1ST_SEM"
+                          ) {
+                            score = ssg.q1FinalGrade;
+                          }
+                        } else if (quarter == "Q2") {
+                          if (
+                            subjectType == "NON_SHS" ||
+                            subjectType == "1ST_SEM"
+                          ) {
+                            score = ssg.q2FinalGrade;
+                          }
+                        } else if (quarter == "Q3") {
+                          if (subjectType == "NON_SHS") {
+                            score = ssg.q3FinalGrade;
+                          } else if (subjectType == "2ND_SEM") {
+                            score = ssg.q1FinalGrade;
+                          }
+                        } else {
+                          if (subjectType == "NON_SHS") {
+                            score = ssg.q4FinalGrade;
+                          } else if (subjectType == "2ND_SEM") {
+                            score = ssg.q2FinalGrade;
+                          }
+                        }
+                      }
+                      return { score, subjectName };
+                    }
+                  });
+                  if (typeof score !== "undefined" && typeof score !== "null") {
+                    data2.push({
+                      imageUrl,
+                      sex,
+                      score,
+                      subjectName,
+                      name,
+                      studsectID
+                    });
+                  }
+                }
+              }
+              return data2;
+            }
+          });
+          data3.push(grades);
+        }
+        const resData = utils.formatCondensedDeliberationGrade(data3);
+        res.status(200).json({
+          data: [
+            ...resData.data.filter(a => a.sex == "M"),
+            ...resData.data.filter(a => a.sex == "F")
+          ],
+          columns: resData.columns
+        });
+      }
+    });
+  }
+);
+
+// @router POST api/registrar/condensedfinalgrade
+// @desc Get condensed grade of students by sectionID and quarter
+// @access Private
+
+router.post(
+  "/condensedfinalgrade",
+  passport.authenticate("registrar", { session: false }),
+  async (req, res) => {
+    const { sectionID, quarter } = req.body;
+    const { schoolYearID } = await utils.getActiveSY();
+    const studsectIDs = await StudentSection.findAll({
+      where: { sectionID, schoolYearID }
+    }).then(ss => {
+      if (ss) {
+        let data = [];
+        for (const [i, v] of ss.entries()) {
+          data.push(v.studsectID);
+        }
+        return data;
+      }
+    });
+    SubjectSectionStudent.findAll({
+      where: { studsectID: { [Op.in]: studsectIDs } }
+    }).then(async sss => {
+      if (sss) {
+        let data3 = [];
+        for (const [i, x] of sss.entries()) {
+          const grades = await SubjectSectionStudent.findAll({
+            where: { studsectID: x.studsectID }
+          }).then(async sss2 => {
+            if (sss2) {
+              let data2 = [];
+              for (const [i, v] of sss2.entries()) {
+                let name = await utils.getStudentNameBySubsectstudID(
+                  v.subsectstudID
+                );
+                let studentID = await StudentSection.findOne({
+                  where: { studsectID: v.studsectID }
+                }).then(ss => ss.studentID);
+                let sex = await utils.getStudentSexBySubsectstudID(
+                  v.subsectstudID
+                );
+                let imageUrl = await utils.getStudentImageUrlBySubsectstudID(
+                  v.subsectstudID
+                );
+                let studsectID = v.studsectID;
+                let {
+                  subjectType,
+                  classRecordID
+                } = await SubjectSection.findOne({
+                  where: { subsectID: v.subsectID }
+                }).then(async ss => {
+                  if (ss) {
+                    return {
+                      subjectType: ss.subjectType,
+                      classRecordID: ss.classRecordID
+                    };
+                  }
+                });
+                let status = await ClassRecordStatus.findOne({
+                  where: { classRecordID }
+                }).then(async crs => {
+                  if (crs) {
+                    if (quarter == "Q1") {
+                      if (
+                        subjectType == "NON_SHS" ||
+                        subjectType == "1ST_SEM"
+                      ) {
+                        return crs.q1;
+                      }
+                    } else if (quarter == "Q2") {
+                      if (
+                        subjectType == "NON_SHS" ||
+                        subjectType == "1ST_SEM"
+                      ) {
+                        return crs.q2;
+                      }
+                    } else if (quarter == "Q3") {
+                      if (subjectType == "NON_SHS") {
+                        return crs.q3;
+                      } else if (subjectType == "2ND_SEM") {
+                        return crs.q1;
+                      }
+                    } else {
+                      if (subjectType == "NON_SHS") {
+                        return crs.q4;
+                      } else if (subjectType == "2ND_SEM") {
+                        return crs.q2;
+                      }
+                    }
+                  }
+                });
+                if (typeof status !== "undefined") {
+                  let {
+                    score,
+                    subjectName
+                  } = await StudentSubjectGrades.findOne({
+                    where: { classRecordID, subsectstudID: v.subsectstudID }
+                  }).then(async ssg => {
+                    if (ssg) {
+                      let score;
+                      let subjectID = await utils.getSubjectIDBySubsectstudID(
+                        ssg.subsectstudID
+                      );
+                      let subjectName = await utils.getSubjectCode(subjectID);
+                      if (status == "F") {
+                        if (quarter == "Q1") {
+                          if (
+                            subjectType == "NON_SHS" ||
+                            subjectType == "1ST_SEM"
+                          ) {
+                            score = ssg.q1FinalGrade;
+                          }
+                        } else if (quarter == "Q2") {
+                          if (
+                            subjectType == "NON_SHS" ||
+                            subjectType == "1ST_SEM"
+                          ) {
+                            score = ssg.q2FinalGrade;
+                          }
+                        } else if (quarter == "Q3") {
+                          if (subjectType == "NON_SHS") {
+                            score = ssg.q3FinalGrade;
+                          } else if (subjectType == "2ND_SEM") {
+                            score = ssg.q1FinalGrade;
+                          }
+                        } else {
+                          if (subjectType == "NON_SHS") {
+                            score = ssg.q4FinalGrade;
+                          } else if (subjectType == "2ND_SEM") {
+                            score = ssg.q2FinalGrade;
+                          }
+                        }
+                      }
+                      return { score, subjectName };
+                    }
+                  });
+                  if (typeof score !== "undefined" && typeof score !== "null") {
+                    data2.push({
+                      imageUrl,
+                      studentID,
+                      sex,
+                      score,
+                      subjectName,
+                      name,
+                      studsectID
+                    });
+                  }
+                }
+              }
+              return data2;
+            }
+          });
+          data3.push(grades);
+        }
+        const resData = utils.formatCondensedDeliberationGrade(data3);
+        res.status(200).json({
+          data: [
+            ...resData.data.filter(a => a.sex == "M"),
+            ...resData.data.filter(a => a.sex == "F")
+          ],
+          columns: resData.columns
+        });
+      }
+    });
+  }
+);
+
+// @route POST api/registrar/getsectionname
+// @desc Get section name by studentID
+// @access Private
+
+router.post(
+  "/getsectionname",
+  passport.authenticate("registrar", { session: false }),
+  async (req, res) => {
+    const response = await utils.getSectionName(req.body.sectionID);
+    res.status(200).json({ sectionName: response });
+  }
+);
+
+// @route POST api/registrar/getsyname
+// @desc Get school year name by schoolYearID
+// @access Private
+
+router.post(
+  "/getsyname",
+  passport.authenticate("registrar", { session: false }),
+  async (req, res) => {
+    const response = await utils.getSYname(req.body.schoolYearID);
+    res.status(200).json({ schoolYear: response });
+  }
+);
+
+// @route POST api/registrar/getnotsubmittedsubsect
+// @desc Get not submitted subject section where class record status = 'D'
+// @access Private
+
+router.post(
+  "/getnotsubmittedsubsect",
+  passport.authenticate("registrar", {
+    session: false
+  }),
+  async (req, res) => {
+    let { accountID, page, pageSize, quarter } = req.body;
+    page = page - 1;
+    let offset = page * pageSize;
+    let limit = offset + pageSize;
+    const { schoolYearID } = await utils.getActiveSY();
+    const teacherID = await utils.getTeacherID(accountID);
+    const deadline = await SubmissionDeadline.findOne({
+      where: {
+        teacherID,
+        isActive: 1
+      }
+    }).then(sd => {
+      if (sd) {
+        return sd.deadline;
+      } else {
+        return "NOT SET";
+      }
+    });
+    const classRecordIDs = await SubjectSection.findAll({
+      where: {
+        teacherID,
+        schoolYearID,
+        subjectType: {
+          [Op.in]:
+            quarter == "Q1" || quarter == "Q2"
+              ? ["NON_SHS", "1ST_SEM"]
+              : ["NON_SHS", "2ND_SEM"]
+        }
+      }
+    }).then(async ss => {
+      if (ss) {
+        let data = [];
+        for (const [i, v] of ss.entries()) {
+          const crs = await ClassRecordStatus.findOne({
+            where: {
+              classRecordID: v.classRecordID
+            }
+          });
+          if (quarter == "Q1" || quarter == "Q2") {
+            if (crs[quarter.toLowerCase()] == "E") {
+              data.push(v.classRecordID);
+            }
+          } else {
+            if (quarter == "Q3") {
+              if (v.subjectType == "NON_SHS") {
+                if (crs[quarter.toLowerCase()] == "E") {
+                  data.push(v.classRecordID);
+                }
+              } else {
+                if (crs["q1"] == "E") {
+                  data.push(v.classRecordID);
+                }
+              }
+            } else {
+              if (v.subjectType == "NON_SHS") {
+                if (crs[quarter.toLowerCase()] == "E") {
+                  data.push(v.classRecordID);
+                }
+              } else {
+                if (crs["q2"] == "E") {
+                  data.push(v.classRecordID);
+                }
+              }
+            }
+          }
+        }
+        return data;
+      }
+    });
+    if (classRecordIDs.length == 0) {
+      res.status(200).json({
+        classRecordList: [],
+        numOfPages: 1,
+        deadline: "NOT SET"
+      });
+    } else {
+      let condition = {};
+      condition["classRecordID"] = {
+        [Op.in]: classRecordIDs
+      };
+      await ClassRecordStatus.findAll({
+        limit,
+        offset,
+        where: condition
+      }).then(async crs => {
+        if (crs) {
+          if (crs.length == 0) {
+            res.status(200).json({
+              classRecordList: [],
+              numOfPages: 1,
+              deadline: "NOT SET"
+            });
+          } else {
+            let data2 = [];
+            let numOfPages = 1;
+            crs.slice(0, pageSize).forEach(async (v, k, r) => {
+              const { classRecordID } = v;
+              const subjectType = await utils.getSubjectTypeByClassRecordID(
+                classRecordID
+              );
+              let dateSubmitted = v[`${quarter.toLowerCase()}DateSubmitted`];
+              if (subjectType == "2ND_SEM") {
+                if (quarter == "Q3") {
+                  dateSubmitted = v.q1DateSubmitted;
+                } else if (quarter == "Q4") {
+                  dateSubmitted = v.q2DateSubmitted;
+                }
+              }
+              const {
+                subjectCode,
+                subjectName,
+                section,
+                subsectID
+              } = await SubjectSection.findOne({
+                where: {
+                  classRecordID
+                }
+              }).then(async cr => {
+                if (cr) {
+                  const subjectCode = await utils.getSubjectCode(cr.subjectID);
+                  const { subsectID } = cr;
                   const subjectName = await utils.getSubjectName(cr.subjectID);
                   const section = await utils.getSectionName(cr.sectionID);
                   return {
@@ -3372,13 +4048,11 @@ router.post(
                 }).then(count => {
                   return Math.ceil(count.count / pageSize);
                 });
-                res
-                  .status(200)
-                  .json({
-                    classRecordList: data2,
-                    numOfPages,
-                    deadline
-                  });
+                res.status(200).json({
+                  classRecordList: data2,
+                  numOfPages,
+                  deadline
+                });
               }
             });
           }
@@ -3397,25 +4071,17 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    let {
-      classRecordID,
-      quarter
-    } = req.body;
-    let {
-      page,
-      pageSize
-    } = req.body;
+  async (req, res) => {
+    let { classRecordID, quarter } = req.body;
+    let { page, pageSize } = req.body;
     page = page - 1;
     let offset = page * pageSize;
     let limit = offset + pageSize;
-    const subjectType = await utils.getSubjectTypeByClassRecordID(classRecordID)
+    const subjectType = await utils.getSubjectTypeByClassRecordID(
+      classRecordID
+    );
 
-    const {
-      IDs,
-      data,
-      numOfPages
-    } = await StudentGrades.findAll({
+    const { IDs, data, numOfPages } = await StudentSubjectGrades.findAll({
       where: {
         classRecordID
       }
@@ -3430,21 +4096,19 @@ router.post(
           let data = [];
           let IDs = [];
           for (const [index, value] of sg.entries()) {
-            const {
-              subsectstudID
-            } = value;
+            const { subsectstudID } = value;
             let grade = value[`${quarter.toLowerCase()}FinalGrade`];
-            if (subjectType == '2ND_SEM') {
-              if (quarter == 'Q3') {
-                grade = value['q1FinalGrade']
-              } else if (quarter == 'Q4') {
-                grade = value['q2FinalGrade']
+            if (subjectType == "2ND_SEM") {
+              if (quarter == "Q3") {
+                grade = value["q1FinalGrade"];
+              } else if (quarter == "Q4") {
+                grade = value["q2FinalGrade"];
               } else {
-                grade = -1
+                grade = -1;
               }
-            } else if (subjectType == '1ST_SEM') {
-              if (quarter == 'Q3' || quarter == 'Q4') {
-                grade = -1
+            } else if (subjectType == "1ST_SEM") {
+              if (quarter == "Q3" || quarter == "Q4") {
+                grade = -1;
               }
             }
             const accountID = await utils.getAccountIDBySubsectstudID(
@@ -3467,15 +4131,14 @@ router.post(
     });
 
     UserAccount.findAll({
-      limit,
-      offset,
       where: {
         accountID: {
           [Op.in]: IDs
         }
       },
       order: [
-        ["lastName", "ASC"]
+        ["lastName", "ASC"],
+        ["sex", "DESC"]
       ]
     }).then(async ua => {
       if (ua) {
@@ -3487,10 +4150,9 @@ router.post(
           const subsectID = data.find(a => a.accountID == value.accountID)
             .subsectID;
           const grade = data.find(a => a.accountID == value.accountID).grade;
-          const {
-            imageUrl
-          } = value;
+          const { imageUrl, sex } = value;
           newData.push({
+            sex,
             name,
             subsectID,
             grade,
@@ -3499,7 +4161,10 @@ router.post(
         }
         res.status(200).json({
           numOfPages,
-          studentList: newData
+          studentList: [
+            ...newData.filter(a => a.sex == "M"),
+            ...newData.filter(a => a.sex == "F")
+          ].slice(page * pageSize, (page + 1) * pageSize)
         });
       }
     });
@@ -3515,15 +4180,13 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    let {
-      classRecordID,
-      quarter
-    } = req.body;
+  async (req, res) => {
+    let { classRecordID, quarter } = req.body;
     const {
       subjectID,
       sectionID,
-      subjectType
+      subjectType,
+      subsectID
     } = await SubjectSection.findOne({
       where: {
         classRecordID
@@ -3533,7 +4196,8 @@ router.post(
         return {
           subjectID: ss.subjectID,
           sectionID: ss.sectionID,
-          subjectType: ss.subjectType
+          subjectType: ss.subjectType,
+          subsectID: ss.subsectID
         };
       }
     });
@@ -3558,11 +4222,9 @@ router.post(
           crs[quarter.toLowerCase()] == "F" ||
           crs[quarter.toLowerCase()] == "E";
         if (invalid) {
-          res
-            .status(400)
-            .json({
-              msg: "You are not authorized to edit this class record."
-            });
+          res.status(400).json({
+            msg: "You are not authorized to edit this class record."
+          });
         } else {
           crs
             .update(quarterObj, {
@@ -3576,9 +4238,89 @@ router.post(
               newVal: "F",
               quarter
             })
-            .then(() => {
+            .then(async () => {
+              await utils.refreshStudentGradesBySubsectID(subsectID);
               res.status(200).json({
                 msg: "Class record is now posted!"
+              });
+            });
+        }
+      }
+    });
+  }
+);
+
+// @route POST api/registrar/revertclassrecord
+// @desc Revert class record by classRecordID and quarter
+// @access Private
+
+router.post(
+  "/revertclassrecord",
+  passport.authenticate("registrar", {
+    session: false
+  }),
+  async (req, res) => {
+    let { classRecordID, quarter } = req.body;
+    const {
+      subjectID,
+      sectionID,
+      subjectType,
+      subsectID
+    } = await SubjectSection.findOne({
+      where: {
+        classRecordID
+      }
+    }).then(ss => {
+      if (ss) {
+        return {
+          subjectID: ss.subjectID,
+          sectionID: ss.sectionID,
+          subjectType: ss.subjectType,
+          subsectID: ss.subsectID
+        };
+      }
+    });
+    if (subjectType == "2ND_SEM") {
+      if (quarter == "Q3") {
+        quarter = "Q1";
+      } else {
+        quarter = "Q2";
+      }
+    }
+
+    ClassRecordStatus.findOne({
+      where: {
+        classRecordID
+      }
+    }).then(async crs => {
+      if (crs) {
+        let quarterObj = {};
+        quarterObj[quarter.toLowerCase()] = "D";
+        let invalid =
+          crs[quarter.toLowerCase()] == "L" ||
+          crs[quarter.toLowerCase()] == "D" ||
+          crs[quarter.toLowerCase()] == "E";
+        if (invalid) {
+          res.status(400).json({
+            msg: "You are not authorized to edit this class record."
+          });
+        } else {
+          crs
+            .update(quarterObj, {
+              position: "Registrar",
+              classRecordID,
+              type: "CHANGE_STATUS",
+              accountID: req.user.accountID,
+              subjectID,
+              sectionID,
+              oldVal: "F",
+              newVal: "D",
+              quarter
+            })
+            .then(async () => {
+              await utils.refreshStudentGradesBySubsectID(subsectID);
+              res.status(200).json({
+                msg: "Class record is now ready for deliberation!"
               });
             });
         }
@@ -3591,386 +4333,377 @@ router.post(
 // @desc Get subject type by classRecordID
 // @access Private
 
-router.post('/getsubjecttype', passport.authenticate('registrar', {
-  session: false
-}), async(req, res) => {
-  const {
-    classRecordID
-  } = req.body;
-  SubjectSection.findOne({
-    where: {
-      classRecordID
-    }
-  }).then(ss => {
-    if (ss) {
-      res.status(200).json({
-        subjectType: ss.subjectType
-      });
-    } else {
-      res.status(404).json({
-        msg: "Subject section not found!"
-      });
-    }
-  });
-})
+router.post(
+  "/getsubjecttype",
+  passport.authenticate("registrar", {
+    session: false
+  }),
+  async (req, res) => {
+    const { classRecordID } = req.body;
+    SubjectSection.findOne({
+      where: {
+        classRecordID
+      }
+    }).then(ss => {
+      if (ss) {
+        res.status(200).json({
+          subjectType: ss.subjectType
+        });
+      } else {
+        res.status(404).json({
+          msg: "Subject section not found!"
+        });
+      }
+    });
+  }
+);
 
 // @route POST api/registrar/getcomponents
 // @desc Get components by classRecordID and quarter
 // @access Private
 
-router.post('/getcomponents', passport.authenticate('registrar', {
-  session: false
-}), async(req, res) => {
-  const {
-    classRecordID,
-    quarter
-  } = req.body
-  SubjectSection.findOne({
-    where: {
-      classRecordID
-    }
-  }).then(subjectsection => {
-    if (subjectsection) {
-      Component.findOne({
-        where: {
-          subjectID: subjectsection.subjectID,
-          component: "FA"
-        }
-      }).then(comp1 => {
+router.post(
+  "/getcomponents",
+  passport.authenticate("registrar", {
+    session: false
+  }),
+  async (req, res) => {
+    const { classRecordID, quarter } = req.body;
+    SubjectSection.findOne({
+      where: {
+        classRecordID
+      }
+    }).then(subjectsection => {
+      if (subjectsection) {
         Component.findOne({
           where: {
             subjectID: subjectsection.subjectID,
-            component: "WW"
+            component: "FA"
           }
-        }).then(comp2 => {
+        }).then(comp1 => {
           Component.findOne({
             where: {
               subjectID: subjectsection.subjectID,
-              component: "PT"
+              component: "WW"
             }
-          }).then(comp3 => {
+          }).then(comp2 => {
             Component.findOne({
               where: {
                 subjectID: subjectsection.subjectID,
-                component: "QE"
+                component: "PT"
               }
-            }).then(async comp4 => {
-              let faSubcompData = [];
-              let wwSubcompData = [];
-              let ptSubcompData = [];
-              let qeSubcompData = [];
-              await Subcomponent.findAll({
+            }).then(comp3 => {
+              Component.findOne({
                 where: {
-                  classRecordID: subjectsection.classRecordID,
-                  componentID: comp1.componentID,
-                  quarter
+                  subjectID: subjectsection.subjectID,
+                  component: "QE"
                 }
-              }).then(async subcomp1 => {
-                if (subcomp1.length != 0) {
-                  let i = 0;
-                  for (i = 0; i < subcomp1.length; i++) {
-                    let {
-                      name,
-                      compWeight,
-                      subcompID
-                    } = subcomp1[i];
-                    faSubcompData.push({
-                      name,
-                      compWeight,
-                      subcompID
-                    });
+              }).then(async comp4 => {
+                let faSubcompData = [];
+                let wwSubcompData = [];
+                let ptSubcompData = [];
+                let qeSubcompData = [];
+                await Subcomponent.findAll({
+                  where: {
+                    classRecordID: subjectsection.classRecordID,
+                    componentID: comp1.componentID,
+                    quarter
                   }
-                }
-              });
-              await Subcomponent.findAll({
-                where: {
-                  classRecordID: subjectsection.classRecordID,
-                  componentID: comp2.componentID,
-                  quarter
-                }
-              }).then(async subcomp2 => {
-                if (subcomp2.length != 0) {
-                  let i = 0;
-                  for (i = 0; i < subcomp2.length; i++) {
-                    let {
-                      name,
-                      compWeight,
-                      subcompID
-                    } = subcomp2[i];
-                    wwSubcompData.push({
-                      name,
-                      compWeight,
-                      subcompID
-                    });
+                }).then(async subcomp1 => {
+                  if (subcomp1.length != 0) {
+                    let i = 0;
+                    for (i = 0; i < subcomp1.length; i++) {
+                      let { name, compWeight, subcompID } = subcomp1[i];
+                      faSubcompData.push({
+                        name,
+                        compWeight,
+                        subcompID
+                      });
+                    }
                   }
-                }
-              });
-              await Subcomponent.findAll({
-                where: {
-                  classRecordID: subjectsection.classRecordID,
-                  componentID: comp3.componentID,
-                  quarter
-                }
-              }).then(async subcomp3 => {
-                if (subcomp3.length != 0) {
-                  let i = 0;
-                  for (i = 0; i < subcomp3.length; i++) {
-                    let {
-                      name,
-                      compWeight,
-                      subcompID
-                    } = subcomp3[i];
-                    ptSubcompData.push({
-                      name,
-                      compWeight,
-                      subcompID
-                    });
+                });
+                await Subcomponent.findAll({
+                  where: {
+                    classRecordID: subjectsection.classRecordID,
+                    componentID: comp2.componentID,
+                    quarter
                   }
-                }
-              });
-              await Subcomponent.findAll({
-                where: {
-                  classRecordID: subjectsection.classRecordID,
-                  componentID: comp4.componentID,
-                  quarter
-                }
-              }).then(async subcomp4 => {
-                if (subcomp4.length != 0) {
-                  let i = 0;
-                  for (i = 0; i < subcomp4.length; i++) {
-                    let {
-                      name,
-                      compWeight,
-                      subcompID
-                    } = subcomp4[i];
-                    qeSubcompData.push({
-                      name,
-                      compWeight,
-                      subcompID
-                    });
+                }).then(async subcomp2 => {
+                  if (subcomp2.length != 0) {
+                    let i = 0;
+                    for (i = 0; i < subcomp2.length; i++) {
+                      let { name, compWeight, subcompID } = subcomp2[i];
+                      wwSubcompData.push({
+                        name,
+                        compWeight,
+                        subcompID
+                      });
+                    }
                   }
-                }
-              });
-              const sectionName = await utils.getSectionName(
-                subjectsection.sectionID
-              );
-              const subjectName = await utils.getSubjectName(
-                subjectsection.subjectID
-              );
-              const schoolYear = await utils.getSYname(
-                subjectsection.schoolYearID
-              );
-              const subjectCode = await utils.getSubjectCode(
-                subjectsection.subjectID
-              );
-              res.status(200).json({
-                subjectCode,
-                sectionName,
-                subjectName,
-                schoolYear,
-                classRecordID: subjectsection.classRecordID,
-                FA: {
-                  componentID: comp1.componentID,
-                  weight: comp1.compWeight,
-                  subcomponents: faSubcompData
-                },
-                WW: {
-                  componentID: comp2.componentID,
-                  weight: comp2.compWeight,
-                  subcomponents: wwSubcompData
-                },
-                PT: {
-                  componentID: comp3.componentID,
-                  weight: comp3.compWeight,
-                  subcomponents: ptSubcompData
-                },
-                QE: {
-                  componentID: comp4.componentID,
-                  weight: comp4.compWeight,
-                  subcomponents: qeSubcompData
-                }
+                });
+                await Subcomponent.findAll({
+                  where: {
+                    classRecordID: subjectsection.classRecordID,
+                    componentID: comp3.componentID,
+                    quarter
+                  }
+                }).then(async subcomp3 => {
+                  if (subcomp3.length != 0) {
+                    let i = 0;
+                    for (i = 0; i < subcomp3.length; i++) {
+                      let { name, compWeight, subcompID } = subcomp3[i];
+                      ptSubcompData.push({
+                        name,
+                        compWeight,
+                        subcompID
+                      });
+                    }
+                  }
+                });
+                await Subcomponent.findAll({
+                  where: {
+                    classRecordID: subjectsection.classRecordID,
+                    componentID: comp4.componentID,
+                    quarter
+                  }
+                }).then(async subcomp4 => {
+                  if (subcomp4.length != 0) {
+                    let i = 0;
+                    for (i = 0; i < subcomp4.length; i++) {
+                      let { name, compWeight, subcompID } = subcomp4[i];
+                      qeSubcompData.push({
+                        name,
+                        compWeight,
+                        subcompID
+                      });
+                    }
+                  }
+                });
+                const sectionName = await utils.getSectionName(
+                  subjectsection.sectionID
+                );
+                const subjectName = await utils.getSubjectName(
+                  subjectsection.subjectID
+                );
+                const schoolYear = await utils.getSYname(
+                  subjectsection.schoolYearID
+                );
+                const subjectCode = await utils.getSubjectCode(
+                  subjectsection.subjectID
+                );
+                res.status(200).json({
+                  subjectCode,
+                  sectionName,
+                  subjectName,
+                  schoolYear,
+                  classRecordID: subjectsection.classRecordID,
+                  FA: {
+                    componentID: comp1.componentID,
+                    weight: comp1.compWeight,
+                    subcomponents: faSubcompData
+                  },
+                  WW: {
+                    componentID: comp2.componentID,
+                    weight: comp2.compWeight,
+                    subcomponents: wwSubcompData
+                  },
+                  PT: {
+                    componentID: comp3.componentID,
+                    weight: comp3.compWeight,
+                    subcomponents: ptSubcompData
+                  },
+                  QE: {
+                    componentID: comp4.componentID,
+                    weight: comp4.compWeight,
+                    subcomponents: qeSubcompData
+                  }
+                });
               });
             });
           });
         });
-      });
-    } else {
-      res.status(404).json({
-        msg: "Subject Section not found!"
-      })
-    }
-  })
-})
+      } else {
+        res.status(404).json({
+          msg: "Subject Section not found!"
+        });
+      }
+    });
+  }
+);
 
 // @route POST api/teacher/editsubcomp
 // @desc Edit subcomponent name, weight by subcomponentID
 // @access Private
 
-router.post('/editsubcomp', passport.authenticate('registrar', {
-  session: false
-}), async(req, res) => {
-  const reg = /^-?[0-9]*(\.[0-9]*)?$/;
-  const {
-    payload,
-    classRecordID,
-    quarter
-  } = req.body;
-  ClassRecordStatus.findOne({
-    where: {
-      classRecordID
-    }
-  }).then(async crs => {
-    if (crs) {
-      let invalid = false;
-      if (quarter == "Q1") {
-        invalid = crs.q1 == "L" || crs.q1 == "E" || crs.q1 == "F";
-      } else if (quarter == "Q2") {
-        invalid = crs.q2 == "L" || crs.q2 == "E" || crs.q2 == "F";
-      } else if (quarter == "Q3") {
-        invalid = crs.q3 == "L" || crs.q3 == "E" || crs.q3 == "F";
-      } else {
-        invalid = crs.q4 == "L" || crs.q4 == "E" || crs.q4 == "F";
+router.post(
+  "/editsubcomp",
+  passport.authenticate("registrar", {
+    session: false
+  }),
+  async (req, res) => {
+    const reg = /^-?[0-9]*(\.[0-9]*)?$/;
+    const { payload, classRecordID, quarter } = req.body;
+    ClassRecordStatus.findOne({
+      where: {
+        classRecordID
       }
-      if (invalid) {
-        res
-          .status(400)
-          .json({
+    }).then(async crs => {
+      if (crs) {
+        let invalid = false;
+        if (quarter == "Q1") {
+          invalid = crs.q1 == "L" || crs.q1 == "E" || crs.q1 == "F";
+        } else if (quarter == "Q2") {
+          invalid = crs.q2 == "L" || crs.q2 == "E" || crs.q2 == "F";
+        } else if (quarter == "Q3") {
+          invalid = crs.q3 == "L" || crs.q3 == "E" || crs.q3 == "F";
+        } else {
+          invalid = crs.q4 == "L" || crs.q4 == "E" || crs.q4 == "F";
+        }
+        if (invalid) {
+          res.status(400).json({
             msg: "You are not authorized to edit this class record."
           });
-      } else {
-        let i = 0;
-        let sum = 0;
-        for (i = 0; i < payload.length; i++) {
-          let {
-            errors,
-            isValid
-          } = validateSubcomponent({
-            name: payload[i].name
-          });
-          if (!isValid) {
-            return res.status(400).json({
-              msg: errors.msg
+        } else {
+          let i = 0;
+          let sum = 0;
+          for (i = 0; i < payload.length; i++) {
+            let { errors, isValid } = validateSubcomponent({
+              name: payload[i].name
             });
-          } else {
-            let valid =
-              (!isNaN(payload[i].compWeight) &&
-                reg.test(payload[i].compWeight)) ||
-              payload[i].compWeight === "" ||
-              payload[i].compWeight === "-";
-            if (
-              payload[i].compWeight > 100 ||
-              payload[i].compWeight < 0 ||
-              !valid
-            ) {
-              return res
-                .status(400)
-                .json({
+            if (!isValid) {
+              return res.status(400).json({
+                msg: errors.msg
+              });
+            } else {
+              let valid =
+                (!isNaN(payload[i].compWeight) &&
+                  reg.test(payload[i].compWeight)) ||
+                payload[i].compWeight === "" ||
+                payload[i].compWeight === "-";
+              if (
+                payload[i].compWeight > 100 ||
+                payload[i].compWeight < 0 ||
+                !valid
+              ) {
+                return res.status(400).json({
                   msg: "Invalid component weight input"
                 });
-            } else {
-              sum = sum + parseFloat(payload[i].compWeight);
+              } else {
+                sum = sum + parseFloat(payload[i].compWeight);
+              }
             }
           }
-        }
 
-        if (sum != 100) {
-          return res.status(400).json({
-            msg: "Sum of component weights must be 100!"
-          });
-        }
+          if (sum != 100) {
+            return res.status(400).json({
+              msg: "Sum of component weights must be 100!"
+            });
+          }
 
-        payload.forEach(async(val, arr, index) => {
-          await Subcomponent.findOne({
-            where: {
-              subcompID: val.subcompID
-            }
-          }).then(subcomp => {
-            if (subcomp) {
-              SubjectSection.findOne({
-                where: {
-                  classRecordID: subcomp.classRecordID
-                }
-              }).then(subjectsection => {
-                if (subjectsection) {
-                  let {
-                    name,
-                    compWeight
-                  } = val;
-                  subcomp
-                    .update({
-                      name,
-                      compWeight
-                    })
-                    .then(async() => {
-                      await utils.refreshStudentWeightedScoreBySubsectID(
-                        subjectsection.subsectID
-                      );
+          payload.forEach(async (val, arr, index) => {
+            await Subcomponent.findOne({
+              where: {
+                subcompID: val.subcompID
+              }
+            }).then(subcomp => {
+              if (subcomp) {
+                SubjectSection.findOne({
+                  where: {
+                    classRecordID: subcomp.classRecordID
+                  }
+                }).then(async subjectsection => {
+                  if (subjectsection) {
+                    let { name, compWeight } = val;
+                    const componentName = await utils.getComponentName(
+                      subcomp.componentID
+                    );
+
+                    subcomp
+                      .update(
+                        {
+                          name,
+                          compWeight
+                        },
+                        {
+                          showLog: true,
+                          position: "Registrar",
+                          type: "SUBCOMP_UPDATE",
+                          accountID: req.user.accountID,
+                          sectionID: subjectsection.sectionID,
+                          subjectID: subjectsection.subjectID,
+                          quarter,
+                          subcompName: subcomp.name,
+                          componentName,
+                          classRecordID,
+                          oldVal: subcomp.compWeight,
+                          newVal: compWeight,
+                          oldName: subcomp.name,
+                          newName: name
+                        }
+                      )
+                      .then(async () => {
+                        await utils.refreshStudentWeightedScoreBySubsectID(
+                          subjectsection.subsectID
+                        );
+                      });
+                  } else {
+                    res.status(400).json({
+                      msg: "Subject Section not found!"
                     });
-                } else {
-                  res.status(400).json({
-                    msg: "Subject Section not found!"
-                  });
-                }
-              });
-            } else {
-              res.status(400).json({
-                msg: "Subcomponent not found!"
-              });
-            }
+                  }
+                });
+              } else {
+                res.status(400).json({
+                  msg: "Subcomponent not found!"
+                });
+              }
+            });
           });
+          res.status(200).json({
+            msg: "Subcomponent updated successfully!"
+          });
+        }
+      } else {
+        res.status(404).json({
+          msg: "Class record status not found!"
         });
-        res.status(200).json({
-          msg: "Subcomponent updated successfully!"
-        });
-
       }
-
-    } else {
-      res.status(404).json({
-        msg: "Class record status not found!"
-      });
-    }
-  })
-})
+    });
+  }
+);
 
 // @route POST api/registrar/addnewsubcomp
 // @desc Add new subcomponent by classRecordID and componentID
 // @access Private
 
-router.post('/addnewsubcomp', passport.authenticate('registrar', {
-  session: false
-}), async(req, res) => {
-  const {
-    classRecordID,
-    componentID,
-    name,
-    quarter
-  } = req.body;
-  const {
-    errors,
-    isValid
-  } = validateSubcomponent({
-    name
-  });
-
-  if (!isValid) {
-    return res.status(400).json({
-      msg: errors.msg
+router.post(
+  "/addnewsubcomp",
+  passport.authenticate("registrar", {
+    session: false
+  }),
+  async (req, res) => {
+    const { classRecordID, componentID, name, quarter } = req.body;
+    const { errors, isValid } = validateSubcomponent({
+      name
     });
-  }
 
-  SubjectSection.findOne({
-    where: {
-      classRecordID
+    if (!isValid) {
+      return res.status(400).json({
+        msg: errors.msg
+      });
     }
-  }).then(subjectsection => {
-    if (subjectsection) {
-      ClassRecordStatus.findOne({
-        where: {
-          classRecordID
-        }
-      }).then(
-        async crs => {
+
+    SubjectSection.findOne({
+      where: {
+        classRecordID
+      }
+    }).then(subjectsection => {
+      if (subjectsection) {
+        ClassRecordStatus.findOne({
+          where: {
+            classRecordID
+          }
+        }).then(async crs => {
           if (crs) {
             if (quarter == "Q1") {
               if (crs.q1 == "L" || crs.q1 == "E" || crs.q1 == "F") {
@@ -3978,13 +4711,28 @@ router.post('/addnewsubcomp', passport.authenticate('registrar', {
                   msg: "You are not authorized to edit this class record."
                 });
               } else {
-                Subcomponent.create({
-                  name,
-                  componentID,
-                  classRecordID,
-                  compWeight: 0,
-                  quarter
-                }).then(subcomponent => {
+                const componentName = await utils.getComponentName(componentID);
+                Subcomponent.create(
+                  {
+                    name,
+                    componentID,
+                    classRecordID,
+                    compWeight: 0,
+                    quarter
+                  },
+                  {
+                    showLog: true,
+                    position: "Registrar",
+                    type: "SUBCOMP_ADD",
+                    accountID: req.user.accountID,
+                    sectionID: subjectsection.sectionID,
+                    subjectID: subjectsection.subjectID,
+                    quarter,
+                    subcompName: name,
+                    componentName,
+                    classRecordID
+                  }
+                ).then(subcomponent => {
                   res.status(200).json({
                     msg: "Successfully added a new subcomponent!"
                   });
@@ -3996,13 +4744,28 @@ router.post('/addnewsubcomp', passport.authenticate('registrar', {
                   msg: "You are not authorized to edit this class record."
                 });
               } else {
-                Subcomponent.create({
-                  name,
-                  componentID,
-                  classRecordID,
-                  compWeight: 0,
-                  quarter
-                }).then(subcomponent => {
+                const componentName = await utils.getComponentName(componentID);
+                Subcomponent.create(
+                  {
+                    name,
+                    componentID,
+                    classRecordID,
+                    compWeight: 0,
+                    quarter
+                  },
+                  {
+                    showLog: true,
+                    position: "Registrar",
+                    type: "SUBCOMP_ADD",
+                    accountID: req.user.accountID,
+                    sectionID: subjectsection.sectionID,
+                    subjectID: subjectsection.subjectID,
+                    quarter,
+                    subcompName: name,
+                    componentName,
+                    classRecordID
+                  }
+                ).then(subcomponent => {
                   res.status(200).json({
                     msg: "Successfully added a new subcomponent!"
                   });
@@ -4014,13 +4777,28 @@ router.post('/addnewsubcomp', passport.authenticate('registrar', {
                   msg: "You are not authorized to edit this class record."
                 });
               } else {
-                Subcomponent.create({
-                  name,
-                  componentID,
-                  classRecordID,
-                  compWeight: 0,
-                  quarter
-                }).then(subcomponent => {
+                const componentName = await utils.getComponentName(componentID);
+                Subcomponent.create(
+                  {
+                    name,
+                    componentID,
+                    classRecordID,
+                    compWeight: 0,
+                    quarter
+                  },
+                  {
+                    showLog: true,
+                    position: "Registrar",
+                    type: "SUBCOMP_ADD",
+                    accountID: req.user.accountID,
+                    sectionID: subjectsection.sectionID,
+                    subjectID: subjectsection.subjectID,
+                    quarter,
+                    subcompName: name,
+                    componentName,
+                    classRecordID
+                  }
+                ).then(subcomponent => {
                   res.status(200).json({
                     msg: "Successfully added a new subcomponent!"
                   });
@@ -4032,13 +4810,28 @@ router.post('/addnewsubcomp', passport.authenticate('registrar', {
                   msg: "You are not authorized to edit this class record."
                 });
               } else {
-                Subcomponent.create({
-                  name,
-                  componentID,
-                  classRecordID,
-                  compWeight: 0,
-                  quarter
-                }).then(subcomponent => {
+                const componentName = await utils.getComponentName(componentID);
+                Subcomponent.create(
+                  {
+                    name,
+                    componentID,
+                    classRecordID,
+                    compWeight: 0,
+                    quarter
+                  },
+                  {
+                    showLog: true,
+                    position: "Registrar",
+                    type: "SUBCOMP_ADD",
+                    accountID: req.user.accountID,
+                    sectionID: subjectsection.sectionID,
+                    subjectID: subjectsection.subjectID,
+                    quarter,
+                    subcompName: name,
+                    componentName,
+                    classRecordID
+                  }
+                ).then(subcomponent => {
                   res.status(200).json({
                     msg: "Successfully added a new subcomponent!"
                   });
@@ -4046,102 +4839,147 @@ router.post('/addnewsubcomp', passport.authenticate('registrar', {
               }
             }
           } else {
-            res
-              .status(404)
-              .json({
-                msg: "Class record status does not exist."
-              });
+            res.status(404).json({
+              msg: "Class record status does not exist."
+            });
           }
-        }
-      );
-    } else {
-      res.status(404).json({
-        msg: "Subject section not found!"
-      });
-    }
-  })
-})
+        });
+      } else {
+        res.status(404).json({
+          msg: "Subject section not found!"
+        });
+      }
+    });
+  }
+);
 
 // @route POST api/registrar/deletesubcomp
 // @desc Delete subcomponent by subcomponentID
 // @access Private
 
-router.post('/deletesubcomp', passport.authenticate('registrar', {
-  session: false
-}), async(req, res) => {
-  const {
-    subcompID,
-    quarter,
-    classRecordID
-  } = req.body;
-  ClassRecordStatus.findOne({
-    where: {
-      classRecordID
-    }
-  }).then(async crs => {
-    if (crs) {
-      let invalid = false;
-      if (quarter == "Q1") {
-        invalid = crs.q1 == "L" || crs.q1 == "E" || crs.q1 == "F";
-      } else if (quarter == "Q2") {
-        invalid = crs.q2 == "L" || crs.q2 == "E" || crs.q2 == "F";
-      } else if (quarter == "Q3") {
-        invalid = crs.q3 == "L" || crs.q3 == "E" || crs.q3 == "F";
-      } else {
-        invalid = crs.q4 == "L" || crs.q4 == "E" || crs.q4 == "F";
+router.post(
+  "/deletesubcomp",
+  passport.authenticate("registrar", {
+    session: false
+  }),
+  async (req, res) => {
+    const { subcompID, quarter, classRecordID } = req.body;
+    ClassRecordStatus.findOne({
+      where: {
+        classRecordID
       }
-      if (invalid) {
-        res
-          .status(400)
-          .json({
+    }).then(async crs => {
+      if (crs) {
+        let invalid = false;
+        if (quarter == "Q1") {
+          invalid = crs.q1 == "L" || crs.q1 == "E" || crs.q1 == "F";
+        } else if (quarter == "Q2") {
+          invalid = crs.q2 == "L" || crs.q2 == "E" || crs.q2 == "F";
+        } else if (quarter == "Q3") {
+          invalid = crs.q3 == "L" || crs.q3 == "E" || crs.q3 == "F";
+        } else {
+          invalid = crs.q4 == "L" || crs.q4 == "E" || crs.q4 == "F";
+        }
+        if (invalid) {
+          res.status(400).json({
             msg: "You are not authorized to edit this class record."
           });
-      } else {
-        Subcomponent.findOne({
-          where: {
-            subcompID
-          }
-        }).then(subcomponent => {
-          if (subcomponent) {
-            Subcomponent.findAll({
-              where: {
-                classRecordID: subcomponent.classRecordID,
-                componentID: subcomponent.componentID
-              }
-            }).then(c => {
-              if (c.length == 1) {
-                res.status(400).json({
-                  msg: "Subcomponent can't be deleted. There must be at least one subcomponent."
-                });
-              } else {
-                let compweight = subcomponent.compWeight;
-                if (compweight != 0) {
+        } else {
+          Subcomponent.findOne({
+            where: {
+              subcompID
+            }
+          }).then(subcomponent => {
+            if (subcomponent) {
+              Subcomponent.findAll({
+                where: {
+                  classRecordID: subcomponent.classRecordID,
+                  componentID: subcomponent.componentID
+                }
+              }).then(c => {
+                if (c.length == 1) {
                   res.status(400).json({
-                    msg: "Subcomponent can't be deleted. Set component weight to 0 first."
+                    msg:
+                      "Subcomponent can't be deleted. There must be at least one subcomponent."
                   });
                 } else {
-                  subcomponent.destroy({}).then(() => {
-                    res.status(200).json({
-                      msg: "Subcomponent deleted successfully!"
+                  let compweight = subcomponent.compWeight;
+                  if (compweight != 0) {
+                    res.status(400).json({
+                      msg:
+                        "Subcomponent can't be deleted. Set component weight to 0 first."
                     });
-                  });
+                  } else {
+                    Grade.findOne({
+                      where: {
+                        subcomponentID: subcomponent.subcompID
+                      }
+                    }).then(async g => {
+                      if (g) {
+                        res.status(400).json({
+                          msg:
+                            "Operation could not be completed. Delete all grades under this subcomponent first."
+                        });
+                      } else {
+                        const {
+                          sectionID,
+                          subjectID
+                        } = await SubjectSection.findOne({
+                          where: {
+                            classRecordID
+                          }
+                        }).then(ss => {
+                          if (ss) {
+                            return {
+                              sectionID: ss.sectionID,
+                              subjectID: ss.subjectID,
+                              subjectType: ss.subjectType
+                            };
+                          }
+                        });
+                        const { accountID } = req.user;
+                        const subcompName = subcomponent.name;
+                        const componentName = await utils.getComponentName(
+                          subcomponent.componentID
+                        );
+                        subcomponent
+                          .destroy({
+                            showLog: true,
+                            position: "Registrar",
+                            type: "SUBCOMP_DELETE",
+                            classRecordID,
+                            accountID,
+                            sectionID,
+                            subjectID,
+                            quarter,
+                            subcompName,
+                            componentName
+                          })
+                          .then(() => {
+                            res.status(200).json({
+                              msg: "Subcomponent deleted successfully!"
+                            });
+                          });
+                      }
+                    });
+                  }
                 }
-              }
-            })
-          } else {
-            res.status(404).json({
-              msg: "Subcomponent not found!"
-            });
-          }
-        })
+              });
+            } else {
+              res.status(404).json({
+                msg: "Subcomponent not found!"
+              });
+            }
+          });
+        }
+      } else {
+        res.status(404).json({
+          msg: "Class record status does not exist."
+        });
       }
-    } else {
-      res.status(404).json({
-        msg: "Class record status does not exist."
-      });
-    }
-  })
-})
+    });
+  }
+);
 
 // @route POST api/registrar/getactivitylog
 // @desc Get activity log by classRecordID
@@ -4152,19 +4990,14 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      classRecordID,
-      quarter
-    } = req.body;
+  async (req, res) => {
+    const { classRecordID, quarter } = req.body;
     const responseData = await ActivityLog.findAll({
       where: {
         classRecordID,
         quarter
       },
-      order: [
-        ["timestamp", "DESC"]
-      ]
+      order: [["timestamp", "DESC"]]
     }).then(async activitylogs => {
       if (activitylogs) {
         let activitylogData = [];
@@ -4232,156 +5065,386 @@ router.post(
 // @router POST api/registrar/compinfo
 // @desc Get component information by classRecordID and componentID
 
-router.post('/compinfo', passport.authenticate('registrar', {
-  session: false
-}), async(req, res) => {
-  const {
-    classRecordID,
-    componentID,
-    quarter
-  } = req.body;
-  const {
-    accountID
-  } = req.user;
-  const teacherID = await utils.getTeacherID(accountID);
-  SubjectSection.findOne({
-    where: {
-      classRecordID
-    }
-  }).then(
-    async subjectsection => {
+router.post(
+  "/compinfo",
+  passport.authenticate("registrar", {
+    session: false
+  }),
+  async (req, res) => {
+    const { classRecordID, componentID, quarter } = req.body;
+    const { accountID } = req.user;
+    const teacherID = await utils.getTeacherID(accountID);
+    SubjectSection.findOne({
+      where: {
+        classRecordID
+      }
+    }).then(async subjectsection => {
       if (subjectsection) {
         Component.findOne({
           where: {
             componentID
           }
-        }).then(
-          async component => {
+        }).then(async component => {
+          if (component) {
+            let component = await utils.getComponentName(componentID);
+            let grades = await Subcomponent.findAll({
+              where: {
+                componentID,
+                classRecordID: subjectsection.classRecordID,
+                quarter
+              }
+            }).then(async subcomp => {
+              if (subcomp.length == 0) {
+                res.status(404).json({
+                  msg: "Subcomponents not found!"
+                });
+              } else {
+                let i = 0;
+                let data1 = [];
+                for (i = 0; i < subcomp.length; i++) {
+                  const { subcompID } = subcomp[i];
+                  let name = await utils.getSubcomponentName(subcompID);
+                  name = name + ` (${subcomp[i].compWeight}%)`;
+                  const data2 = await SubjectSectionStudent.findAll({
+                    where: {
+                      subsectID: subjectsection.subsectID
+                    }
+                  }).then(async subsectstud => {
+                    if (subsectstud.length == 0) {
+                      res.status(404).json({
+                        msg: "Subject section student not found!"
+                      });
+                    } else {
+                      let j = 0;
+                      let studentData = [];
+                      for (j = 0; j < subsectstud.length; j++) {
+                        const { subsectstudID } = subsectstud[j];
+                        const name = await utils.getStudentNameBySubsectstudID(
+                          subsectstudID
+                        );
+                        let sex = await utils.getStudentSexBySubsectstudID(
+                          subsectstudID
+                        );
+                        const imageUrl = await utils.getStudentImageUrlBySubsectstudID(
+                          subsectstudID
+                        );
+                        const grades = await Grade.findAll({
+                          where: {
+                            componentID,
+                            subcomponentID: subcomp[i].subcompID,
+                            classRecordID: subjectsection.classRecordID,
+                            subsectstudID: subsectstud[j].subsectstudID,
+                            quarter
+                          },
+                          order: [["dateGiven", "DESC"]]
+                        }).then(async grades => {
+                          if (grades.length == 0) {
+                            return [];
+                          } else {
+                            let k = 0;
+                            let gradesData = [];
+                            for (k = 0; k < grades.length; k++) {
+                              const {
+                                gradeID,
+                                dateGiven,
+                                score,
+                                total,
+                                attendance
+                              } = grades[k];
+                              gradesData.push({
+                                gradeID,
+                                dateGiven,
+                                score,
+                                total,
+                                attendance
+                              });
+                            }
+                            return gradesData;
+                          }
+                        });
+                        let k = 0;
+                        let sumScores = 0;
+                        let sumItems = 0;
+                        let excused = 0;
+                        let ps = -1;
+                        for (k = 0; k < grades.length; k++) {
+                          if (grades[k].attendance == "E") {
+                            excused = excused + 1;
+                          } else if (grades[k].attendance == "A") {
+                            sumScores = sumScores + 0;
+                            sumItems = sumItems + parseFloat(grades[k].total);
+                          } else {
+                            sumScores = sumScores + parseFloat(grades[k].score);
+                            sumItems = sumItems + parseFloat(grades[k].total);
+                          }
+                        }
+                        if (grades.length != 0) {
+                          if (grades.length == excused) {
+                            ps = -1;
+                          } else {
+                            ps = (sumScores / sumItems) * 100;
+                          }
+                        }
+
+                        studentData.push({
+                          sex,
+                          imageUrl,
+                          subsectstudID,
+                          name,
+                          grades,
+                          ps
+                        });
+                      }
+                      return studentData;
+                    }
+                  });
+                  data2.sort((a, b) => (a.name > b.name ? 1 : -1));
+                  let tempData = [
+                    ...data2.filter(a => a.sex == "M"),
+                    ...data2.filter(a => a.sex == "F")
+                  ];
+                  data1.push({
+                    subcompID,
+                    name,
+                    data: tempData
+                  });
+                }
+                return data1;
+              }
+            });
+            let ave = await StudentWeightedScore.findAll({
+              where: {
+                classRecordID: subjectsection.classRecordID,
+                quarter
+              }
+            }).then(async studweightedscore => {
+              if (studweightedscore.length == 0) {
+                return [];
+              } else {
+                let l = 0;
+                const aveData = [];
+                for (l = 0; l < studweightedscore.length; l++) {
+                  const {
+                    subsectstudID,
+                    faWS,
+                    wwWS,
+                    ptWS,
+                    qeWS,
+                    actualGrade
+                  } = studweightedscore[l];
+                  const name = await utils.getStudentNameBySubsectstudID(
+                    subsectstudID
+                  );
+                  let sex = await utils.getStudentSexBySubsectstudID(
+                    subsectstudID
+                  );
+                  let ws = 0;
+                  switch (component) {
+                    case "Formative Assessment": {
+                      ws = faWS;
+                      break;
+                    }
+                    case "Written Works": {
+                      ws = wwWS;
+                      break;
+                    }
+                    case "Performance Task": {
+                      ws = ptWS;
+                      break;
+                    }
+                    case "Quarterly Exam": {
+                      ws = qeWS;
+                      break;
+                    }
+                    default:
+                      break;
+                  }
+                  aveData.push({
+                    sex,
+                    subsectstudID,
+                    ws,
+                    name
+                  });
+                }
+                return aveData;
+              }
+            });
+            ave.sort((a, b) => (a.name > b.name ? 1 : -1));
+            let tempData2 = [
+              ...ave.filter(a => a.sex == "M"),
+              ...ave.filter(a => a.sex == "F")
+            ];
+            res.status(200).json({
+              componentID,
+              component,
+              grades,
+              ave: tempData2
+            });
+          } else {
+            res.status(404).json({
+              msg: "Component not found!"
+            });
+          }
+        });
+      } else {
+        res.status(404).json({
+          msg: "Subject section not found!"
+        });
+      }
+    });
+  }
+);
+
+// @router POST api/registrar/subcompinfo
+// @desc Get component information by componentID and classRecordID
+// @access Private
+
+router.post(
+  "/subcompinfo",
+  passport.authenticate("registrar", {
+    session: false
+  }),
+  async (req, res) => {
+    const { classRecordID, componentID, subcompID, quarter } = req.body;
+    SubjectSection.findOne({
+      where: {
+        classRecordID
+      }
+    }).then(async subjectsection => {
+      if (subjectsection) {
+        if (false) {
+          res.status(400).json({
+            msg: "Not authorized!"
+          });
+        } else {
+          Component.findOne({
+            where: {
+              componentID
+            }
+          }).then(async component => {
             if (component) {
               let component = await utils.getComponentName(componentID);
-              let grades = await Subcomponent.findAll({
+              let { subcomponentID, name, data } = await Subcomponent.findOne({
                 where: {
                   componentID,
                   classRecordID: subjectsection.classRecordID,
+                  subcompID,
                   quarter
                 }
               }).then(async subcomp => {
-                if (subcomp.length == 0) {
+                if (!subcomp) {
                   res.status(404).json({
                     msg: "Subcomponents not found!"
                   });
                 } else {
-                  let i = 0;
-                  let data1 = [];
-                  for (i = 0; i < subcomp.length; i++) {
-                    const {
-                      subcompID
-                    } = subcomp[i];
-                    let name = await utils.getSubcomponentName(subcompID);
-                    name = name + ` (${subcomp[i].compWeight}%)`;
-                    const data2 = await SubjectSectionStudent.findAll({
-                      where: {
-                        subsectID: subjectsection.subsectID
-                      }
-                    }).then(async subsectstud => {
-                      if (subsectstud.length == 0) {
-                        res.status(404).json({
-                          msg: "Subject section student not found!"
+                  const subcomponentID = subcomp.subcompID;
+                  let name = await utils.getSubcomponentName(subcomponentID);
+                  name = name + ` (${subcomp.compWeight}%)`;
+                  const data2 = await SubjectSectionStudent.findAll({
+                    where: {
+                      subsectID: subjectsection.subsectID
+                    }
+                  }).then(async subsectstud => {
+                    if (subsectstud.length == 0) {
+                      res.status(404).json({
+                        msg: "Subject section student not found!"
+                      });
+                    } else {
+                      let j = 0;
+                      let studentData = [];
+                      for (j = 0; j < subsectstud.length; j++) {
+                        const { subsectstudID } = subsectstud[j];
+                        const name = await utils.getStudentNameBySubsectstudID(
+                          subsectstudID
+                        );
+                        const sex = await utils.getStudentSexBySubsectstudID(
+                          subsectstudID
+                        );
+                        const imageUrl = await utils.getStudentImageUrlBySubsectstudID(
+                          subsectstudID
+                        );
+                        const grades = await Grade.findAll({
+                          where: {
+                            componentID,
+                            subcomponentID: subcomp.subcompID,
+                            classRecordID: subjectsection.classRecordID,
+                            subsectstudID: subsectstud[j].subsectstudID,
+                            quarter
+                          },
+                          order: [["date", "DESC"]]
+                        }).then(async grades => {
+                          if (grades.length == 0) {
+                            return [];
+                          } else {
+                            let k = 0;
+                            let gradesData = [];
+                            for (k = 0; k < grades.length; k++) {
+                              const {
+                                gradeID,
+                                dateGiven,
+                                score,
+                                total,
+                                description,
+                                attendance
+                              } = grades[k];
+                              gradesData.push({
+                                gradeID,
+                                dateGiven,
+                                score,
+                                total,
+                                description,
+                                attendance
+                              });
+                            }
+                            return gradesData;
+                          }
                         });
-                      } else {
-                        let j = 0;
-                        let studentData = [];
-                        for (j = 0; j < subsectstud.length; j++) {
-                          const {
-                            subsectstudID
-                          } = subsectstud[j];
-                          const name = await utils.getStudentNameBySubsectstudID(
-                            subsectstudID
-                          );
-                          const imageUrl = await utils.getStudentImageUrlBySubsectstudID(
-                            subsectstudID
-                          );
-                          const grades = await Grade.findAll({
-                            where: {
-                              componentID,
-                              subcomponentID: subcomp[i].subcompID,
-                              classRecordID: subjectsection.classRecordID,
-                              subsectstudID: subsectstud[j].subsectstudID,
-                              quarter
-                            },
-                            order: [
-                              ["dateGiven", "DESC"]
-                            ]
-                          }).then(async grades => {
-                            if (grades.length == 0) {
-                              return [];
-                            } else {
-                              let k = 0;
-                              let gradesData = [];
-                              for (k = 0; k < grades.length; k++) {
-                                const {
-                                  gradeID,
-                                  dateGiven,
-                                  score,
-                                  total,
-                                  attendance
-                                } = grades[k];
-                                gradesData.push({
-                                  gradeID,
-                                  dateGiven,
-                                  score,
-                                  total,
-                                  attendance
-                                });
-                              }
-                              return gradesData;
-                            }
-                          });
-                          let k = 0;
-                          let sumScores = 0;
-                          let sumItems = 0;
-                          let excused = 0;
-                          let ps = -1;
-                          for (k = 0; k < grades.length; k++) {
-                            if (grades[k].attendance == "E") {
-                              excused = excused + 1;
-                            } else if (grades[k].attendance == "A") {
-                              sumScores = sumScores + 0;
-                              sumItems =
-                                sumItems + parseFloat(grades[k].total);
-                            } else {
-                              sumScores =
-                                sumScores + parseFloat(grades[k].score);
-                              sumItems =
-                                sumItems + parseFloat(grades[k].total);
-                            }
+                        let k = 0;
+                        let sumScores = 0;
+                        let sumItems = 0;
+                        let excused = 0;
+                        let ps = -1;
+                        for (k = 0; k < grades.length; k++) {
+                          if (grades[k].attendance == "E") {
+                            excused = excused + 1;
+                          } else if (grades[k].attendance == "A") {
+                            sumScores = sumScores + 0;
+                            sumItems = sumItems + parseFloat(grades[k].total);
+                          } else {
+                            sumScores = sumScores + parseFloat(grades[k].score);
+                            sumItems = sumItems + parseFloat(grades[k].total);
                           }
-                          if (grades.length != 0) {
-                            if (grades.length == excused) {
-                              ps = -1;
-                            } else {
-                              ps = (sumScores / sumItems) * 100;
-                            }
-                          }
-
-                          studentData.push({
-                            imageUrl,
-                            subsectstudID,
-                            name,
-                            grades,
-                            ps
-                          });
                         }
-                        return studentData;
+                        if (grades.length != 0) {
+                          if (grades.length == excused) {
+                            ps = -1;
+                          } else {
+                            ps = (sumScores / sumItems) * 100;
+                          }
+                        }
+
+                        studentData.push({
+                          sex,
+                          imageUrl,
+                          subsectstudID,
+                          name,
+                          grades,
+                          ps
+                        });
                       }
-                    });
-                    data1.push({
-                      subcompID,
-                      name,
-                      data: data2
-                    });
-                  }
-                  return data1;
+                      studentData.sort((a, b) => (a.name > b.name ? 1 : -1));
+                      return [
+                        ...studentData.filter(a => a.sex == "M"),
+                        ...studentData.filter(a => a.sex == "F")
+                      ];
+                    }
+                  });
+
+                  return {
+                    subcomponentID,
+                    name,
+                    data: data2
+                  };
                 }
               });
               let ave = await StudentWeightedScore.findAll({
@@ -4407,32 +5470,28 @@ router.post('/compinfo', passport.authenticate('registrar', {
                     const name = await utils.getStudentNameBySubsectstudID(
                       subsectstudID
                     );
+                    let sex = await utils.getStudentSexBySubsectstudID(
+                      subsectstudID
+                    );
                     let ws = 0;
                     switch (component) {
-                      case "Formative Assessment":
-                        {
-                          ws = faWS;
-                          break;
-                        }
-                      case "Written Works":
-                        {
-                          ws = wwWS;
-                          break;
-                        }
-                      case "Performance Task":
-                        {
-                          ws = ptWS;
-                          break;
-                        }
-                      case "Quarterly Exam":
-                        {
-                          ws = qeWS;
-                          break;
-                        }
+                      case "Formative Assessment": {
+                        ws = faWS;
+                      }
+                      case "Written Works": {
+                        ws = wwWS;
+                      }
+                      case "Performance Task": {
+                        ws = ptWS;
+                      }
+                      case "Quarterly Exam": {
+                        ws = qeWS;
+                      }
                       default:
-                        break;
+                        "";
                     }
                     aveData.push({
+                      sex,
                       subsectstudID,
                       ws,
                       name
@@ -4441,266 +5500,33 @@ router.post('/compinfo', passport.authenticate('registrar', {
                   return aveData;
                 }
               });
+              ave.sort((a, b) => (a.name > b.name ? 1 : -1));
               res.status(200).json({
                 componentID,
                 component,
-                grades,
-                ave
+                subcompID: subcomponentID,
+                subcompName: name,
+                data,
+                ave: [
+                  ...ave.filter(a => a.sex == "M"),
+                  ...ave.filter(a => a.sex == "F")
+                ]
               });
             } else {
               res.status(404).json({
                 msg: "Component not found!"
               });
             }
-          }
-        );
-      } else {
-        res.status(404).json({
-          msg: "Subject section not found!"
-        });
-      }
-    }
-  );
-})
-
-// @router POST api/registrar/subcompinfo
-// @desc Get component information by componentID and classRecordID
-// @access Private
-
-router.post('/subcompinfo', passport.authenticate('registrar', {
-  session: false
-}), async(req, res) => {
-  const {
-    classRecordID,
-    componentID,
-    subcompID,
-    quarter
-  } = req.body;
-  SubjectSection.findOne({
-    where: {
-      classRecordID
-    }
-  }).then(
-    async subjectsection => {
-      if (subjectsection) {
-        if (false) {
-          res.status(400).json({
-            msg: "Not authorized!"
           });
-        } else {
-          Component.findOne({
-            where: {
-              componentID
-            }
-          }).then(
-            async component => {
-              if (component) {
-                let component = await utils.getComponentName(componentID);
-                let {
-                  subcomponentID,
-                  name,
-                  data
-                } = await Subcomponent.findOne({
-                  where: {
-                    componentID,
-                    classRecordID: subjectsection.classRecordID,
-                    subcompID,
-                    quarter
-                  }
-                }).then(async subcomp => {
-                  if (!subcomp) {
-                    res.status(404).json({
-                      msg: "Subcomponents not found!"
-                    });
-                  } else {
-                    const subcomponentID = subcomp.subcompID;
-                    let name = await utils.getSubcomponentName(
-                      subcomponentID
-                    );
-                    name = name + ` (${subcomp.compWeight}%)`;
-                    const data2 = await SubjectSectionStudent.findAll({
-                      where: {
-                        subsectID: subjectsection.subsectID
-                      }
-                    }).then(async subsectstud => {
-                      if (subsectstud.length == 0) {
-                        res.status(404).json({
-                          msg: "Subject section student not found!"
-                        });
-                      } else {
-                        let j = 0;
-                        let studentData = [];
-                        for (j = 0; j < subsectstud.length; j++) {
-                          const {
-                            subsectstudID
-                          } = subsectstud[j];
-                          const name = await utils.getStudentNameBySubsectstudID(
-                            subsectstudID
-                          );
-                          const imageUrl = await utils.getStudentImageUrlBySubsectstudID(
-                            subsectstudID
-                          );
-                          const grades = await Grade.findAll({
-                            where: {
-                              componentID,
-                              subcomponentID: subcomp.subcompID,
-                              classRecordID: subjectsection.classRecordID,
-                              subsectstudID: subsectstud[j].subsectstudID,
-                              quarter
-                            },
-                            order: [
-                              ["date", "DESC"]
-                            ]
-                          }).then(async grades => {
-                            if (grades.length == 0) {
-                              return [];
-                            } else {
-                              let k = 0;
-                              let gradesData = [];
-                              for (k = 0; k < grades.length; k++) {
-                                const {
-                                  gradeID,
-                                  dateGiven,
-                                  score,
-                                  total,
-                                  description,
-                                  attendance
-                                } = grades[k];
-                                gradesData.push({
-                                  gradeID,
-                                  dateGiven,
-                                  score,
-                                  total,
-                                  description,
-                                  attendance
-                                });
-                              }
-                              return gradesData;
-                            }
-                          });
-                          let k = 0;
-                          let sumScores = 0;
-                          let sumItems = 0;
-                          let excused = 0;
-                          let ps = -1;
-                          for (k = 0; k < grades.length; k++) {
-                            if (grades[k].attendance == "E") {
-                              excused = excused + 1;
-                            } else if (grades[k].attendance == "A") {
-                              sumScores = sumScores + 0;
-                              sumItems =
-                                sumItems + parseFloat(grades[k].total);
-                            } else {
-                              sumScores =
-                                sumScores + parseFloat(grades[k].score);
-                              sumItems =
-                                sumItems + parseFloat(grades[k].total);
-                            }
-                          }
-                          if (grades.length != 0) {
-                            if (grades.length == excused) {
-                              ps = -1;
-                            } else {
-                              ps = (sumScores / sumItems) * 100;
-                            }
-                          }
-
-                          studentData.push({
-                            imageUrl,
-                            subsectstudID,
-                            name,
-                            grades,
-                            ps
-                          });
-                        }
-                        return studentData;
-                      }
-                    });
-
-                    return {
-                      subcomponentID,
-                      name,
-                      data: data2
-                    };
-                  }
-                });
-                let ave = await StudentWeightedScore.findAll({
-                  where: {
-                    classRecordID: subjectsection.classRecordID,
-                    quarter
-                  }
-                }).then(async studweightedscore => {
-                  if (studweightedscore.length == 0) {
-                    return [];
-                  } else {
-                    let l = 0;
-                    const aveData = [];
-                    for (l = 0; l < studweightedscore.length; l++) {
-                      const {
-                        subsectstudID,
-                        faWS,
-                        wwWS,
-                        ptWS,
-                        qeWS,
-                        actualGrade
-                      } = studweightedscore[l];
-                      const name = await utils.getStudentNameBySubsectstudID(
-                        subsectstudID
-                      );
-                      let ws = 0;
-                      switch (component) {
-                        case "Formative Assessment":
-                          {
-                            ws = faWS;
-                          }
-                        case "Written Works":
-                          {
-                            ws = wwWS;
-                          }
-                        case "Performance Task":
-                          {
-                            ws = ptWS;
-                          }
-                        case "Quarterly Exam":
-                          {
-                            ws = qeWS;
-                          }
-                        default:
-                          "";
-                      }
-                      aveData.push({
-                        subsectstudID,
-                        ws,
-                        name
-                      });
-                    }
-                    return aveData;
-                  }
-                });
-                res.status(200).json({
-                  componentID,
-                  component,
-                  subcompID: subcomponentID,
-                  subcompName: name,
-                  data,
-                  ave
-                });
-              } else {
-                res.status(404).json({
-                  msg: "Component not found!"
-                });
-              }
-            }
-          );
         }
       } else {
         res.status(404).json({
           msg: "Subject section not found!"
         });
       }
-    }
-  );
-})
+    });
+  }
+);
 
 // @route POST api/registrar/deleterecord
 // @desc Delete a record
@@ -4711,7 +5537,7 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
+  async (req, res) => {
     const {
       classRecordID,
       description,
@@ -4762,8 +5588,36 @@ router.post(
                   }
                 }).then(async grades => {
                   if (grades.length != 0) {
+                    const name = await utils.getAccountName(req.user.accountID);
+                    const section = await utils.getSectionName(
+                      subsect.sectionID
+                    );
+                    const subject = await utils.getSubjectName(
+                      subsect.subjectID
+                    );
+                    const logID = await ActivityLog.create({
+                      type: "DELETE",
+                      classRecordID,
+                      position: "Registrar",
+                      name,
+                      section,
+                      subject,
+                      quarter,
+                      timestamp: new Date()
+                    }).then(async al => {
+                      if (al) {
+                        return al.logID;
+                      }
+                    });
                     for (const [index, value] of grades.entries()) {
-                      await value.destroy({});
+                      await value.destroy({
+                        showLog: true,
+                        logID,
+                        subsectstudID: value.subsectstudID,
+                        componentID,
+                        subcompID,
+                        value: value.score
+                      });
                     }
                     await utils.refreshStudentWeightedScoreBySubsectID(
                       subsect.subsectID
@@ -4779,11 +5633,9 @@ router.post(
                 });
               }
             } else {
-              res
-                .status(404)
-                .json({
-                  msg: "Class record status does not exist"
-                });
+              res.status(404).json({
+                msg: "Class record status does not exist"
+              });
             }
           });
         }
@@ -4805,7 +5657,7 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
+  async (req, res) => {
     const {
       classRecordID,
       componentID,
@@ -4830,11 +5682,7 @@ router.post(
             }
           }).then(async grade => {
             if (grade) {
-              const {
-                description,
-                dateGiven,
-                total
-              } = grade;
+              const { description, dateGiven, total } = grade;
               const component = await utils.getComponentName(componentID);
               const weight = await Subcomponent.findOne({
                 where: {
@@ -4863,12 +5711,7 @@ router.post(
                 } else {
                   let data = [];
                   for (const [index, value] of grades.entries()) {
-                    const {
-                      subsectstudID,
-                      score,
-                      gradeID,
-                      attendance
-                    } = value;
+                    const { subsectstudID, score, gradeID, attendance } = value;
                     const name = await utils.getStudentNameBySubsectstudID(
                       subsectstudID
                     );
@@ -4878,9 +5721,12 @@ router.post(
                     data.push({
                       gradeID,
                       subsectstudID,
-                      score: attendance == "A" ?
-                        "A" : attendance == "E" ?
-                        "E" : score,
+                      score:
+                        attendance == "A"
+                          ? "A"
+                          : attendance == "E"
+                          ? "E"
+                          : score,
                       name,
                       imageUrl
                     });
@@ -4922,7 +5768,7 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
+  async (req, res) => {
     const reg = /^-?[0-9]*(\.[0-9]*)?$/;
     const {
       description,
@@ -4934,7 +5780,8 @@ router.post(
       quarter,
       payload
     } = req.body;
-    let totalValid = !isNaN(total) && reg.test(total) && total !== "" && total !== "-";
+    let totalValid =
+      !isNaN(total) && reg.test(total) && total !== "" && total !== "-";
     SubjectSection.findOne({
       where: {
         classRecordID
@@ -4963,161 +5810,178 @@ router.post(
               });
             } else {
               if (!totalValid) {
-                res
-                  .status(400)
-                  .json({
-                    msg: "Total score is invalid. Enter numbers only."
-                  });
+                res.status(400).json({
+                  msg: "Total score is invalid. Enter numbers only."
+                });
               } else {
                 if (total <= 0) {
-                  return res
-                    .status(400)
-                    .json({
-                      msg: "Total must be more than 0"
-                    });
+                  return res.status(400).json({
+                    msg: "Total must be more than 0"
+                  });
                 } else {
                   SubjectSection.findOne({
                     where: {
                       classRecordID
                     }
-                  }).then(
-                    async subjectsection => {
-                      if (subjectsection) {
-                        if (false) {
-                          return res
-                            .status(401)
-                            .json({
-                              msg: "Not authorized!"
-                            });
+                  }).then(async subjectsection => {
+                    if (subjectsection) {
+                      if (false) {
+                        return res.status(401).json({
+                          msg: "Not authorized!"
+                        });
+                      } else {
+                        const isSubmitted = await ClassRecord.findOne({
+                          where: {
+                            classRecordID: subjectsection.classRecordID
+                          }
+                        }).then(cr => {
+                          if (cr) {
+                            return cr.isSubmitted;
+                          }
+                        });
+                        let { errors, isValid } = validateSubcomponent({
+                          name: description
+                        });
+                        if (!isValid) {
+                          return res.status(400).json({
+                            msg: "Error input: Description"
+                          });
                         } else {
-                          const isSubmitted = await ClassRecord.findOne({
-                            where: {
-                              classRecordID: subjectsection.classRecordID
-                            }
-                          }).then(cr => {
-                            if (cr) {
-                              return cr.isSubmitted;
-                            }
-                          });
-                          let {
-                            errors,
-                            isValid
-                          } = validateSubcomponent({
-                            name: description
-                          });
-                          if (!isValid) {
-                            return res
-                              .status(400)
-                              .json({
-                                msg: "Error input: Description"
-                              });
-                          } else {
-                            let i = 0;
-                            let invalid = false;
-                            let gradeIDchecker = [];
-                            for (const [index, value] of payload.entries()) {
-                              gradeIDchecker.push(value.gradeID);
-                              await Grade.findAll({
-                                where: {
-                                  componentID,
-                                  subcomponentID: subcompID,
-                                  quarter,
-                                  subsectstudID: value.subsectstudID,
-                                  gradeID: {
-                                    [Op.ne]: value.gradeID
-                                  }
-                                }
-                              }).then(async grades2 => {
-                                let sum = 0;
-                                let totalTemp = 0;
-                                for (const [
-                                    index2,
-                                    value2
-                                  ] of grades2.entries()) {
-                                  if (value2.score == "A") {
-                                    sum = sum + 0;
-                                    totalTemp =
-                                      totalTemp + parseFloat(value2.total);
-                                  } else if (value2.score == "E") {} else {
-                                    sum = sum + parseFloat(value2.score);
-                                    totalTemp =
-                                      totalTemp + parseFloat(value2.total);
-                                  }
-                                }
-                                if (
-                                  sum + parseFloat(value.score) >
-                                  totalTemp + parseFloat(total) &&
-                                  !invalid
-                                ) {
-                                  invalid = true;
-                                  return res.status(400).json({
-                                    msg: "Invalid score input. Score must accumulate to less than or equal to the total number of items."
-                                  });
-                                }
-                              });
-                            }
-
-                            for (i = 0; i < payload.length; i++) {
-                              let {
-                                score,
-                                subsectstudID
-                              } = payload[i];
-                              let valid =
-                                (!isNaN(score) &&
-                                  reg.test(score) &&
-                                  score !== "" &&
-                                  score !== "-") ||
-                                score == "A" ||
-                                score == "E";
-                              if (!valid) {
-                                invalid = true;
-                                return res.status(400).json({
-                                  msg: "Invalid score input. Enter numbers, E, or B only"
-                                });
-                              }
-                            }
-
-                            await Grade.findOne({
+                          let i = 0;
+                          let invalid = false;
+                          let gradeIDchecker = [];
+                          for (const [index, value] of payload.entries()) {
+                            gradeIDchecker.push(value.gradeID);
+                            await Grade.findAll({
                               where: {
-                                description,
-                                dateGiven,
                                 componentID,
                                 subcomponentID: subcompID,
-                                classRecordID: subjectsection.classRecordID,
                                 quarter,
+                                subsectstudID: value.subsectstudID,
                                 gradeID: {
-                                  [Op.notIn]: gradeIDchecker
+                                  [Op.ne]: value.gradeID
                                 }
                               }
-                            }).then(async gr => {
-                              if (gr) {
-                                res
-                                  .status(400)
-                                  .json({
-                                    msg: "Descrption already exists!"
-                                  });
-                              } else {
-                                if (!invalid) {
-                                  for (const [
-                                      index,
-                                      value3
-                                    ] of payload.entries()) {
-                                    Grade.findOne({
-                                      where: {
-                                        gradeID: value3.gradeID
+                            }).then(async grades2 => {
+                              let sum = 0;
+                              let totalTemp = 0;
+                              for (const [
+                                index2,
+                                value2
+                              ] of grades2.entries()) {
+                                if (value2.score == "A") {
+                                  sum = sum + 0;
+                                  totalTemp =
+                                    totalTemp + parseFloat(value2.total);
+                                } else if (value2.score == "E") {
+                                } else {
+                                  sum = sum + parseFloat(value2.score);
+                                  totalTemp =
+                                    totalTemp + parseFloat(value2.total);
+                                }
+                              }
+                              if (
+                                sum + parseFloat(value.score) >
+                                  totalTemp + parseFloat(total) &&
+                                !invalid
+                              ) {
+                                // invalid = true;
+                                // return res.status(400).json({
+                                //   msg:
+                                //     "Invalid score input. Score must accumulate to less than or equal to the total number of items."
+                                // });
+                              }
+                            });
+                          }
+
+                          for (i = 0; i < payload.length; i++) {
+                            let { score, subsectstudID } = payload[i];
+                            let valid =
+                              (!isNaN(score) &&
+                                reg.test(score) &&
+                                score !== "" &&
+                                score !== "-") ||
+                              score == "A" ||
+                              score == "E";
+                            if (!valid) {
+                              invalid = true;
+                              return res.status(400).json({
+                                msg:
+                                  "Invalid score input. Enter numbers, E, or B only"
+                              });
+                            }
+                          }
+
+                          await Grade.findOne({
+                            where: {
+                              description,
+                              dateGiven,
+                              componentID,
+                              subcomponentID: subcompID,
+                              classRecordID: subjectsection.classRecordID,
+                              quarter,
+                              gradeID: {
+                                [Op.notIn]: gradeIDchecker
+                              }
+                            }
+                          }).then(async gr => {
+                            if (gr) {
+                              res.status(400).json({
+                                msg: "Descrption already exists!"
+                              });
+                            } else {
+                              if (!invalid) {
+                                const name = await utils.getAccountName(
+                                  req.user.accountID
+                                );
+                                const section = await utils.getSectionName(
+                                  subjectsection.sectionID
+                                );
+                                const subject = await utils.getSubjectName(
+                                  subjectsection.subjectID
+                                );
+                                const logID = await ActivityLog.create({
+                                  type: "UPDATE",
+                                  classRecordID,
+                                  position: "Registrar",
+                                  name,
+                                  section,
+                                  subject,
+                                  quarter,
+                                  timestamp: new Date()
+                                }).then(async al => {
+                                  if (al) {
+                                    return al.logID;
+                                  }
+                                });
+
+                                let oldDesc = "";
+                                let oldTotal = -1;
+                                for (const [
+                                  index,
+                                  value3
+                                ] of payload.entries()) {
+                                  await Grade.findOne({
+                                    where: {
+                                      gradeID: value3.gradeID
+                                    }
+                                  }).then(async gr2 => {
+                                    if (gr2) {
+                                      const score = gr2.score;
+                                      let attendance = "";
+                                      if (value3.score == "A") {
+                                        attendance = "A";
+                                      } else if (value3.score == "E") {
+                                        attendance = "E";
+                                      } else {
+                                        attendance = "P";
                                       }
-                                    }).then(async gr2 => {
-                                      if (gr2) {
-                                        const score = gr2.score;
-                                        let attendance = "";
-                                        if (value3.score == "A") {
-                                          attendance = "A";
-                                        } else if (value3.score == "E") {
-                                          attendance = "E";
-                                        } else {
-                                          attendance = "P";
-                                        }
-                                        await gr2.update({
+                                      if (index == 0) {
+                                        oldDesc = gr2.description;
+                                        oldTotal = gr2.total;
+                                      }
+                                      await gr2.update(
+                                        {
                                           description,
                                           total,
                                           dateGiven,
@@ -5125,32 +5989,166 @@ router.post(
                                           score: value3.score,
                                           isUpdated: 1,
                                           showLog: isSubmitted
-                                        });
-                                      }
-                                    });
-                                  }
-
-                                  await utils.refreshStudentWeightedScoreBySubsectID(
-                                    subjectsection.subsectID
-                                  );
-
-                                  res.status(200).json({
-                                    msg: "Record updated successfully!"
+                                        },
+                                        {
+                                          showLog: true,
+                                          logID,
+                                          subsectstudID: gr2.subsectstudID,
+                                          componentID,
+                                          subcompID,
+                                          oldValue: gr2.score,
+                                          newValue: value3.score,
+                                          description
+                                        }
+                                      );
+                                    }
                                   });
                                 }
+                                await LogDetails.findAll({
+                                  where: { logID }
+                                }).then(lds => {
+                                  if (lds) {
+                                    if (lds.length == 0) {
+                                      ActivityLog.findOne({
+                                        where: { logID }
+                                      }).then(async al => {
+                                        if (al) {
+                                          al.destroy({}).then(() => {
+                                            if (oldDesc != description) {
+                                              ActivityLog.create({
+                                                type: "DESC_UPDATE",
+                                                classRecordID,
+                                                position: "Registrar",
+                                                name,
+                                                section,
+                                                subject,
+                                                quarter,
+                                                timestamp: new Date()
+                                              }).then(async al2 => {
+                                                if (al2) {
+                                                  const component = await utils.getComponentName(
+                                                    componentID
+                                                  );
+                                                  const subcomponent = await utils.getSubcomponentName(
+                                                    subcompID
+                                                  );
+                                                  await LogDetails.create({
+                                                    logID: al2.logID,
+                                                    description: `Changed description from '${oldDesc}' to '${description}'`,
+                                                    subcomponent,
+                                                    component
+                                                  });
+                                                }
+                                              });
+                                            }
+
+                                            if (oldTotal != total) {
+                                              ActivityLog.create({
+                                                type: "TOTAL_UPDATE",
+                                                classRecordID,
+                                                position: "Registrar",
+                                                name,
+                                                section,
+                                                subject,
+                                                quarter,
+                                                timestamp: new Date()
+                                              }).then(async al2 => {
+                                                if (al2) {
+                                                  const component = await utils.getComponentName(
+                                                    componentID
+                                                  );
+                                                  const subcomponent = await utils.getSubcomponentName(
+                                                    subcompID
+                                                  );
+                                                  await LogDetails.create({
+                                                    logID: al2.logID,
+                                                    description: `Changed total from '${oldTotal}' to '${total}'`,
+                                                    subcomponent,
+                                                    component
+                                                  });
+                                                }
+                                              });
+                                            }
+                                          });
+                                        }
+                                      });
+                                    } else {
+                                      if (oldDesc != description) {
+                                        ActivityLog.create({
+                                          type: "DESC_UPDATE",
+                                          classRecordID,
+                                          position: "Registrar",
+                                          name,
+                                          section,
+                                          subject,
+                                          quarter,
+                                          timestamp: new Date()
+                                        }).then(async al2 => {
+                                          if (al2) {
+                                            const component = await utils.getComponentName(
+                                              componentID
+                                            );
+                                            const subcomponent = await utils.getSubcomponentName(
+                                              subcompID
+                                            );
+                                            await LogDetails.create({
+                                              logID: al2.logID,
+                                              description: `Changed description from '${oldDesc}' to '${description}'`,
+                                              subcomponent,
+                                              component
+                                            });
+                                          }
+                                        });
+                                      }
+
+                                      if (oldTotal != total) {
+                                        ActivityLog.create({
+                                          type: "TOTAL_UPDATE",
+                                          classRecordID,
+                                          position: "Registrar",
+                                          name,
+                                          section,
+                                          subject,
+                                          quarter,
+                                          timestamp: new Date()
+                                        }).then(async al2 => {
+                                          if (al2) {
+                                            const component = await utils.getComponentName(
+                                              componentID
+                                            );
+                                            const subcomponent = await utils.getSubcomponentName(
+                                              subcompID
+                                            );
+                                            await LogDetails.create({
+                                              logID: al2.logID,
+                                              description: `Changed total from '${oldTotal}' to '${total}'`,
+                                              subcomponent,
+                                              component
+                                            });
+                                          }
+                                        });
+                                      }
+                                    }
+                                  }
+                                });
+                                await utils.refreshStudentWeightedScoreBySubsectID(
+                                  subjectsection.subsectID
+                                );
+
+                                res.status(200).json({
+                                  msg: "Record updated successfully!"
+                                });
                               }
-                            });
-                          }
-                        }
-                      } else {
-                        res
-                          .status(404)
-                          .json({
-                            msg: "Subject section not found!"
+                            }
                           });
+                        }
                       }
+                    } else {
+                      res.status(404).json({
+                        msg: "Subject section not found!"
+                      });
                     }
-                  );
+                  });
                 }
               }
             }
@@ -5178,7 +6176,7 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
+  async (req, res) => {
     const reg = /^-?[0-9]*(\.[0-9]*)?$/;
     const {
       componentID,
@@ -5190,7 +6188,8 @@ router.post(
       classRecordID,
       quarter
     } = req.body;
-    let totalValid = !isNaN(total) && reg.test(total) && total !== "" && total !== "-";
+    let totalValid =
+      !isNaN(total) && reg.test(total) && total !== "" && total !== "-";
     SubjectSection.findOne({
       where: {
         classRecordID
@@ -5219,11 +6218,9 @@ router.post(
               });
             } else {
               if (!totalValid) {
-                res
-                  .status(400)
-                  .json({
-                    msg: "Total score is invalid. Enter numbers only."
-                  });
+                res.status(400).json({
+                  msg: "Total score is invalid. Enter numbers only."
+                });
               } else {
                 if (total <= 0) {
                   res.status(400).json({
@@ -5234,122 +6231,129 @@ router.post(
                   where: {
                     classRecordID
                   }
-                }).then(
-                  async subjectsection => {
-                    if (subjectsection) {
-                      if (false) {
+                }).then(async subjectsection => {
+                  if (subjectsection) {
+                    if (false) {
+                      return res.status(400).json({
+                        msg: "Not authorized!"
+                      });
+                    } else {
+                      let { errors, isValid } = validateSubcomponent({
+                        name: description
+                      });
+                      if (!isValid) {
                         return res.status(400).json({
-                          msg: "Not authorized!"
+                          msg: "Error input: Description"
                         });
                       } else {
-                        let {
-                          errors,
-                          isValid
-                        } = validateSubcomponent({
-                          name: description
-                        });
-                        if (!isValid) {
-                          return res
-                            .status(400)
-                            .json({
-                              msg: "Error input: Description"
-                            });
-                        } else {
-                          let i = 0;
-                          let invalid = false;
-                          for (i = 0; i < payload.length; i++) {
-                            let {
-                              score,
-                              subsectstudID
-                            } = payload[i];
-                            let valid =
-                              (!isNaN(score) &&
-                                reg.test(score) &&
-                                score !== "" &&
-                                score !== "-") ||
-                              score == "A" ||
-                              score == "E";
-                            if (!valid) {
-                              invalid = true;
-                              return res.status(400).json({
-                                msg: "Invalid score input. Enter numbers, E, or B only"
-                              });
-                            }
-                          }
-
-                          for (const [index, value] of payload.entries()) {
-                            await Grade.findAll({
-                              where: {
-                                componentID,
-                                subcomponentID: subcompID,
-                                quarter,
-                                subsectstudID: value.subsectstudID
-                              }
-                            }).then(async grades2 => {
-                              let sum = 0;
-                              let totalTemp = 0;
-                              for (const [
-                                  index2,
-                                  value2
-                                ] of grades2.entries()) {
-                                if (value2.score == "A") {
-                                  sum = sum + 0;
-                                  totalTemp =
-                                    totalTemp + parseFloat(value2.total);
-                                } else if (value2.score == "E") {} else {
-                                  sum = sum + parseFloat(value2.score);
-                                  totalTemp =
-                                    totalTemp + parseFloat(value2.total);
-                                }
-                              }
-
-                              console.log(sum + parseFloat(value.score));
-                              console.log(totalTemp + parseFloat(total));
-                              if (
-                                sum + parseFloat(value.score) >
-                                totalTemp + parseFloat(total) &&
-                                !invalid
-                              ) {
-                                invalid = true;
-                                return res.status(400).json({
-                                  msg: "Invalid score input. Scores must accumulate to less than or equal to the total number of items."
-                                });
-                              }
+                        let i = 0;
+                        let invalid = false;
+                        for (i = 0; i < payload.length; i++) {
+                          let { score, subsectstudID } = payload[i];
+                          let valid =
+                            (!isNaN(score) &&
+                              reg.test(score) &&
+                              score !== "" &&
+                              score !== "-") ||
+                            score == "A" ||
+                            score == "E";
+                          if (!valid) {
+                            invalid = true;
+                            return res.status(400).json({
+                              msg:
+                                "Invalid score input. Enter numbers, E, or B only"
                             });
                           }
+                        }
 
-                          await Grade.findOne({
+                        for (const [index, value] of payload.entries()) {
+                          await Grade.findAll({
                             where: {
-                              description,
-                              dateGiven,
                               componentID,
                               subcomponentID: subcompID,
-                              classRecordID: subjectsection.classRecordID,
-                              quarter
+                              quarter,
+                              subsectstudID: value.subsectstudID
                             }
-                          }).then(async gr => {
-                            if (gr) {
-                              res
-                                .status(400)
-                                .json({
-                                  msg: "Description already exists"
-                                });
-                            } else {
-                              for (i = 0; i < payload.length; i++) {
-                                let {
-                                  score,
-                                  subsectstudID
-                                } = payload[i];
-                                let attendance = "";
-                                if (score == "A") {
-                                  attendance = "A";
-                                } else if (score == "E") {
-                                  attendance = "E";
-                                } else {
-                                  attendance = "P";
-                                }
-                                if (!invalid) {
-                                  Grade.create({
+                          }).then(async grades2 => {
+                            let sum = 0;
+                            let totalTemp = 0;
+                            for (const [index2, value2] of grades2.entries()) {
+                              if (value2.score == "A") {
+                                sum = sum + 0;
+                                totalTemp =
+                                  totalTemp + parseFloat(value2.total);
+                              } else if (value2.score == "E") {
+                              } else {
+                                sum = sum + parseFloat(value2.score);
+                                totalTemp =
+                                  totalTemp + parseFloat(value2.total);
+                              }
+                            }
+                            if (
+                              sum + parseFloat(value.score) >
+                                totalTemp + parseFloat(total) &&
+                              !invalid
+                            ) {
+                              // invalid = true;
+                              // return res.status(400).json({
+                              //   msg:
+                              //     "Invalid score input. Scores must accumulate to less than or equal to the total number of items."
+                              // });
+                            }
+                          });
+                        }
+
+                        await Grade.findOne({
+                          where: {
+                            description,
+                            dateGiven,
+                            componentID,
+                            subcomponentID: subcompID,
+                            classRecordID: subjectsection.classRecordID,
+                            quarter
+                          }
+                        }).then(async gr => {
+                          if (gr) {
+                            res.status(400).json({
+                              msg: "Description already exists"
+                            });
+                          } else {
+                            const name = await utils.getAccountName(
+                              req.user.accountID
+                            );
+                            const section = await utils.getSectionName(
+                              subjectsection.sectionID
+                            );
+                            const subject = await utils.getSubjectName(
+                              subjectsection.subjectID
+                            );
+                            const logID = await ActivityLog.create({
+                              type: "ADD",
+                              classRecordID,
+                              position: "Registrar",
+                              name,
+                              section,
+                              subject,
+                              quarter,
+                              timestamp: new Date()
+                            }).then(async al => {
+                              if (al) {
+                                return al.logID;
+                              }
+                            });
+                            for (i = 0; i < payload.length; i++) {
+                              let { score, subsectstudID } = payload[i];
+                              let attendance = "";
+                              if (score == "A") {
+                                attendance = "A";
+                              } else if (score == "E") {
+                                attendance = "E";
+                              } else {
+                                attendance = "P";
+                              }
+                              if (!invalid) {
+                                Grade.create(
+                                  {
                                     description,
                                     dateGiven,
                                     score,
@@ -5363,28 +6367,34 @@ router.post(
                                     showLog: 0,
                                     isUpdated: 0,
                                     quarter: quarter
-                                  });
-                                }
+                                  },
+                                  {
+                                    showLog: true,
+                                    logID,
+                                    subsectstudID,
+                                    componentID,
+                                    subcompID,
+                                    value: score
+                                  }
+                                );
                               }
-                              await utils.refreshStudentWeightedScoreBySubsectID(
-                                subjectsection.subsectID
-                              );
-                              return res.status(200).json({
-                                msg: "Record has been added successfully!"
-                              });
                             }
-                          });
-                        }
-                      }
-                    } else {
-                      res
-                        .status(404)
-                        .json({
-                          msg: "Subject section not found!"
+                            await utils.refreshStudentWeightedScoreBySubsectID(
+                              subjectsection.subsectID
+                            );
+                            return res.status(200).json({
+                              msg: "Record has been added successfully!"
+                            });
+                          }
                         });
+                      }
                     }
+                  } else {
+                    res.status(404).json({
+                      msg: "Subject section not found!"
+                    });
                   }
-                );
+                });
               }
             }
           } else {
@@ -5411,12 +6421,8 @@ router.post(
   passport.authenticate("registrar", {
     session: false
   }),
-  async(req, res) => {
-    const {
-      classRecordID,
-      quarter,
-      transmutation
-    } = req.body;
+  async (req, res) => {
+    const { classRecordID, quarter, transmutation } = req.body;
     SubjectSection.findOne({
       where: {
         classRecordID
@@ -5456,45 +6462,95 @@ router.post(
                 }).then(async cr => {
                   if (cr) {
                     switch (quarter) {
-                      case "Q1":
-                        {
-                          await cr.update({
+                      case "Q1": {
+                        await cr.update(
+                          {
                             q1Transmu: transmutation
-                          });
-                          break;
-                        }
-                      case "Q2":
-                        {
-                          await cr.update({
+                          },
+                          {
+                            showLog: true,
+                            position: "Registrar",
+                            type: "TRANSMU_UPDATE",
+                            accountID: req.user.accountID,
+                            sectionID: ss.sectionID,
+                            subjectID: ss.subjectID,
+                            quarter,
+                            classRecordID,
+                            oldVal: cr.q1Transmu,
+                            newVal: transmutation
+                          }
+                        );
+                        break;
+                      }
+                      case "Q2": {
+                        await cr.update(
+                          {
                             q2Transmu: transmutation
-                          });
-                          break;
-                        }
-                      case "Q3":
-                        {
-                          await cr.update({
+                          },
+                          {
+                            showLog: true,
+                            position: "Registrar",
+                            type: "TRANSMU_UPDATE",
+                            accountID: req.user.accountID,
+                            sectionID: ss.sectionID,
+                            subjectID: ss.subjectID,
+                            quarter,
+                            classRecordID,
+                            oldVal: cr.q2Transmu,
+                            newVal: transmutation
+                          }
+                        );
+                        break;
+                      }
+                      case "Q3": {
+                        await cr.update(
+                          {
                             q3Transmu: transmutation
-                          });
-                          break;
-                        }
-                      case "Q4":
-                        {
-                          await cr.update({
+                          },
+                          {
+                            showLog: true,
+                            position: "Registrar",
+                            type: "TRANSMU_UPDATE",
+                            accountID: req.user.accountID,
+                            sectionID: ss.sectionID,
+                            subjectID: ss.subjectID,
+                            quarter,
+                            classRecordID,
+                            oldVal: cr.q3Transmu,
+                            newVal: transmutation
+                          }
+                        );
+                        break;
+                      }
+                      case "Q4": {
+                        await cr.update(
+                          {
                             q4Transmu: transmutation
-                          });
-                          break;
-                        }
+                          },
+                          {
+                            showLog: true,
+                            position: "Registrar",
+                            type: "TRANSMU_UPDATE",
+                            accountID: req.user.accountID,
+                            sectionID: ss.sectionID,
+                            subjectID: ss.subjectID,
+                            quarter,
+                            classRecordID,
+                            oldVal: cr.q4Transmu,
+                            newVal: transmutation
+                          }
+                        );
+                        break;
+                      }
                       default:
                         break;
                     }
                     await utils.refreshStudentWeightedScoreBySubsectID(
                       ss.subsectID
                     );
-                    res
-                      .status(200)
-                      .json({
-                        msg: "Transmutation changed successfully!"
-                      });
+                    res.status(200).json({
+                      msg: "Transmutation changed successfully!"
+                    });
                   } else {
                     res.status(404).json({
                       msg: "Class Record not found!"
@@ -5518,4 +6574,830 @@ router.post(
   }
 );
 
+// @route POST api/registrar/getquartersummary
+// @desc Get quarter summary by classRecordID and quarter
+// @access Private
+
+router.post(
+  "/getquartersummary",
+  passport.authenticate("registrar", {
+    session: false
+  }),
+  async (req, res) => {
+    const { classRecordID, quarter } = req.body;
+    SubjectSection.findOne({
+      where: {
+        classRecordID
+      }
+    }).then(async subsect => {
+      if (subsect) {
+        if (false) {
+          res.status(401).json({
+            msg: "Not authorized!"
+          });
+        } else {
+          const transmutation = await ClassRecord.findOne({
+            where: {
+              classRecordID: subsect.classRecordID
+            }
+          }).then(async cr => {
+            if (cr) {
+              switch (quarter) {
+                case "Q1": {
+                  return cr.q1Transmu;
+                  break;
+                }
+                case "Q2": {
+                  return cr.q2Transmu;
+                  break;
+                }
+                case "Q3": {
+                  return cr.q3Transmu;
+                  break;
+                }
+                case "Q4": {
+                  return cr.q4Transmu;
+                  break;
+                }
+                default:
+                  break;
+              }
+            }
+          });
+          const subjectName = await utils.getSubjectName(subsect.subjectID);
+          const subjectCode = await utils.getSubjectCode(subsect.subjectID);
+          const sectionName = await utils.getSectionName(subsect.sectionID);
+          const schoolYearID = subsect.schoolYearID;
+          const schoolYear = await utils.getSYname(schoolYearID);
+          const subsectstudIDs = await SubjectSectionStudent.findAll({
+            where: {
+              subsectID: subsect.subsectID
+            }
+          }).then(async sss => {
+            if (sss.length == 0) {
+              return [];
+            } else {
+              let data = [];
+              for (const [index, value] of sss.entries()) {
+                data.push(value.subsectstudID);
+              }
+              return data;
+            }
+          });
+          let data = [];
+          for (const [index, value] of subsectstudIDs.entries()) {
+            const temp = await StudentWeightedScore.findOne({
+              where: {
+                subsectstudID: value,
+                quarter
+              }
+            }).then(async sws => {
+              if (sws) {
+                const {
+                  subsectstudID,
+                  faWS,
+                  wwWS,
+                  ptWS,
+                  qeWS,
+                  actualGrade,
+                  transmutedGrade50,
+                  transmutedGrade55,
+                  transmutedGrade60
+                } = sws;
+                let finalGrade = 0;
+                switch (transmutation) {
+                  case "50": {
+                    finalGrade = Math.round(transmutedGrade50);
+                    break;
+                  }
+                  case "55": {
+                    finalGrade = Math.round(transmutedGrade55);
+                    break;
+                  }
+                  case "60": {
+                    finalGrade = Math.round(transmutedGrade60);
+                    break;
+                  }
+                  default:
+                    break;
+                }
+                const name = await utils.getStudentNameBySubsectstudID(
+                  subsectstudID
+                );
+                const sex = await utils.getStudentSexBySubsectstudID(
+                  subsectstudID
+                );
+                const imageUrl = await utils.getStudentImageUrlBySubsectstudID(
+                  subsectstudID
+                );
+                return {
+                  sex,
+                  name,
+                  imageUrl,
+                  subsectstudID,
+                  faWS,
+                  wwWS,
+                  ptWS,
+                  qeWS,
+                  actualGrade,
+                  transmutedGrade50,
+                  transmutedGrade55,
+                  transmutedGrade60,
+                  finalGrade
+                };
+              }
+            });
+            data.push(temp);
+          }
+          data.sort((a, b) => (a.name > b.name ? 1 : -1));
+          res.status(200).json({
+            transmutation,
+            subjectName,
+            subjectCode,
+            sectionName,
+            schoolYearID,
+            schoolYear,
+            classRecordID: subsect.classRecordID,
+            data: [
+              ...data.filter(a => a.sex == "M"),
+              ...data.filter(a => a.sex == "F")
+            ]
+          });
+        }
+      } else {
+        res.status(404).json({
+          msg: "Subject section not found!"
+        });
+      }
+    });
+  }
+);
+
+// @route POST api/registrar/getsubmittedsubsectbysectionid
+// @desc Get subject section where class record status = 'D' by sectionID
+// @access Private
+
+router.post(
+  "/getsubmittedsubsectbysectionid",
+  passport.authenticate("registrar", { session: false }),
+  async (req, res) => {
+    let = { sectionID, page, pageSize, quarter } = req.body;
+    page = page - 1;
+    let offset = page * pageSize;
+    let limit = offset + pageSize;
+    const sectionName = await utils.getSectionName(sectionID);
+    const { schoolYearID } = await utils.getActiveSY();
+    const classRecordIDs = await SubjectSection.findAll({
+      where: {
+        sectionID,
+        schoolYearID,
+        subjectType: {
+          [Op.in]:
+            quarter == "Q1" || quarter == "Q2"
+              ? ["NON_SHS", "1ST_SEM"]
+              : ["NON_SHS", "2ND_SEM"]
+        }
+      }
+    }).then(async ss => {
+      if (ss) {
+        let data = [];
+        for (const [i, v] of ss.entries()) {
+          const crs = await ClassRecordStatus.findOne({
+            where: {
+              classRecordID: v.classRecordID
+            }
+          });
+          if (quarter == "Q1" || quarter == "Q2") {
+            if (crs[quarter.toLowerCase()] == "D") {
+              data.push(v.classRecordID);
+            }
+          } else {
+            if (quarter == "Q3") {
+              if (v.subjectType == "NON_SHS") {
+                if (crs[quarter.toLowerCase()] == "D") {
+                  data.push(v.classRecordID);
+                }
+              } else {
+                if (crs["q1"] == "D") {
+                  data.push(v.classRecordID);
+                }
+              }
+            } else {
+              if (v.subjectType == "NON_SHS") {
+                if (crs[quarter.toLowerCase()] == "D") {
+                  data.push(v.classRecordID);
+                }
+              } else {
+                if (crs["q2"] == "D") {
+                  data.push(v.classRecordID);
+                }
+              }
+            }
+          }
+        }
+        return data;
+      }
+    });
+    if (classRecordIDs.length == 0) {
+      res.status(200).json({
+        sectionName,
+        classRecordList: [],
+        numOfPages: 1,
+        deadline: "NOT SET"
+      });
+    } else {
+      let condition = {};
+      condition["classRecordID"] = {
+        [Op.in]: classRecordIDs
+      };
+      await ClassRecordStatus.findAll({
+        limit,
+        offset,
+        where: condition
+      }).then(async crs => {
+        if (crs) {
+          if (crs.length == 0) {
+            res.status(404).json({
+              msg: "No class record for deliberation found"
+            });
+          } else {
+            let data2 = [];
+            let numOfPages = 1;
+            crs.slice(0, pageSize).forEach(async (v, k, r) => {
+              const { classRecordID } = v;
+              const subjectType = await utils.getSubjectTypeByClassRecordID(
+                classRecordID
+              );
+              let dateSubmitted = v[`${quarter.toLowerCase()}DateSubmitted`];
+              if (subjectType == "2ND_SEM") {
+                if (quarter == "Q3") {
+                  dateSubmitted = v.q1DateSubmitted;
+                } else if (quarter == "Q4") {
+                  dateSubmitted = v.q2DateSubmitted;
+                }
+              }
+              const {
+                subjectCode,
+                subjectName,
+                section,
+                subsectID,
+                deadline,
+                teacher
+              } = await SubjectSection.findOne({
+                where: {
+                  classRecordID
+                }
+              }).then(async cr => {
+                if (cr) {
+                  const deadline = await SubmissionDeadline.findOne({
+                    where: { teacherID: cr.teacherID, isActive: 1 }
+                  }).then(sd => {
+                    if (sd) {
+                      return sd.deadline;
+                    } else {
+                      return "NOT SET";
+                    }
+                  });
+                  const subjectCode = await utils.getSubjectCode(cr.subjectID);
+                  const { subsectID } = cr;
+                  const teacher = await utils.getTeacherName(cr.teacherID);
+                  const subjectName = await utils.getSubjectName(cr.subjectID);
+                  const section = await utils.getSectionName(cr.sectionID);
+                  return {
+                    teacher,
+                    subjectCode,
+                    subsectID,
+                    subjectName,
+                    section,
+                    deadline
+                  };
+                }
+              });
+              data2.push({
+                teacher,
+                classRecordID,
+                dateSubmitted,
+                subjectCode,
+                subjectName,
+                section,
+                subsectID,
+                deadline
+              });
+              if (k == r.length - 1) {
+                numOfPages = await ClassRecordStatus.findAndCountAll({
+                  where: condition
+                }).then(count => {
+                  return Math.ceil(count.count / pageSize);
+                });
+                res.status(200).json({
+                  sectionName,
+                  classRecordList: data2,
+                  numOfPages,
+                  deadline
+                });
+              }
+            });
+          }
+        }
+      });
+    }
+  }
+);
+
+// @route POST api/registrar/getnotsubmittedsubsectbysectionid
+// @desc Get not submitted subject section where class record status = 'D' by sectionID
+// @access Private
+
+router.post(
+  "/getnotsubmittedsubsectbysectionid",
+  passport.authenticate("registrar", { session: false }),
+  async (req, res) => {
+    let = { sectionID, page, pageSize, quarter } = req.body;
+    page = page - 1;
+    let offset = page * pageSize;
+    let limit = offset + pageSize;
+    const sectionName = await utils.getSectionName(sectionID);
+    const { schoolYearID } = await utils.getActiveSY();
+    const classRecordIDs = await SubjectSection.findAll({
+      where: {
+        sectionID,
+        schoolYearID,
+        subjectType: {
+          [Op.in]:
+            quarter == "Q1" || quarter == "Q2"
+              ? ["NON_SHS", "1ST_SEM"]
+              : ["NON_SHS", "2ND_SEM"]
+        }
+      }
+    }).then(async ss => {
+      if (ss) {
+        let data = [];
+        for (const [i, v] of ss.entries()) {
+          const crs = await ClassRecordStatus.findOne({
+            where: {
+              classRecordID: v.classRecordID
+            }
+          });
+          if (quarter == "Q1" || quarter == "Q2") {
+            if (crs[quarter.toLowerCase()] == "E") {
+              data.push(v.classRecordID);
+            }
+          } else {
+            if (quarter == "Q3") {
+              if (v.subjectType == "NON_SHS") {
+                if (crs[quarter.toLowerCase()] == "E") {
+                  data.push(v.classRecordID);
+                }
+              } else {
+                if (crs["q1"] == "E") {
+                  data.push(v.classRecordID);
+                }
+              }
+            } else {
+              if (v.subjectType == "NON_SHS") {
+                if (crs[quarter.toLowerCase()] == "E") {
+                  data.push(v.classRecordID);
+                }
+              } else {
+                if (crs["q2"] == "E") {
+                  data.push(v.classRecordID);
+                }
+              }
+            }
+          }
+        }
+        return data;
+      }
+    });
+    if (classRecordIDs.length == 0) {
+      res.status(404).json({ msg: "Class Record not found!" });
+    } else {
+      let condition = {};
+      condition["classRecordID"] = {
+        [Op.in]: classRecordIDs
+      };
+      await ClassRecordStatus.findAll({
+        limit,
+        offset,
+        where: condition
+      }).then(async crs => {
+        if (crs) {
+          if (crs.length == 0) {
+            res.status(404).json({
+              msg: "No class record for deliberation found"
+            });
+          } else {
+            let data2 = [];
+            let numOfPages = 1;
+            crs.slice(0, pageSize).forEach(async (v, k, r) => {
+              const { classRecordID } = v;
+              const dateSubmitted = v[`${quarter.toLowerCase()}DateSubmitted`];
+              const {
+                subjectCode,
+                subjectName,
+                section,
+                subsectID,
+                deadline,
+                teacher
+              } = await SubjectSection.findOne({
+                where: {
+                  classRecordID
+                }
+              }).then(async cr => {
+                if (cr) {
+                  const deadline = await SubmissionDeadline.findOne({
+                    where: { teacherID: cr.teacherID, isActive: 1 }
+                  }).then(sd => {
+                    if (sd) {
+                      return sd.deadline;
+                    } else {
+                      return "NOT SET";
+                    }
+                  });
+                  const subjectCode = await utils.getSubjectCode(cr.subjectID);
+                  const { subsectID } = cr;
+                  const subjectName = await utils.getSubjectName(cr.subjectID);
+                  const teacher = await utils.getTeacherName(cr.teacherID);
+                  const section = await utils.getSectionName(cr.sectionID);
+                  return {
+                    teacher,
+                    subjectCode,
+                    subsectID,
+                    subjectName,
+                    section,
+                    deadline
+                  };
+                }
+              });
+              data2.push({
+                teacher,
+                classRecordID,
+                dateSubmitted,
+                subjectCode,
+                subjectName,
+                section,
+                subsectID,
+                deadline
+              });
+              if (k == r.length - 1) {
+                numOfPages = await ClassRecordStatus.findAndCountAll({
+                  where: condition
+                }).then(count => {
+                  return Math.ceil(count.count / pageSize);
+                });
+                res.status(200).json({
+                  sectionName,
+                  classRecordList: data2,
+                  numOfPages,
+                  deadline
+                });
+              }
+            });
+          }
+        }
+      });
+    }
+  }
+);
+
+// @route POST api/registrar/studentdeliberationrecord
+// @desc Get deliberation grade of student by studsectID
+// @access Private
+
+router.post(
+  "/studentdeliberationrecord",
+  passport.authenticate("registrar", { session: false }),
+  async (req, res) => {
+    const { studsectID } = req.body;
+    const { schoolYearID, quarter } = await utils.getActiveSY();
+    const data = await SubjectSectionStudent.findAll({
+      where: { studsectID }
+    }).then(async sss2 => {
+      if (sss2) {
+        let data2 = [];
+        for (const [i, v] of sss2.entries()) {
+          let {
+            subjectType,
+            classRecordID,
+            subjectID
+          } = await SubjectSection.findOne({
+            where: { subsectID: v.subsectID, schoolYearID }
+          }).then(async ss => {
+            if (ss) {
+              return {
+                subjectType: ss.subjectType,
+                classRecordID: ss.classRecordID,
+                subjectID: ss.subjectID
+              };
+            }
+          });
+
+          let status = await ClassRecordStatus.findOne({
+            where: { classRecordID }
+          }).then(async crs => {
+            if (crs) {
+              if (quarter == "Q1") {
+                if (subjectType == "NON_SHS" || subjectType == "1ST_SEM") {
+                  return crs.q1;
+                }
+              } else if (quarter == "Q2") {
+                if (subjectType == "NON_SHS" || subjectType == "1ST_SEM") {
+                  return crs.q2;
+                }
+              } else if (quarter == "Q3") {
+                if (subjectType == "NON_SHS") {
+                  return crs.q3;
+                } else if (subjectType == "2ND_SEM") {
+                  return crs.q1;
+                }
+              } else {
+                if (subjectType == "NON_SHS") {
+                  return crs.q4;
+                } else if (subjectType == "2ND_SEM") {
+                  return crs.q2;
+                }
+              }
+            }
+          });
+          let subjectName = await utils.getSubjectName(subjectID);
+          if (typeof status !== "undefined") {
+            let score = await StudentSubjectGrades.findOne({
+              where: { classRecordID, subsectstudID: v.subsectstudID }
+            }).then(ssg => {
+              if (status == "F" || status == "D") {
+                if (quarter == "Q1") {
+                  if (subjectType == "NON_SHS" || subjectType == "1ST_SEM") {
+                    return ssg.q1FinalGrade;
+                  }
+                } else if (quarter == "Q2") {
+                  if (subjectType == "NON_SHS" || subjectType == "1ST_SEM") {
+                    return ssg.q2FinalGrade;
+                  }
+                } else if (quarter == "Q3") {
+                  if (subjectType == "NON_SHS") {
+                    return ssg.q3FinalGrade;
+                  } else if (subjectType == "2ND_SEM") {
+                    return ssg.q1FinalGrade;
+                  }
+                } else {
+                  if (subjectType == "NON_SHS") {
+                    return ssg.q4FinalGrade;
+                  } else if (subjectType == "2ND_SEM") {
+                    return ssg.q2FinalGrade;
+                  }
+                }
+              }
+            });
+            if (typeof score !== "undefined") {
+              data2.push({ score, subjectName });
+            }
+          }
+        }
+        return data2;
+      }
+    });
+    res.status(200).json({ data });
+  }
+);
+
+// @route POST api/registrar/studentfinalgrade
+// @desc Get student final grade of student by studentID, schoolYearID
+// @access Private
+
+router.post(
+  "/studentfinalgrade",
+  passport.authenticate("registrar", { session: false }),
+  async (req, res) => {
+    const { studentID, schoolYearID } = req.body;
+    const studsectID = await StudentSection.findOne({
+      where: { studentID, schoolYearID }
+    }).then(std => {
+      if (std) {
+        return std.studsectID;
+      } else return -1;
+    });
+    if (studsectID == -1) {
+      res.status(200).json({ finalGrade: -1, data: [] });
+    } else {
+      let finalGrade = await StudentFinalGrade.findOne({
+        where: { studsectID, schoolYearID }
+      }).then(sfg => {
+        if (sfg) {
+          return sfg.grade;
+        }
+      });
+      let data = await StudentGrades.findAll({
+        where: { studsectID, schoolYearID }
+      }).then(sg => {
+        if (sg) {
+          let data2 = [];
+          for (const [index, value] of sg.entries()) {
+            data2.push({ quarter: value.quarter, grade: value.grade });
+          }
+          return data2;
+        }
+      });
+      data.sort((a, b) => (a.quarter > b.quarter ? 1 : -1));
+      res.status(200).json({ finalGrade, data });
+    }
+  }
+);
+
+// @route POST api/registrar/studentfinalrecord
+// @desc Get finalgrade grade of student by studentID, schoolYearID, quarter
+// @access Private
+
+router.post(
+  "/studentfinalrecord",
+  passport.authenticate("registrar", { session: false }),
+  async (req, res) => {
+    const { studentID } = req.body;
+    const { schoolYearID, quarter } = req.body;
+    const studsectID = await StudentSection.findOne({
+      where: { studentID, schoolYearID }
+    }).then(std => {
+      if (std) {
+        return std.studsectID;
+      } else {
+        return -1;
+      }
+    });
+    if (studsectID == -1) {
+      res.status(200).json({ data: [], finalGrade: -1 });
+    } else {
+      const data = await SubjectSectionStudent.findAll({
+        where: { studsectID }
+      }).then(async sss2 => {
+        if (sss2) {
+          let data2 = [];
+          for (const [i, v] of sss2.entries()) {
+            let {
+              subjectType,
+              classRecordID,
+              subjectID
+            } = await SubjectSection.findOne({
+              where: { subsectID: v.subsectID, schoolYearID }
+            }).then(async ss => {
+              if (ss) {
+                return {
+                  subjectType: ss.subjectType,
+                  classRecordID: ss.classRecordID,
+                  subjectID: ss.subjectID
+                };
+              }
+            });
+
+            let status = await ClassRecordStatus.findOne({
+              where: { classRecordID }
+            }).then(async crs => {
+              if (crs) {
+                if (quarter == "Q1") {
+                  if (subjectType == "NON_SHS" || subjectType == "1ST_SEM") {
+                    return crs.q1;
+                  }
+                } else if (quarter == "Q2") {
+                  if (subjectType == "NON_SHS" || subjectType == "1ST_SEM") {
+                    return crs.q2;
+                  }
+                } else if (quarter == "Q3") {
+                  if (subjectType == "NON_SHS") {
+                    return crs.q3;
+                  } else if (subjectType == "2ND_SEM") {
+                    return crs.q1;
+                  }
+                } else {
+                  if (subjectType == "NON_SHS") {
+                    return crs.q4;
+                  } else if (subjectType == "2ND_SEM") {
+                    return crs.q2;
+                  }
+                }
+              }
+            });
+            let subjectName = await utils.getSubjectName(subjectID);
+            if (typeof status !== "undefined") {
+              let score = await StudentSubjectGrades.findOne({
+                where: { classRecordID, subsectstudID: v.subsectstudID }
+              }).then(ssg => {
+                if (status == "F") {
+                  if (quarter == "Q1") {
+                    if (subjectType == "NON_SHS" || subjectType == "1ST_SEM") {
+                      return ssg.q1FinalGrade;
+                    }
+                  } else if (quarter == "Q2") {
+                    if (subjectType == "NON_SHS" || subjectType == "1ST_SEM") {
+                      return ssg.q2FinalGrade;
+                    }
+                  } else if (quarter == "Q3") {
+                    if (subjectType == "NON_SHS") {
+                      return ssg.q3FinalGrade;
+                    } else if (subjectType == "2ND_SEM") {
+                      return ssg.q1FinalGrade;
+                    }
+                  } else {
+                    if (subjectType == "NON_SHS") {
+                      return ssg.q4FinalGrade;
+                    } else if (subjectType == "2ND_SEM") {
+                      return ssg.q2FinalGrade;
+                    }
+                  }
+                }
+              });
+              if (typeof score !== "undefined") {
+                data2.push({ score, subjectName });
+              }
+            }
+          }
+          return data2;
+        }
+      });
+      let finalGrade = await StudentGrades.findOne({
+        where: { studsectID, quarter }
+      }).then(sg => {
+        if (sg) {
+          return sg.grade;
+        }
+      });
+      res.status(200).json({ data, finalGrade });
+    }
+  }
+);
+
+// @router POST api/registrar/getsectionstudent
+// @desc Get student section by studentID, schoolYearID
+// @access Private
+
+router.post(
+  "/getsectionstudent",
+  passport.authenticate("registrar", { session: false }),
+  async (req, res) => {
+    const { studentID, schoolYearID } = req.body;
+    const section = await StudentSection.findOne({
+      where: { studentID, schoolYearID }
+    }).then(async ss => await utils.getSectionName(ss.sectionID));
+    res.status(200).json({ sectionName: section });
+  }
+);
+
+// @router POST api/registrar/reportcardstudent
+// @desc Generate report card pdf per student
+// @access Private
+
+router.post(
+  "/reportcardstudent",
+  passport.authenticate("registrar", { session: false }),
+  async (req, res) => {
+    let doc = new PDFDocument();
+    const { studentID, schoolYearID, quarter } = req.body;
+    let filename = encodeURIComponent("final_grade") + ".pdf";
+    res.setHeader(
+      "Content-disposition",
+      'attachment; filename="' + filename + '"'
+    );
+    res.setHeader("Content-type", "application/pdf");
+    doc.pipe(res);
+    await utils.generateReportCardStudent(
+      doc,
+      res,
+      studentID,
+      schoolYearID,
+      quarter,
+      true
+    );
+  }
+);
+
+// @route POST api/registrar/reportcardsection
+// @desc Generate report card pdf per section
+// @access Private
+
+router.post(
+  "/reportcardsection",
+  passport.authenticate("registrar", { session: false }),
+  async (req, res) => {
+    let doc = new PDFDocument();
+    let headerSent = false
+    const { studentIDs, schoolYearID, quarter } = req.body;
+    let filename = encodeURIComponent("final_grade") + ".pdf";
+    res.setHeader(
+      "Content-disposition",
+      'attachment; filename="' + filename + '"'
+    );
+    res.setHeader("Content-type", "application/pdf");
+    doc.pipe(res);
+    for (const [index, value] of studentIDs.entries()) {
+      if (!headerSent){
+        await utils.generateReportCardStudent(
+          doc,
+          res,
+          value,
+          schoolYearID,
+          quarter,
+          index + 1 == studentIDs.length,
+          headerSent
+        );
+      }
+    }
+  }
+);
 module.exports = router;

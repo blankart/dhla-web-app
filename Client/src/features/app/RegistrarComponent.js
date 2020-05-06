@@ -32,7 +32,7 @@ import {
 } from 'tabler-react';
 import { Link } from 'react-router-dom';
 import { getImageUrl } from '../../utils';
-
+import ViewEditLog from './ViewEditLog';
 const { Option } = AutoComplete;
 
 export class RegistrarComponent extends Component {
@@ -102,7 +102,11 @@ export class RegistrarComponent extends Component {
             <span style={{ marginLeft: '5px' }}>
               <Button outline size="sm" color="primary">
                 <Link
-                  to={`/individualdeliberation/${this.props.id}/managegrade/${this.props.classRecordID}/quarter/${this.props.quarter}/comp/${this.props.componentID}/subcomp/${value.subcompID}`}
+                  to={
+                    !this.props.locked
+                      ? `/individualdeliberation/${this.props.id}/managegrade/${this.props.classRecordID}/quarter/${this.props.quarter}/comp/${this.props.componentID}/subcomp/${value.subcompID}`
+                      : `/viewstudentrecord/classrecord/${this.props.classRecordID}/q/${this.props.quarter}/comp/${this.props.componentID}/subcomp/${value.subcompID}`
+                  }
                 >
                   View
                 </Link>
@@ -208,6 +212,15 @@ export class RegistrarComponent extends Component {
                   </Grid.Row>
                 </Card.Body>
               )}
+              <Card.Footer>
+                <Button.List align="right">
+                  <ViewEditLog
+                    classRecordID={this.props.classRecordID}
+                    quarter={this.state.quarter}
+                    position="Registrar"
+                  />
+                </Button.List>
+              </Card.Footer>
             </Card>
           </Grid.Row>
         </Container>

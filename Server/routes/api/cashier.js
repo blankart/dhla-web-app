@@ -3,6 +3,10 @@ const router = express.Router();
 const UserAccount = require("../../models/UserAccount");
 const AccountNotice = require("../../models/AccountNotice");
 const passport = require("passport");
+const Sequelize = require('sequelize')
+const {
+  Op
+} = Sequelize
 
 // Input Validation
 const validateCreateAccount = require("../../validation/createaccount");
@@ -47,9 +51,10 @@ router.post(
       emergencyRelationship
     } = req.body;
 
-    console.log(req.body.firstName);
-
-    const { errors, isValid } = validateEditProfileNonacademic(req.body);
+    const {
+      errors,
+      isValid
+    } = validateEditProfileNonacademic(req.body);
 
     if (!isValid) {
       return res.status(400).json(errors);
@@ -88,7 +93,9 @@ router.post(
             emergencyRelationship
           })
           .then(user2 => {
-            res.status(200).json({ msg: "Profile updated successfully!" });
+            res.status(200).json({
+              msg: "Profile updated successfully!"
+            });
           });
       }
     });
@@ -101,42 +108,45 @@ router.post(
 
 router.post(
   "/getallstudents",
-  passport.authenticate("cashier", { session: false }),
-  async (req, res) => {
-    let { page, pageSize, keyword } = req.body;
+  passport.authenticate("cashier", {
+    session: false
+  }),
+  async(req, res) => {
+    let {
+      page,
+      pageSize,
+      keyword
+    } = req.body;
     page = page - 1;
     let offset = page * pageSize;
     let limit = offset + pageSize;
 
     UserAccount.findAll({
-      limit,
-      offset,
-      where: {
-        accountID: 4,
-        [Op.or]: [
-          {
+        limit,
+        offset,
+        where: {
+          position: 4,
+          [Op.or]: [{
             firstName: {
               [Op.like]: `%${keyword}%`
             }
-          },
-          {
+          }, {
             lastName: {
               [Op.like]: `%${keyword}%`
             }
-          }
-        ]
-      }
-    })
+          }]
+        }
+      })
       .then(users => {
         let accountData = [];
         if (users.length != 0) {
-          users.slice(0, pageSize).forEach(async (user, key, arr) => {
+          users.slice(0, pageSize).forEach(async(user, key, arr) => {
             const keyID = user.accountID;
             const email = user.email;
             const name =
-              utils.capitalize(user.firstName) +
+              user.firstName +
               " " +
-              utils.capitalize(user.lastName);
+              user.lastName;
             const position = utils.displayPosition(user.position);
             const imageUrl = user.imageUrl;
             const isActive = user.isActive;
@@ -148,27 +158,23 @@ router.post(
               imageUrl,
               isActive
             });
-            console.log(key + " User account");
             if (key == arr.length - 1) {
               UserAccount.findAndCountAll({
-                where: {
-                  accountID: {
-                    [Op.ne]: 1
-                  },
-                  [Op.or]: [
-                    {
+                  where: {
+                    accountID: {
+                      [Op.ne]: 1
+                    },
+                    [Op.or]: [{
                       firstName: {
                         [Op.like]: `%${keyword}%`
                       }
-                    },
-                    {
+                    }, {
                       lastName: {
                         [Op.like]: `%${keyword}%`
                       }
-                    }
-                  ]
-                }
-              })
+                    }]
+                  }
+                })
                 .then(count => {
                   accountData.sort((a, b) => (a.key > b.key ? 1 : -1));
                   res.status(200).json({
@@ -182,7 +188,9 @@ router.post(
             }
           });
         } else {
-          res.status(404).json({ msg: "Not found" });
+          res.status(404).json({
+            msg: "Not found"
+          });
         }
       })
       .catch(err => {
@@ -201,19 +209,29 @@ router.post(
     session: false
   }),
   (req, res) => {
-    const { accountID, message } = req.body;
+    const {
+      accountID,
+      message
+    } = req.body;
     UserAccount.findOne({
       where: {
         accountID
       }
     }).then(user => {
       if (!user) {
-        errors.email = "User account not found";
+        errors.msg = "User account not found";
         res.status(404).json(errors);
       } else {
-        user.update({ isActive: false }).then(() => {
-          AccountNotice.create({ accountID, message }).then(accountnotice => {
-            res.status(200).json({ msg: "Account restricted succesfully!" });
+        user.update({
+          isActive: false
+        }).then(() => {
+          AccountNotice.create({
+            accountID,
+            message
+          }).then(accountnotice => {
+            res.status(200).json({
+              msg: "Account restricted succesfully!"
+            });
           });
         });
       }
@@ -231,24 +249,34 @@ router.post(
     session: false
   }),
   (req, res) => {
-    const { accountID } = req.body;
+    const {
+      accountID
+    } = req.body;
     UserAccount.findOne({
       where: {
         accountID
       }
     }).then(user => {
       if (!user) {
-        errors.email = "User account not found";
+        errors.msg = "User account not found";
         res.status(404).json(errors);
       } else {
-        user.update({ isActive: true }).then(() => {
-          AccountNotice.findOne({ where: { accountID } }).then(
+        user.update({
+          isActive: true
+        }).then(() => {
+          AccountNotice.findOne({
+            where: {
+              accountID
+            }
+          }).then(
             accountnotice => {
               if (accountnotice) {
                 accountnotice.destroy().then(() => {
                   res
                     .status(200)
-                    .json({ msg: "Account unrestricted successfully!" });
+                    .json({
+                      msg: "Account unrestricted successfully!"
+                    });
                 });
               } else {
                 res.status(404);

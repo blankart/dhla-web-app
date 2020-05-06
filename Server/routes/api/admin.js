@@ -56,8 +56,6 @@ router.post(
       emergencyRelationship
     } = req.body;
 
-    console.log(req.body.firstName);
-
     const { errors, isValid } = validateEditProfileNonacademic(req.body);
 
     if (!isValid) {
@@ -297,7 +295,6 @@ router.post(
               imageUrl,
               isActive
             });
-            console.log(key + " User account");
             if (key == arr.length - 1) {
               UserAccount.findAndCountAll({
                 where: {

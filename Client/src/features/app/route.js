@@ -32,6 +32,15 @@ import {
   RegistrarEditRecordView,
   RegistrarAddRecordView,
   RegistrarSummaryReportView,
+  RegistrarGroupDeliberationInfoView,
+  RegistrarViewStudentRecordView,
+  RegistrarViewStudentRecordTeacherView,
+  RegistrarViewStudentRecordStudentView,
+  RegistrarViewStudentRecordSectionView,
+  RegistrarViewStudentRecordGradeView,
+  RegistrarViewStudentRecordGradeCompView,
+  RegistrarViewStudentRecordGradeSubcompView,
+  RegistrarViewStudentRecordGradeSummaryReportView,
 } from './';
 
 export default {
@@ -165,5 +174,14 @@ export default {
     },
     { path: '/individualdeliberation/:id/managegrade/:classRecordID/quarter/:Q/comp/:comp/subcomp/:subcomp/addrecord', name: 'Registrar add record view', component: RegistrarAddRecordView },
     { path: 'individualdeliberation/:id/managegrade/:classRecordID/quarter/:Q/summaryreport', name: 'Registrar summary report view', component: RegistrarSummaryReportView },
+    { path: 'groupdeliberation/:id', name: 'Registrar group deliberation info view', component: RegistrarGroupDeliberationInfoView },
+    { path: 'viewstudentrecord', name: 'Registrar view student record view', component: RegistrarViewStudentRecordView },
+    { path: 'viewstudentrecord/teacher/:id/sy/:sy/q/:q', name: 'Registrar view student record teacher view', component: RegistrarViewStudentRecordTeacherView },
+    { path: 'viewstudentrecord/student/:id/sy/:sy/q/:q', name: 'Registrar view student record student view', component: RegistrarViewStudentRecordStudentView },
+    { path: 'viewstudentrecord/section/:id/sy/:sy/q/:q', name: 'Registrar view student record section view', component: RegistrarViewStudentRecordSectionView },
+    { path: 'viewstudentrecord/classrecord/:classRecordID/q/:q', name: 'Registrar view student record grade view', component: RegistrarViewStudentRecordGradeView },
+    { path: '/viewstudentrecord/classrecord/:classRecordID/q/:q/comp/:comp', name: 'Registrar view student record grade comp view', component: RegistrarViewStudentRecordGradeCompView },
+    { path: '/viewstudentrecord/classrecord/:classRecordID/q/:q/comp/:comp/subcomp/:subcomp', name: 'Registrar view student record grade subcomp view', component: RegistrarViewStudentRecordGradeSubcompView },
+    { path: '/viewstudentrecord/classrecord/:classRecordID/q/:q/summaryreport', name: 'Registrar view student record grade summary report view', component: RegistrarViewStudentRecordGradeSummaryReportView },
   ],
 };

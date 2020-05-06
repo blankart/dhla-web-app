@@ -197,9 +197,6 @@ export class TeacherViewSubjectLoadById extends Component {
                     <Descriptions.Item span={3} label="Subject Name">
                       {this.state.subjectName}
                     </Descriptions.Item>
-                    <Descriptions.Item span={3} label="Number of Students">
-                      {this.state.data.length}
-                    </Descriptions.Item>
                   </Descriptions>
                   <Grid.Row>
                     <Grid.Col xs={12} sm={12} md={12}>
