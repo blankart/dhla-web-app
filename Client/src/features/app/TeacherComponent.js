@@ -31,7 +31,7 @@ import {
   Alert,
 } from 'tabler-react';
 import { Link } from 'react-router-dom';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 import ViewEditLog from './ViewEditLog';
 const { Option } = AutoComplete;
 
@@ -136,7 +136,7 @@ export class TeacherComponent extends Component {
         tableData.push(
           <Table.Row>
             <Table.Col className="w-1">
-              <Avatar imageURL={imageUrl == 'NA' ? placeholder : getImageUrl(imageUrl)} />
+              <Avatar imageURL={imageUrl == 'NA' ? getPlaceholder() : getImageUrl(imageUrl)} />
             </Table.Col>
             <Table.Col>{name}</Table.Col>
             {tempRow}
@@ -241,4 +241,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeacherComponent);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(TeacherComponent);

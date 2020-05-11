@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import * as actions from './redux/actions';
 import { Card, Button, Grid, Avatar, Table, Form, Alert } from 'tabler-react';
 import { Pagination, Spin, Popconfirm, Modal, message } from 'antd';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 import placeholder from '../../images/placeholder.jpg';
 import axios from 'axios';
 
@@ -41,7 +41,46 @@ export class RestrictAccount extends Component {
     });
   };
 
-  handleOnSearch = () => {};
+  handleOnSearch = () => {
+    this.setState({ isLoading: true });
+    axios
+      .post('api/cashier/getallstudents', {
+        page: this.state.page,
+        pageSize: this.state.pageSize,
+        keyword: this.state.keyword,
+      })
+      .then(res => {
+        this.setState({
+          isLoading: false,
+          data: res.data.accountList,
+          numOfPages: res.data.numOfPages,
+        });
+      })
+      .catch(err => {
+        this.setState({ isLoading: false, data: [], numOfPages: 1 });
+      });
+  };
+
+  paginate = page => {
+    this.setState({ page, isLoading: true }, () => {
+      axios
+        .post('api/cashier/getallstudents', {
+          page: this.state.page,
+          pageSize: this.state.pageSize,
+          keyword: this.state.keyword,
+        })
+        .then(res => {
+          this.setState({
+            isLoading: false,
+            data: res.data.accountList,
+            numOfPages: res.data.numOfPages,
+          });
+        })
+        .catch(err => {
+          this.setState({ isLoading: false, data: [], numOfPages: 1 });
+        });
+    });
+  };
 
   componentDidMount() {
     axios
@@ -68,7 +107,9 @@ export class RestrictAccount extends Component {
       DisplayData.push(
         <Table.Row>
           <Table.Col className="w-1">
-            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)} />
+            <Avatar
+              imageURL={value.imageUrl == 'NA' ? getPlaceholder() : getImageUrl(value.imageUrl)}
+            />
           </Table.Col>
           <Table.Col>{value.name}</Table.Col>
           <Table.Col>{value.email}</Table.Col>
@@ -164,6 +205,13 @@ export class RestrictAccount extends Component {
                         )}
                       </Table.Body>
                     </Table>
+                    <Pagination
+                      size="large"
+                      current={this.state.page}
+                      pageSize={this.state.pageSize}
+                      total={this.state.pageSize * this.state.numOfPages}
+                      onChange={this.paginate}
+                    />
                   </Spin>
                 </Grid.Col>
               </Grid.Row>
@@ -189,4 +237,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RestrictAccount);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RestrictAccount);

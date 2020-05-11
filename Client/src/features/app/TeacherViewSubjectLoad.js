@@ -30,31 +30,65 @@ export class TeacherViewSubjectLoad extends Component {
       page: 1,
       pageSize: 10,
       numOfPages: 1,
+      schoolYearList: [],
+      selectedSchoolYearID: -1,
+      selectedQuarter: 'Q1',
     };
   }
 
+  onDropdownChange = () => {
+    this.setState({ isLoadingTable: true });
+    axios
+      .post('api/teacher/getsubjectload', {
+        schoolYearID: this.state.selectedSchoolYearID,
+        quarter: this.state.selectedQuarter,
+        page: this.state.page,
+        pageSize: this.state.pageSize,
+      })
+      .then(res2 => {
+        this.setState({
+          isLoadingTable: false,
+          data: res2.data.subjectSectionData,
+          numOfPages: res2.data.numOfPages,
+        });
+      })
+      .catch(err => {
+        this.setState({ isLoadingTable: false, data: [] });
+      });
+  };
+
   componentDidMount() {
     axios.get('api/teacher/getsy').then(res => {
-      this.setState({
-        isLoading: false,
-        schoolYear: res.data.schoolYear,
-        schoolYearID: res.data.schoolYearID,
+      axios.get('api/teacher/getallsy').then(res3 => {
+        this.setState(
+          {
+            isLoading: false,
+            schoolYear: res.data.schoolYear,
+            schoolYearID: res.data.schoolYearID,
+            schoolYearList: res3.data.schoolYearList,
+            selectedSchoolYearID: res3.data.schoolYearList[0].schoolYearID,
+          },
+          () => {
+            axios
+              .post('api/teacher/getsubjectload', {
+                schoolYearID: this.state.selectedSchoolYearID,
+                quarter: this.state.selectedQuarter,
+                page: this.state.page,
+                pageSize: this.state.pageSize,
+              })
+              .then(res2 => {
+                this.setState({
+                  isLoadingTable: false,
+                  data: res2.data.subjectSectionData,
+                  numOfPages: res2.data.numOfPages,
+                });
+              })
+              .catch(err => {
+                this.setState({ isLoadingTable: false, data: [] });
+              });
+          },
+        );
       });
-      axios
-        .post('api/teacher/getsubjectload', {
-          page: this.state.page,
-          pageSize: this.state.pageSize,
-        })
-        .then(res2 => {
-          this.setState({
-            isLoadingTable: false,
-            data: res2.data.subjectSectionData,
-            numOfPages: res2.data.numOfPages,
-          });
-        })
-        .catch(err => {
-          this.setState({ isLoadingTable: false, data: [] });
-        });
     });
   }
 
@@ -126,7 +160,7 @@ export class TeacherViewSubjectLoad extends Component {
           <Table.Col>{displayGradeLevel(value.gradeLevel)}</Table.Col>
           <Table.Col>{value.sectionName}</Table.Col>
           <Table.Col>
-            <Link to={`/viewsubjectload/${value.key}/${this.props.quarter}`}>
+            <Link to={`/viewsubjectload/${value.key}/${this.state.selectedQuarter}`}>
               <Button pill size="sm" icon="user" color="primary">
                 View information
               </Button>
@@ -153,10 +187,46 @@ export class TeacherViewSubjectLoad extends Component {
                             <Breadcrumb.Item>View Subject Load</Breadcrumb.Item>
                           </Breadcrumb>
                         </Card.Title>
-                        <Card.Title>Subject Load S.Y. {this.state.schoolYear}</Card.Title>
+                        <Card.Title>Subject Load List</Card.Title>
                       </div>
                     )}
                     <Grid.Row>
+                      <Grid.Col sm={12} xs={12} md={7}>
+                        <Form.Group>
+                          <Form.Label>Select School Year</Form.Label>
+                          <Form.Select
+                            value={this.state.selectedSchoolYearID}
+                            onChange={e =>
+                              this.setState({ selectedSchoolYearID: e.target.value }, () =>
+                                this.onDropdownChange(),
+                              )
+                            }
+                            disabled={this.state.schoolYearList.length == 0}
+                          >
+                            {this.state.schoolYearList.map(a => (
+                              <option value={a.schoolYearID}>{a.schoolYear}</option>
+                            ))}
+                          </Form.Select>
+                        </Form.Group>
+                      </Grid.Col>
+                      <Grid.Col sm={12} xs={12} md={5}>
+                        <Form.Group>
+                          <Form.Label>Select Quarter</Form.Label>
+                          <Form.Select
+                            value={this.state.selectedQuarter}
+                            onChange={e =>
+                              this.setState({ selectedQuarter: e.target.value }, () =>
+                                this.onDropdownChange(),
+                              )
+                            }
+                          >
+                            <option value="Q1">Quarter 1</option>
+                            <option value="Q2">Quarter 2</option>
+                            <option value="Q3">Quarter 3</option>
+                            <option value="Q4">Quarter 4</option>
+                          </Form.Select>
+                        </Form.Group>
+                      </Grid.Col>
                       <Grid.Col sm={12} md={12} xs={12}>
                         <Spin spinning={this.state.isLoadingTable}>
                           <Table highlightRowOnHover={true} responsive={true}>

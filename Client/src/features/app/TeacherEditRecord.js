@@ -32,7 +32,7 @@ import {
 } from 'tabler-react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 const { Option } = AutoComplete;
 
 export class TeacherEditRecord extends Component {
@@ -140,7 +140,9 @@ export class TeacherEditRecord extends Component {
       tableData.push(
         <Table.Row>
           <Table.Col className="w-1">
-            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)} />
+            <Avatar
+              imageURL={value.imageUrl == 'NA' ? getPlaceholder() : getImageUrl(value.imageUrl)}
+            />
           </Table.Col>
           <Table.Col>{value.name}</Table.Col>
           <Table.Col>
@@ -340,4 +342,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeacherEditRecord);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(TeacherEditRecord);

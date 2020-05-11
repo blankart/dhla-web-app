@@ -1093,17 +1093,20 @@ export class RegistrarManageGrades extends Component {
               )}
               <Card.Footer>
                 <Button.List align="right">
-                  <ViewEditLog
-                    classRecordID={this.props.classRecordID}
-                    quarter={
-                      this.state.subjectType == 'NON_SHS' || this.state.subjectType == '1ST_SEM'
-                        ? this.props.quarter
-                        : this.props.quarter == 'Q3'
-                        ? 'Q1'
-                        : 'Q2'
-                    }
-                    position="Registrar"
-                  />
+                  {(this.props.app.auth.user.position == 2 ||
+                    this.props.app.auth.user.position == 3) && (
+                    <ViewEditLog
+                      classRecordID={this.props.classRecordID}
+                      quarter={
+                        this.state.subjectType == 'NON_SHS' || this.state.subjectType == '1ST_SEM'
+                          ? this.props.quarter
+                          : this.props.quarter == 'Q3'
+                          ? 'Q1'
+                          : 'Q2'
+                      }
+                      position="Registrar"
+                    />
+                  )}
                 </Button.List>
               </Card.Footer>
             </Card>

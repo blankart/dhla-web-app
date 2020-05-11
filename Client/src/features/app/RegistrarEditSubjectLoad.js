@@ -21,7 +21,7 @@ import RegistrarAddNewLoad from './RegistrarAddNewLoad';
 import cn from 'classnames';
 import placeholder from '../../images/placeholder.jpg';
 import bg from '../../images/BG.png';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 const { Option } = AutoComplete;
 
 function ProfileImage({ avatarURL }) {
@@ -185,7 +185,9 @@ export class RegistrarEditSubjectLoad extends Component {
       displayOptions.push(
         <Option key={value.studsectID} text={value.name}>
           <div>
-            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)} />
+            <Avatar
+              imageURL={value.imageUrl == 'NA' ? getPlaceholder() : getImageUrl(value.imageUrl)}
+            />
             <span style={{ margin: '16px', verticalAlign: 'text-top' }}>{value.name}</span>
           </div>
         </Option>,
@@ -195,7 +197,9 @@ export class RegistrarEditSubjectLoad extends Component {
       displayStudentData.push(
         <Table.Row>
           <Table.Col className="w-1">
-            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)} />
+            <Avatar
+              imageURL={value.imageUrl == 'NA' ? getPlaceholder() : getImageUrl(value.imageUrl)}
+            />
           </Table.Col>
           <Table.Col>{value.name}</Table.Col>
           <Table.Col>{value.email}</Table.Col>
@@ -253,7 +257,9 @@ export class RegistrarEditSubjectLoad extends Component {
                 <Profile
                   name={this.state.name}
                   avatarURL={
-                    this.state.imageUrl === 'NA' ? placeholder : getImageUrl(this.state.imageUrl)
+                    this.state.imageUrl === 'NA'
+                      ? getPlaceholder()
+                      : getImageUrl(this.state.imageUrl)
                   }
                   backgroundURL={bg}
                 ></Profile>
@@ -365,4 +371,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegistrarEditSubjectLoad);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RegistrarEditSubjectLoad);

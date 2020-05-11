@@ -100,3 +100,7 @@ export { default as AllStudentFinalGrades } from './AllStudentFinalGrades';
 export { default as CashierDashboard } from './CashierDashboard';
 export { default as RestrictAccount } from './RestrictAccount';
 export { default as CashierProfile } from './CashierProfile';
+export { default as ViewHonorStudents } from './ViewHonorStudents';
+export { default as ViewFailedStudents } from './ViewFailedStudents';
+export { default as StudentViewGrade } from './StudentViewGrade';
+export { default as TeacherAdviseeGrade } from './TeacherAdviseeGrade';

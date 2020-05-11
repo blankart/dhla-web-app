@@ -49,3 +49,5 @@ export { restrictAccount } from './restrictAccount';
 export { unrestrictAccount } from './unrestrictAccount';
 export { updateCashierProfile } from './updateCashierProfile';
 export { updateStudentProfile } from './updateStudentProfile';
+export { assignParent } from './assignParent';
+export { unassignParent } from './unassignParent';

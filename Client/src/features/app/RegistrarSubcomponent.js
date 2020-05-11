@@ -31,7 +31,7 @@ import {
   Alert,
 } from 'tabler-react';
 import { Link } from 'react-router-dom';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 import ViewEditLog from './ViewEditLog';
 const { Option } = AutoComplete;
 
@@ -257,7 +257,7 @@ export class RegistrarSubcomponent extends Component {
         tableData.push(
           <Table.Row>
             <Table.Col className="w-1">
-              <Avatar imageURL={imageUrl == 'NA' ? placeholder : getImageUrl(imageUrl)} />
+              <Avatar imageURL={imageUrl == 'NA' ? getPlaceholder() : getImageUrl(imageUrl)} />
             </Table.Col>
             <Table.Col>{name}</Table.Col>
             {tempRow}
@@ -404,11 +404,14 @@ export class RegistrarSubcomponent extends Component {
               )}
               <Card.Footer>
                 <Button.List align="right">
-                  <ViewEditLog
-                    classRecordID={this.props.classRecordID}
-                    quarter={this.state.quarter}
-                    position="Registrar"
-                  />
+                  {(this.props.app.auth.user.position == 2 ||
+                    this.props.app.auth.user.position == 3) && (
+                    <ViewEditLog
+                      classRecordID={this.props.classRecordID}
+                      quarter={this.state.quarter}
+                      position="Registrar"
+                    />
+                  )}
                 </Button.List>
               </Card.Footer>
             </Card>
@@ -433,4 +436,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegistrarSubcomponent);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RegistrarSubcomponent);

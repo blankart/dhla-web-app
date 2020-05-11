@@ -10,7 +10,7 @@ import { Alert, Upload, message } from 'antd';
 import cn from 'classnames';
 import placeholder from '../../images/placeholder.jpg';
 import bg from '../../images/BG.png';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 
 function ProfileImage({ avatarURL }) {
   return <img className="card-profile-img" alt="Profile" src={avatarURL} />;
@@ -239,7 +239,7 @@ export class TeacherProfile extends Component {
               <Grid.Col sm={12} lg={4}>
                 <Profile
                   name={`${firstName} ${middleName.charAt(0).toUpperCase()}. ${lastName}`}
-                  avatarURL={imageUrl == 'NA' ? placeholder : getImageUrl(imageUrl)}
+                  avatarURL={imageUrl == 'NA' ? getPlaceholder() : getImageUrl(imageUrl)}
                   backgroundURL={bg}
                 >
                   <Upload
@@ -655,4 +655,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeacherProfile);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(TeacherProfile);

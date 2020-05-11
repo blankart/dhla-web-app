@@ -32,7 +32,7 @@ import {
   Badge,
 } from 'tabler-react';
 import { Link } from 'react-router-dom';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 const { Option } = AutoComplete;
 
 export class TeacherSummary extends Component {
@@ -121,7 +121,7 @@ export class TeacherSummary extends Component {
           <Table.Row>
             <Table.Col className="w-1">
               <Avatar
-                imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)}
+                imageURL={value.imageUrl == 'NA' ? getPlaceholder() : getImageUrl(value.imageUrl)}
               />
             </Table.Col>
             <Table.Col>{value.name}</Table.Col>
@@ -154,6 +154,13 @@ export class TeacherSummary extends Component {
               </b>
             </Table.Col>
             <Table.Col alignContent="center">
+              {value.ave != -1 && (
+                <span
+                  className={`status-icon bg-${
+                    Number(Math.round(value.ave + 'e2') + 'e-2') < 75 ? 'red' : 'green'
+                  }`}
+                />
+              )}
               <b>
                 {value.ave == -1
                   ? 'Not yet available'
@@ -167,7 +174,7 @@ export class TeacherSummary extends Component {
           <Table.Row>
             <Table.Col className="w-1">
               <Avatar
-                imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)}
+                imageURL={value.imageUrl == 'NA' ? getPlaceholder() : getImageUrl(value.imageUrl)}
               />
             </Table.Col>
             <Table.Col>{value.name}</Table.Col>
@@ -186,6 +193,13 @@ export class TeacherSummary extends Component {
               </b>
             </Table.Col>
             <Table.Col alignContent="center">
+              {value.ave != -1 && (
+                <span
+                  className={`status-icon bg-${
+                    Number(Math.round(value.ave + 'e2') + 'e-2') < 75 ? 'red' : 'green'
+                  }`}
+                />
+              )}
               <b>
                 {value.ave == -1
                   ? 'Not yet available'
@@ -515,4 +529,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeacherSummary);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(TeacherSummary);

@@ -9,9 +9,8 @@ import axios from 'axios';
 import { Pagination, Spin, Tooltip, Descriptions } from 'antd';
 import { Modal, Popconfirm, Search, Breadcrumb, AutoComplete, Input, message } from 'antd';
 import cn from 'classnames';
-import placeholder from '../../images/placeholder.jpg';
 import bg from '../../images/BG.png';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 const { Option } = AutoComplete;
 
 export class AllStudentFinalGrades extends Component {
@@ -72,7 +71,7 @@ export class AllStudentFinalGrades extends Component {
         <Modal
           title="Student Grades"
           onCancel={() => this.setState({ showModal: false })}
-          footer={[<Button onClick={() => this.setState({ showModa: false })}>Close</Button>]}
+          footer={[<Button onClick={() => this.setState({ showModal: false })}>Close</Button>]}
           visible={this.state.showModal}
         >
           <Spin spinning={this.state.isLoading}>
@@ -142,4 +141,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AllStudentFinalGrades);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(AllStudentFinalGrades);

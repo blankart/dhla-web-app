@@ -11,7 +11,7 @@ import { Modal, Popconfirm, Search, Breadcrumb, AutoComplete, Input, message } f
 import cn from 'classnames';
 import placeholder from '../../images/placeholder.jpg';
 import bg from '../../images/BG.png';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 import ClassRecordInformation from './ClassRecordInformation';
 const { Option } = AutoComplete;
 
@@ -215,7 +215,8 @@ export class RegistrarIndividualDeliberationInfo extends Component {
   };
 
   handleQuarterChange = () => {
-    this.setState({ isLoadingTable: true, isLoadingTable2: true });
+    this.setState({ isLoadingTable: true, isLoadingTable2: true, selectedClassRecordID: -1 });
+    this.resetClassRecordInfo();
     axios
       .post('api/registrar/getsubmittedsubsect', {
         accountID: this.props.id,
@@ -372,6 +373,9 @@ export class RegistrarIndividualDeliberationInfo extends Component {
                   </Grid.Row>
                 </Container>
               </Spin>
+            </Grid.Col>
+            <Grid.Col sm={12} xs={12} md={6}>
+              {' '}
               <Grid.Row>
                 <Container>
                   {this.state.isLoading ? (
@@ -469,7 +473,7 @@ export class RegistrarIndividualDeliberationInfo extends Component {
                 </Container>
               </Grid.Row>
             </Grid.Col>
-            <Grid.Col sm={12} sm={6}>
+            <Grid.Col sm={12} xs={12}>
               <Grid.Row>
                 <Container>
                   <ClassRecordInformation
@@ -507,4 +511,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegistrarIndividualDeliberationInfo);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RegistrarIndividualDeliberationInfo);

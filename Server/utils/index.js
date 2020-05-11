@@ -1375,7 +1375,12 @@ exports.formatCondensedDeliberationGrade = data => {
     for (const [i2, v2] of v.entries()) {
       if (flags2[v2.subjectName]) continue;
       flags2[v2.subjectName] = true;
-      subjectName.push(v2.subjectName);
+      subjectName.push({
+        subjectName: v2.subjectName,
+        status: v2.status,
+        classRecordID: v2.classRecordID,
+        teacher: v2.teacher
+      });
     }
   }
   for (const [i, v] of name.entries()) {
@@ -1388,12 +1393,12 @@ exports.formatCondensedDeliberationGrade = data => {
     let imageUrl = temparr[0].imageUrl;
     for (const [i2, v2] of subjectName.entries()) {
       let grade =
-        typeof temparr.find(a => a.subjectName == v2) === "undefined" ?
+        typeof temparr.find(a => a.subjectName == v2.subjectName) === "undefined" ?
         "N/A" :
-        temparr.find(a => a.subjectName == v2).score;
+        temparr.find(a => a.subjectName == v2.subjectName).score;
       grades.push({
-        subjectName: v2,
-        grade
+        subjectName: v2.subjectName,
+        grade,
       });
     }
     output.push({

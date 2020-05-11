@@ -50,6 +50,8 @@ import { reducer as restrictAccountReducer } from './restrictAccount';
 import { reducer as unrestrictAccountReducer } from './unrestrictAccount';
 import { reducer as updateCashierProfileReducer } from './updateCashierProfile';
 import { reducer as updateStudentProfileReducer } from './updateStudentProfile';
+import { reducer as assignParentReducer } from './assignParent';
+import { reducer as unassignParentReducer } from './unassignParent';
 
 const reducers = [
   setCurrentUserReducer,
@@ -103,6 +105,8 @@ const reducers = [
   unrestrictAccountReducer,
   updateCashierProfileReducer,
   updateStudentProfileReducer,
+  assignParentReducer,
+  unassignParentReducer,
 ];
 
 export default function reducer(state = initialState, action) {

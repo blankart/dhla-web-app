@@ -11,7 +11,7 @@ import { Modal, Popconfirm, Search, Breadcrumb, AutoComplete, Input, message } f
 import cn from 'classnames';
 import placeholder from '../../images/placeholder.jpg';
 import bg from '../../images/BG.png';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 import AllStudentFinalGrades from './AllStudentFinalGrades';
 const { Option } = AutoComplete;
 
@@ -111,7 +111,14 @@ export class RegistrarViewStudentRecordStudent extends Component {
       DisplayData.push(
         <Table.Row>
           <Table.Col>{value.subjectName}</Table.Col>
-          <Table.Col>{value.score == -1 ? 'Not yet available' : value.score}</Table.Col>
+          <Table.Col>
+            {(value.score != -1 || value.score != 'N/A') && (
+              <span
+                className={`status-icon bg-${parseFloat(value.score) >= 75 ? 'green' : 'red'}`}
+              />
+            )}
+            {value.score == -1 ? 'Not yet available' : value.score}
+          </Table.Col>
         </Table.Row>,
       );
     }
@@ -203,22 +210,25 @@ export class RegistrarViewStudentRecordStudent extends Component {
                       </Card.Body>
                       <Card.Footer>
                         <Button.List align="right">
-                          <Button
-                            color="primary"
-                            icon="file"
-                            onClick={() =>
-                              this.props.actions.generatePdfStudent(
-                                {
-                                  studentID: this.props.id,
-                                  schoolYearID: this.props.schoolYearID,
-                                  quarter: this.props.quarter,
-                                },
-                                'Registrar',
-                              )
-                            }
-                          >
-                            Generate Report Card
-                          </Button>
+                          {this.props.app.auth.user.position == 2 && (
+                            <Button
+                              color="primary"
+                              icon="file"
+                              disabled={this.state.data.length == 0}
+                              onClick={() =>
+                                this.props.actions.generatePdfStudent(
+                                  {
+                                    studentID: this.props.id,
+                                    schoolYearID: this.props.schoolYearID,
+                                    quarter: this.props.quarter,
+                                  },
+                                  'Registrar',
+                                )
+                              }
+                            >
+                              Generate Report Card
+                            </Button>
+                          )}
                         </Button.List>
                       </Card.Footer>
                     </Card>
@@ -247,4 +257,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegistrarViewStudentRecordStudent);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RegistrarViewStudentRecordStudent);

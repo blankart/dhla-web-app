@@ -41,6 +41,8 @@ import {
   RegistrarViewStudentRecordGradeCompView,
   RegistrarViewStudentRecordGradeSubcompView,
   RegistrarViewStudentRecordGradeSummaryReportView,
+  StudentViewGrade,
+  TeacherAdviseeGrade,
 } from './';
 
 export default {
@@ -183,5 +185,7 @@ export default {
     { path: '/viewstudentrecord/classrecord/:classRecordID/q/:q/comp/:comp', name: 'Registrar view student record grade comp view', component: RegistrarViewStudentRecordGradeCompView },
     { path: '/viewstudentrecord/classrecord/:classRecordID/q/:q/comp/:comp/subcomp/:subcomp', name: 'Registrar view student record grade subcomp view', component: RegistrarViewStudentRecordGradeSubcompView },
     { path: '/viewstudentrecord/classrecord/:classRecordID/q/:q/summaryreport', name: 'Registrar view student record grade summary report view', component: RegistrarViewStudentRecordGradeSummaryReportView },
+    { path: 'viewstudentgrade', name: 'Student view grade', component: StudentViewGrade },
+    { path: 'viewadviseegrades', name: 'Teacher advisee grade', component: TeacherAdviseeGrade },
   ],
 };

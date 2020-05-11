@@ -27,6 +27,8 @@ export const loginUser = userData => dispatch => {
       dispatch(actions.getErrors(err.response.data));
       if (err.response.data.isActive) {
         message.error(err.response.data.isActive);
+      } else {
+        message.error(err.response.data.msg);
       }
     });
   return {

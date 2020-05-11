@@ -10,7 +10,7 @@ import axios from 'axios';
 import { Pagination, Spin, Tooltip } from 'antd';
 import { Modal, Popconfirm, Search, Breadcrumb, AutoComplete, Input, message } from 'antd';
 import placeholder from '../../images/placeholder.jpg';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 import { Table as AntdTable } from 'antd';
 const { Option } = AutoComplete;
 
@@ -176,7 +176,7 @@ export class RegistrarViewEnrolled extends Component {
             <Option key={data.key} text={data.name}>
               <div>
                 <Avatar
-                  imageURL={data.imageUrl == 'NA' ? placeholder : getImageUrl(data.imageUrl)}
+                  imageURL={data.imageUrl == 'NA' ? getPlaceholder() : getImageUrl(data.imageUrl)}
                 />
                 <span style={{ margin: '16px', verticalAlign: 'text-top' }}>{data.name}</span>
               </div>
@@ -207,7 +207,9 @@ export class RegistrarViewEnrolled extends Component {
       DisplayData.push(
         <Table.Row>
           <Table.Col className="w-1">
-            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)} />
+            <Avatar
+              imageURL={value.imageUrl == 'NA' ? getPlaceholder() : getImageUrl(value.imageUrl)}
+            />
           </Table.Col>
           <Table.Col>
             <Tooltip title={<StudentTooltip id={value.key} />}>{value.name}</Tooltip>
@@ -379,4 +381,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegistrarViewEnrolled);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RegistrarViewEnrolled);

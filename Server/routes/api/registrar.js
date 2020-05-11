@@ -27,6 +27,9 @@ const StudentGrades = require("../../models/StudentGrades");
 const StudentFinalGrade = require("../../models/StudentFinalGrade");
 const Op = Sequelize.Op;
 
+// Director and Registrar Shared API
+const directorRegistrar = ["director", "registrar"];
+
 //Import Utility Functions
 const utils = require("../../utils");
 
@@ -42,7 +45,7 @@ const validateSubcomponent = require("../../validation/subcomponents");
 router.post(
   "/updateprofile",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   (req, res) => {
     const {
@@ -68,9 +71,8 @@ router.post(
       emergencyTelephone,
       emergencyCellphone,
       emergencyEmail,
-      emergencyRelationship
+      emergencyRelationship,
     } = req.body;
-
 
     const { errors, isValid } = validateEditProfileNonacademic(req.body);
 
@@ -80,9 +82,9 @@ router.post(
 
     UserAccount.findOne({
       where: {
-        accountID: req.user.accountID
-      }
-    }).then(user => {
+        accountID: req.user.accountID,
+      },
+    }).then((user) => {
       if (user) {
         user
           .update({
@@ -108,11 +110,11 @@ router.post(
             emergencyTelephone,
             emergencyCellphone,
             emergencyEmail,
-            emergencyRelationship
+            emergencyRelationship,
           })
-          .then(user2 => {
+          .then((user2) => {
             res.status(200).json({
-              msg: "Profile updated successfully!"
+              msg: "Profile updated successfully!",
             });
           });
       }
@@ -127,7 +129,7 @@ router.post(
 router.post(
   "/setdeadlineall",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   (req, res) => {
     let { deadline } = req.body;
@@ -135,39 +137,39 @@ router.post(
     const dateSet = utils.getPHTime();
     if (deadlineDate.getTime() <= dateSet.getTime()) {
       res.status(400).json({
-        msg: "Invalid date. Date must be greater than current date."
+        msg: "Invalid date. Date must be greater than current date.",
       });
     } else {
-      Teacher.findAll().then(teachers => {
+      Teacher.findAll().then((teachers) => {
         if (teachers.length != 0) {
           for (const [index, value] of teachers.entries()) {
             SubmissionDeadline.findOne({
               where: {
                 teacherID: value.teacherID,
-                isActive: 1
-              }
-            }).then(sd => {
+                isActive: 1,
+              },
+            }).then((sd) => {
               if (sd) {
                 sd.update({
                   deadline: deadlineDate,
-                  dateSet
+                  dateSet,
                 });
               } else {
                 SubmissionDeadline.create({
                   teacherID: value.teacherID,
                   isActive: 1,
                   deadline: deadlineDate,
-                  dateSet
+                  dateSet,
                 });
               }
             });
           }
           res.status(200).json({
-            msg: "Successfully updated the submission deadline!"
+            msg: "Successfully updated the submission deadline!",
           });
         } else {
           res.status(404).json({
-            msg: "No active teachers found."
+            msg: "No active teachers found.",
           });
         }
       });
@@ -182,26 +184,26 @@ router.post(
 router.get(
   "/disabledeadline",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   (req, res) => {
     SubmissionDeadline.findAll({
       where: {
-        isActive: true
-      }
-    }).then(submissiondeadline => {
+        isActive: true,
+      },
+    }).then((submissiondeadline) => {
       if (submissiondeadline.length == 0) {
         res.status(404).json({
-          msg: "There is no active submission deadline."
+          msg: "There is no active submission deadline.",
         });
       } else {
         submissiondeadline.forEach(async (entry, key, arr) => {
           await entry.update({
-            isActive: 0
+            isActive: 0,
           });
         });
         res.status(200).json({
-          msg: "Disabled successfully!"
+          msg: "Disabled successfully!",
         });
       }
     });
@@ -215,40 +217,40 @@ router.get(
 router.post(
   "/removedeadline",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { deadlineID } = req.body;
     if (deadlineID != 0) {
       SubmissionDeadline.findOne({
         where: {
-          deadlineID
-        }
-      }).then(sd => {
+          deadlineID,
+        },
+      }).then((sd) => {
         if (sd) {
           sd.update({
-            isActive: 0
+            isActive: 0,
           }).then(() => {
             res.status(200).json({
-              msg: "Submission deadline removed successfully."
+              msg: "Submission deadline removed successfully.",
             });
           });
         } else {
           res.status(404).json({
-            msg: "Submission deadline not found!"
+            msg: "Submission deadline not found!",
           });
         }
       });
     } else {
-      SubmissionDeadline.findAll().then(sds => {
+      SubmissionDeadline.findAll().then((sds) => {
         if (sds.length != 0) {
           for (const [index, value] of sds.entries()) {
             value.update({
-              isActive: 0
+              isActive: 0,
             });
           }
           res.status(200).json({
-            msg: "Submission deadline removed successfully."
+            msg: "Submission deadline removed successfully.",
           });
         }
       });
@@ -263,7 +265,7 @@ router.post(
 router.post(
   "/setdeadline",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { teacherID, deadline } = req.body;
@@ -271,30 +273,30 @@ router.post(
     const dateSet = utils.getPHTime();
     if (deadlineDate.getTime() <= dateSet.getTime()) {
       res.status(400).json({
-        msg: "Invalid date. Date must be greater than current date."
+        msg: "Invalid date. Date must be greater than current date.",
       });
     } else {
       SubmissionDeadline.findOne({
         where: {
           teacherID,
-          isActive: 1
-        }
-      }).then(sd => {
+          isActive: 1,
+        },
+      }).then((sd) => {
         if (sd) {
           sd.update({
             deadline: deadlineDate,
-            dateSet
+            dateSet,
           });
         } else {
           SubmissionDeadline.create({
             deadline: deadlineDate,
             dateSet,
             teacherID,
-            isActive: 1
+            isActive: 1,
           });
         }
         res.status(200).json({
-          msg: "Successfully updated the submission deadline!"
+          msg: "Successfully updated the submission deadline!",
         });
       });
     }
@@ -307,8 +309,8 @@ router.post(
 
 router.post(
   "/getsections",
-  passport.authenticate("registrar", {
-    session: false
+  passport.authenticate(["registrar", "director"], {
+    session: false,
   }),
   async (req, res) => {
     let { page, pageSize, keyword } = req.body;
@@ -318,11 +320,11 @@ router.post(
     Section.findAll({
       where: {
         sectionName: {
-          [Op.like]: `%${keyword}%`
+          [Op.like]: `%${keyword}%`,
         },
-        archived: 0
-      }
-    }).then(sections => {
+        archived: 0,
+      },
+    }).then((sections) => {
       let sectionData = [];
       if (sections.length != 0) {
         sections.forEach(async (section, key, arr) => {
@@ -332,18 +334,18 @@ router.post(
           sectionData.push({
             key: keyID,
             name,
-            gradeLevel
+            gradeLevel,
           });
           if (key == arr.length - 1) {
             Section.findAndCountAll({
               where: {
                 sectionName: {
-                  [Op.like]: `%${keyword}%`
+                  [Op.like]: `%${keyword}%`,
                 },
-                archived: 0
-              }
+                archived: 0,
+              },
             })
-              .then(count => {
+              .then((count) => {
                 sectionData.sort((a, b) =>
                   a.gradeLevel > b.gradeLevel ? 1 : -1
                 );
@@ -352,17 +354,17 @@ router.post(
                   sectionList: sectionData.slice(
                     pageSize * page,
                     pageSize * (page + 1)
-                  )
+                  ),
                 });
               })
-              .catch(err => {
+              .catch((err) => {
                 res.status(404);
               });
           }
         });
       } else {
         res.status(404).json({
-          msg: "Not found"
+          msg: "Not found",
         });
       }
     });
@@ -376,18 +378,18 @@ router.post(
 router.post(
   "/sectiongradelevel",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { sectionID } = req.body;
     let gradeLevel = await utils.getGradeLevelBySectionID(sectionID);
     if (gradeLevel === "") {
       res.status(404).json({
-        msg: "Not found!"
+        msg: "Not found!",
       });
     } else {
       res.status(200).json({
-        gradeLevel
+        gradeLevel,
       });
     }
   }
@@ -400,7 +402,7 @@ router.post(
 router.post(
   "/getpastgradelevel",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   (req, res) => {
     const { gradeLevel } = req.body;
@@ -419,16 +421,16 @@ router.post(
       "G9",
       "G10",
       "G11",
-      "G12"
+      "G12",
     ];
     const gradeLevelIndex = gradeLevels.indexOf(gradeLevel);
     if (gradeLevelIndex != 0) {
       res.status(200).json({
-        gradeLevel: gradeLevels[gradeLevelIndex - 1]
+        gradeLevel: gradeLevels[gradeLevelIndex - 1],
       });
     } else {
       res.status(200).json({
-        gradeLevel: gradeLevels[gradeLevelIndex]
+        gradeLevel: gradeLevels[gradeLevelIndex],
       });
     }
   }
@@ -441,12 +443,12 @@ router.post(
 router.post(
   "/addsection",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { sectionName, gradeLevel } = req.body;
     const { errors, isValid } = validateAddSection({
-      sectionName
+      sectionName,
     });
 
     if (!isValid) {
@@ -456,20 +458,20 @@ router.post(
     Section.findOne({
       where: {
         sectionName,
-        archived: 0
-      }
-    }).then(section => {
+        archived: 0,
+      },
+    }).then((section) => {
       if (section) {
         res.status(400).json({
-          sectionName: "Section name is already taken"
+          sectionName: "Section name is already taken",
         });
       } else {
         Section.create({
           sectionName,
-          gradeLevel
-        }).then(section2 => {
+          gradeLevel,
+        }).then((section2) => {
           res.status(200).json({
-            msg: "Section created successfully!"
+            msg: "Section created successfully!",
           });
         });
       }
@@ -484,35 +486,35 @@ router.post(
 router.post(
   "/editsection",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { sectionID, sectionName, gradeLevel } = req.body;
     const { errors, isValid } = validateAddSection({
-      sectionName
+      sectionName,
     });
     if (!isValid) {
       return res.status(400).json(errors);
     }
     Section.findOne({
       where: {
-        sectionID
-      }
-    }).then(section => {
+        sectionID,
+      },
+    }).then((section) => {
       if (section) {
         section
           .update({
             sectionName,
-            gradeLevel
+            gradeLevel,
           })
-          .then(section2 => {
+          .then((section2) => {
             res.status(200).json({
-              msg: "Section updated successfully!"
+              msg: "Section updated successfully!",
             });
           });
       } else {
         res.status(404).json({
-          msg: "Section not found"
+          msg: "Section not found",
         });
       }
     });
@@ -526,76 +528,81 @@ router.post(
 router.post(
   "/deletesection",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { sectionID } = req.body;
+    console.log("here1");
     Section.findOne({
       where: {
-        sectionID
-      }
+        sectionID,
+      },
     })
-      .then(async section => {
+      .then(async (section) => {
         let { schoolYearID, quarter } = await utils.getActiveSY();
+        console.log("here2");
         await StudentSection.findAll({
           where: {
             sectionID,
-            schoolYearID
-          }
-        }).then(async studentsections => {
+            schoolYearID,
+          },
+        }).then(async (studentsections) => {
           let hasData = [];
-          studentsections.forEach(async (studentsection, key, arr) => {
+          console.log("here3");
+          for (const [index, value] of studentsections.entries()) {
             hasData.push(studentsection.studsectID);
-          });
+          }
           if (hasData.length != 0) {
             res.status(400).json({
               msg:
-                "Operation could not be completed. Remove all students under this section first."
+                "Operation could not be completed. Remove all students under this section first.",
             });
           } else {
             await SubjectSection.findAll({
               where: {
                 sectionID,
-                schoolYearID
-              }
-            }).then(async ubjectsections => {
+                schoolYearID,
+              },
+            }).then(async (subjectsections) => {
+              console.log("here4");
               let hasData2 = [];
-              subjectsections.forEach(async (subjectsection, key, arr) => {
-                hasData.push(subjectsection.subsectID);
-              });
+              for (const [index, value] of subjectsections.entries()) {
+                hasData2.push(subjectsections.studsectID);
+              }
 
               if (hasData2.length != 0) {
+                console.log("here4");
                 res.status(400).json({
                   msg:
-                    "Operation could not be completed. There are active subjects in this section."
+                    "Operation could not be completed. There are active subjects in this section.",
                 });
               } else {
                 await TeacherSection.findOne({
                   where: {
                     sectionID,
-                    schoolYearID
-                  }
-                }).then(adviser => {
+                    schoolYearID,
+                  },
+                }).then((adviser) => {
                   if (adviser) {
                     adviser.destroy({});
                   }
                 });
                 await section
                   .update({
-                    archived: 1
+                    archived: 1,
                   })
                   .then(() => {
                     res.status(200).json({
-                      msg: "Section deleted successfully!"
+                      msg: "Section deleted successfully!",
                     });
                   })
-                  .catch(err => res.status(404));
+                  .catch((err) => res.status(404));
               }
             });
           }
         });
       })
-      .catch(err => res.status(404));
+      .catch((err) => res.status(404));
   }
 );
 
@@ -605,8 +612,8 @@ router.post(
 
 router.post(
   "/getallstudents",
-  passport.authenticate("registrar", {
-    session: false
+  passport.authenticate(["registrar", "director"], {
+    session: false,
   }),
   async (req, res) => {
     let { page, pageSize, keyword } = req.body;
@@ -622,18 +629,18 @@ router.post(
         [Op.or]: [
           {
             firstName: {
-              [Op.like]: `%${keyword}%`
-            }
+              [Op.like]: `%${keyword}%`,
+            },
           },
           {
             lastName: {
-              [Op.like]: `%${keyword}%`
-            }
-          }
-        ]
-      }
+              [Op.like]: `%${keyword}%`,
+            },
+          },
+        ],
+      },
     })
-      .then(users => {
+      .then((users) => {
         let accountData = [];
         if (users.length != 0) {
           users.slice(0, pageSize).forEach(async (user, key, arr) => {
@@ -655,7 +662,7 @@ router.post(
               name,
               position,
               imageUrl,
-              isActive
+              isActive,
             });
             if (key == arr.length - 1) {
               UserAccount.findAndCountAll({
@@ -664,37 +671,46 @@ router.post(
                   [Op.or]: [
                     {
                       firstName: {
-                        [Op.like]: `%${keyword}%`
-                      }
+                        [Op.like]: `%${keyword}%`,
+                      },
                     },
                     {
                       lastName: {
-                        [Op.like]: `%${keyword}%`
-                      }
-                    }
-                  ]
-                }
+                        [Op.like]: `%${keyword}%`,
+                      },
+                    },
+                  ],
+                },
               })
-                .then(count => {
+                .then((count) => {
                   accountData.sort((a, b) =>
                     a.accountID > b.accountID ? 1 : -1
                   );
                   res.status(200).json({
                     numOfPages: Math.ceil(count.count / pageSize),
-                    accountList: accountData
+                    accountList: accountData,
                   });
                 })
-                .catch(err => {
-                  res.status(200).json({ numOfPages: 1, accountList: [] });
+                .catch((err) => {
+                  res.status(200).json({
+                    numOfPages: 1,
+                    accountList: [],
+                  });
                 });
             }
           });
         } else {
-          res.status(200).json({ numOfPages: 1, accountList: [] });
+          res.status(200).json({
+            numOfPages: 1,
+            accountList: [],
+          });
         }
       })
-      .catch(err => {
-        res.status(200).json({ numOfPages: 1, accountList: [] });
+      .catch((err) => {
+        res.status(200).json({
+          numOfPages: 1,
+          accountList: [],
+        });
       });
   }
 );
@@ -705,8 +721,8 @@ router.post(
 
 router.post(
   "/getallteachers",
-  passport.authenticate("registrar", {
-    session: false
+  passport.authenticate(["registrar", "director"], {
+    session: false,
   }),
   async (req, res) => {
     let { page, pageSize, keyword } = req.body;
@@ -721,18 +737,18 @@ router.post(
         [Op.or]: [
           {
             firstName: {
-              [Op.like]: `%${keyword}%`
-            }
+              [Op.like]: `%${keyword}%`,
+            },
           },
           {
             lastName: {
-              [Op.like]: `%${keyword}%`
-            }
-          }
-        ]
-      }
+              [Op.like]: `%${keyword}%`,
+            },
+          },
+        ],
+      },
     })
-      .then(async users => {
+      .then(async (users) => {
         let accountData = [];
         if (users.length != 0) {
           users.slice(0, pageSize).forEach(async (user, key, arr) => {
@@ -750,19 +766,19 @@ router.post(
             const { deadline, deadlineID } = await SubmissionDeadline.findOne({
               where: {
                 teacherID,
-                isActive: 1
-              }
-            }).then(sd => {
+                isActive: 1,
+              },
+            }).then((sd) => {
               if (sd) {
                 const { deadline, deadlineID } = sd;
                 return {
                   deadline,
-                  deadlineID
+                  deadlineID,
                 };
               } else {
                 return {
                   deadline: "NOT SET",
-                  deadlineID: -1
+                  deadlineID: -1,
                 };
               }
             });
@@ -775,7 +791,7 @@ router.post(
               position,
               imageUrl,
               isActive,
-              deadlineID
+              deadlineID,
             });
             if (key == arr.length - 1) {
               UserAccount.findAndCountAll({
@@ -784,37 +800,46 @@ router.post(
                   [Op.or]: [
                     {
                       firstName: {
-                        [Op.like]: `%${keyword}%`
-                      }
+                        [Op.like]: `%${keyword}%`,
+                      },
                     },
                     {
                       lastName: {
-                        [Op.like]: `%${keyword}%`
-                      }
-                    }
-                  ]
-                }
+                        [Op.like]: `%${keyword}%`,
+                      },
+                    },
+                  ],
+                },
               })
-                .then(count => {
+                .then((count) => {
                   accountData.sort((a, b) =>
                     a.accountID > b.accountID ? 1 : -1
                   );
                   res.status(200).json({
                     numOfPages: Math.ceil(count.count / pageSize),
-                    accountList: accountData
+                    accountList: accountData,
                   });
                 })
-                .catch(err => {
-                  res.status(200).json({ numOfPages: 1, accountList: [] });
+                .catch((err) => {
+                  res.status(200).json({
+                    numOfPages: 1,
+                    accountList: [],
+                  });
                 });
             }
           });
         } else {
-          res.status(200).json({ numOfPages: 1, accountList: [] });
+          res.status(200).json({
+            numOfPages: 1,
+            accountList: [],
+          });
         }
       })
-      .catch(err => {
-        res.status(200).json({ numOfPages: 1, accountList: [] });
+      .catch((err) => {
+        res.status(200).json({
+          numOfPages: 1,
+          accountList: [],
+        });
       });
   }
 );
@@ -824,28 +849,27 @@ router.post(
 
 router.post(
   "/getfinalsubsect",
-  passport.authenticate("registrar", {
-    session: false
+  passport.authenticate(directorRegistrar, {
+    session: false,
   }),
   async (req, res) => {
-    let { teacherID, page, pageSize, quarter } = req.body;
+    let { teacherID, page, pageSize, quarter, schoolYearID } = req.body;
     page = page - 1;
     let offset = page * pageSize;
     let limit = offset + pageSize;
-    const { schoolYearID } = await utils.getActiveSY();
     const deadline = await SubmissionDeadline.findOne({
       where: {
         teacherID,
-        isActive: 1
-      }
-    }).then(sd => {
+        isActive: 1,
+      },
+    }).then((sd) => {
       if (sd) {
         return sd.deadline;
       } else {
         return "NOT SET";
       }
     });
-    const classRecordIDs = await SubjectSection.findAll({
+    const { classRecordIDs, crStatus } = await SubjectSection.findAll({
       where: {
         teacherID,
         schoolYearID,
@@ -853,67 +877,100 @@ router.post(
           [Op.in]:
             quarter == "Q1" || quarter == "Q2"
               ? ["NON_SHS", "1ST_SEM"]
-              : ["NON_SHS", "2ND_SEM"]
-        }
-      }
-    }).then(async ss => {
+              : ["NON_SHS", "2ND_SEM"],
+        },
+      },
+    }).then(async (ss) => {
       if (ss) {
         let data = [];
+        let crStatus = [];
         for (const [i, v] of ss.entries()) {
           const crs = await ClassRecordStatus.findOne({
             where: {
-              classRecordID: v.classRecordID
-            }
+              classRecordID: v.classRecordID,
+            },
           });
           if (quarter == "Q1" || quarter == "Q2") {
-            if (crs[quarter.toLowerCase()] == "F") {
+            if (
+              crs[quarter.toLowerCase()] == "F" ||
+              crs[quarter.toLowerCase()] == "D"
+            ) {
               data.push(v.classRecordID);
+              crStatus.push({
+                classRecordID: v.classRecordID,
+                status: crs[quarter.toLowerCase()],
+              });
             }
           } else {
             if (quarter == "Q3") {
               if (v.subjectType == "NON_SHS") {
-                if (crs[quarter.toLowerCase()] == "F") {
+                if (
+                  crs[quarter.toLowerCase()] == "F" ||
+                  crs[quarter.toLowerCase()] == "D"
+                ) {
                   data.push(v.classRecordID);
+                  crStatus.push({
+                    classRecordID: v.classRecordID,
+                    status: crs[quarter.toLowerCase()],
+                  });
                 }
               } else {
-                if (crs["q1"] == "F") {
+                if (crs["q1"] == "F" || crs["q1"] == "D") {
                   data.push(v.classRecordID);
+                  crStatus.push({
+                    classRecordID: v.classRecordID,
+                    status: crs["q1"],
+                  });
                 }
               }
             } else {
               if (v.subjectType == "NON_SHS") {
-                if (crs[quarter.toLowerCase()] == "F") {
+                if (
+                  crs[quarter.toLowerCase()] == "F" ||
+                  crs[quarter.toLowerCase()] == "D"
+                ) {
                   data.push(v.classRecordID);
+                  crStatus.push({
+                    classRecordID: v.classRecordID,
+                    status: crs[quarter.toLowerCase()],
+                  });
                 }
               } else {
-                if (crs["q2"] == "F") {
+                if (crs["q2"] == "F" || crs["q2"] == "D") {
                   data.push(v.classRecordID);
+                  crStatus.push({
+                    classRecordID: v.classRecordID,
+                    status: crs["q2"],
+                  });
                 }
               }
             }
           }
         }
-        return data;
+        return {
+          classRecordIDs: data,
+          crStatus,
+        };
       }
     });
     if (classRecordIDs.length == 0) {
       res.status(404).json({
-        msg: "Class Record not found!"
+        msg: "Class Record not found!",
       });
     } else {
       let condition = {};
       condition["classRecordID"] = {
-        [Op.in]: classRecordIDs
+        [Op.in]: classRecordIDs,
       };
       await ClassRecordStatus.findAll({
         limit,
         offset,
-        where: condition
-      }).then(async crs => {
+        where: condition,
+      }).then(async (crs) => {
         if (crs) {
           if (crs.length == 0) {
             res.status(404).json({
-              msg: "No class record for deliberation found"
+              msg: "No class record for deliberation found",
             });
           } else {
             let data2 = [];
@@ -923,6 +980,9 @@ router.post(
               const subjectType = await utils.getSubjectTypeByClassRecordID(
                 classRecordID
               );
+              const status = crStatus.find(
+                (a) => a.classRecordID == classRecordID
+              ).status;
               let dateSubmitted = v[`${quarter.toLowerCase()}DateSubmitted`];
               if (subjectType == "2ND_SEM") {
                 if (quarter == "Q3") {
@@ -935,12 +995,12 @@ router.post(
                 subjectCode,
                 subjectName,
                 section,
-                subsectID
+                subsectID,
               } = await SubjectSection.findOne({
                 where: {
-                  classRecordID
-                }
-              }).then(async cr => {
+                  classRecordID,
+                },
+              }).then(async (cr) => {
                 if (cr) {
                   const subjectCode = await utils.getSubjectCode(cr.subjectID);
                   const { subsectID } = cr;
@@ -950,28 +1010,29 @@ router.post(
                     subjectCode,
                     subsectID,
                     subjectName,
-                    section
+                    section,
                   };
                 }
               });
               data2.push({
+                status,
                 classRecordID,
                 dateSubmitted,
                 subjectCode,
                 subjectName,
                 section,
-                subsectID
+                subsectID,
               });
               if (k == r.length - 1) {
                 numOfPages = await ClassRecordStatus.findAndCountAll({
-                  where: condition
-                }).then(count => {
+                  where: condition,
+                }).then((count) => {
                   return Math.ceil(count.count / pageSize);
                 });
                 res.status(200).json({
                   classRecordList: data2,
                   numOfPages,
-                  deadline
+                  deadline,
                 });
               }
             });
@@ -989,7 +1050,7 @@ router.post(
 router.post(
   "/getpastrecords",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     let { page, pageSize, keyword } = req.body;
@@ -1011,7 +1072,7 @@ router.post(
       "G9",
       "G10",
       "G11",
-      "G12"
+      "G12",
     ];
     const gradeLevelIndex = gradeLevels.indexOf(gradeLevel);
     let pastGradeLevel =
@@ -1021,7 +1082,7 @@ router.post(
     let sectionsID = await utils.getSectionsIDByGradeLevel(pastGradeLevel);
     let recordsData = {
       numOfPages: 1,
-      studentData: []
+      studentData: [],
     };
     if (sectionsID.length != 0) {
       recordsData = await utils.getStudentSectionBySYAndSectionID({
@@ -1029,12 +1090,12 @@ router.post(
         schoolYearID: pastSYID,
         page,
         pageSize,
-        keyword
+        keyword,
       });
       res.status(200).json(recordsData);
     } else {
       res.status(404).json({
-        msg: "Not found!"
+        msg: "Not found!",
       });
     }
   }
@@ -1047,7 +1108,7 @@ router.post(
 router.post(
   "/searchstudent",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { keyword } = req.body;
@@ -1064,18 +1125,18 @@ router.post(
         [Op.or]: [
           {
             firstName: {
-              [Op.like]: `%${keyword}%`
-            }
+              [Op.like]: `%${keyword}%`,
+            },
           },
           {
             lastName: {
-              [Op.like]: `%${keyword}%`
-            }
-          }
-        ]
-      }
+              [Op.like]: `%${keyword}%`,
+            },
+          },
+        ],
+      },
     })
-      .then(users => {
+      .then((users) => {
         let studentData = [];
         if (users.length != 0) {
           users.slice(0, pageSize).forEach(async (user, key, arr) => {
@@ -1089,24 +1150,24 @@ router.post(
             studentData.push({
               key: keyID,
               name,
-              imageUrl
+              imageUrl,
             });
             if (key == arr.length - 1) {
               studentData.sort((a, b) => (a.name > b.name ? 1 : -1));
               res.status(200).json({
-                accountList: studentData
+                accountList: studentData,
               });
             }
           });
         } else {
           res.status(404).json({
-            msg: "Not found"
+            msg: "Not found",
           });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         res.status(404).json({
-          msg: "Not found"
+          msg: "Not found",
         });
       });
   }
@@ -1119,7 +1180,7 @@ router.post(
 router.post(
   "/searchteacher",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { keyword } = req.body;
@@ -1136,18 +1197,18 @@ router.post(
         [Op.or]: [
           {
             firstName: {
-              [Op.like]: `%${keyword}%`
-            }
+              [Op.like]: `%${keyword}%`,
+            },
           },
           {
             lastName: {
-              [Op.like]: `%${keyword}%`
-            }
-          }
-        ]
-      }
+              [Op.like]: `%${keyword}%`,
+            },
+          },
+        ],
+      },
     })
-      .then(users => {
+      .then((users) => {
         let teacherData = [];
         if (users.length != 0) {
           users.slice(0, pageSize).forEach(async (user, key, arr) => {
@@ -1161,24 +1222,24 @@ router.post(
             teacherData.push({
               key: keyID,
               name,
-              imageUrl
+              imageUrl,
             });
             if (key == arr.length - 1) {
               teacherData.sort((a, b) => (a.name > b.name ? 1 : -1));
               res.status(200).json({
-                accountList: teacherData
+                accountList: teacherData,
               });
             }
           });
         } else {
           res.status(404).json({
-            msg: "Not found"
+            msg: "Not found",
           });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         res.status(404).json({
-          msg: "Not found"
+          msg: "Not found",
         });
       });
   }
@@ -1191,7 +1252,7 @@ router.post(
 router.post(
   "/searchenrolled",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { keyword } = req.body;
@@ -1204,7 +1265,7 @@ router.post(
     let { schoolYearID, quarter } = await utils.getActiveSY();
     if (studentsID.length == 0) {
       res.status(404).json({
-        msg: "Not found!"
+        msg: "Not found!",
       });
     } else {
       StudentSection.findAll({
@@ -1212,9 +1273,9 @@ router.post(
         offset,
         where: {
           studentID: studentsID,
-          schoolYearID
-        }
-      }).then(async studentsections => {
+          schoolYearID,
+        },
+      }).then(async (studentsections) => {
         if (studentsections.length != 0) {
           let i = 0;
           let studsectarr = [];
@@ -1241,15 +1302,15 @@ router.post(
               imageUrl,
               gradeLevel,
               sectionName,
-              studsectID
+              studsectID,
             });
           }
           res.status(200).json({
-            studentList: studsectarr
+            studentList: studsectarr,
           });
         } else {
           res.status(404).json({
-            msg: "Not found!"
+            msg: "Not found!",
           });
         }
       });
@@ -1264,7 +1325,7 @@ router.post(
 router.post(
   "/getenrolled",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   (req, res) => {}
 );
@@ -1276,44 +1337,48 @@ router.post(
 router.post(
   "/createsy",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { schoolYear } = req.body;
     let checker = schoolYear.split("-");
     if (checker.length != 2) {
       res.status(400).json({
-        msg: "Invalid school year format"
+        msg: "Invalid school year format",
       });
     } else {
       if (parseInt(checker[1]) - parseInt(checker[0]) != 1) {
         res.status(400).json({
-          msg: "Invalid school year format"
+          msg: "Invalid school year format",
         });
       } else {
         SchoolYear.findOne({
           where: {
-            isActive: 1
-          }
-        }).then(sy => {
+            isActive: 1,
+          },
+        }).then((sy) => {
           if (sy) {
             res.status(400).json({
-              msg: "Invalid operation. There is an active school year"
+              msg: "Invalid operation. There is an active school year",
             });
           } else {
-            SchoolYear.findOne({ where: { schoolYear } }).then(sy2 => {
+            SchoolYear.findOne({
+              where: {
+                schoolYear,
+              },
+            }).then((sy2) => {
               if (sy2) {
                 res.status(404).json({
-                  msg: "Invalid operation. School year already exists"
+                  msg: "Invalid operation. School year already exists",
                 });
               } else {
                 SchoolYear.create({
                   schoolYear,
                   isActive: 1,
-                  quarter: "Q1"
+                  quarter: "Q1",
                 }).then(() => {
                   res.status(200).json({
-                    msg: "School year created successfully!"
+                    msg: "School year created successfully!",
                   });
                 });
               }
@@ -1332,26 +1397,26 @@ router.post(
 router.post(
   "/endschoolyear",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { schoolYearID } = req.body;
     SchoolYear.findOne({
       where: {
-        schoolYearID
-      }
-    }).then(sy => {
+        schoolYearID,
+      },
+    }).then((sy) => {
       if (sy) {
         sy.update({
-          isActive: 0
+          isActive: 0,
         }).then(() => {
           res.status(200).json({
-            msg: "School year has ended successfully!"
+            msg: "School year has ended successfully!",
           });
         });
       } else {
         res.status(404).json({
-          msg: "School year not found"
+          msg: "School year not found",
         });
       }
     });
@@ -1365,7 +1430,7 @@ router.post(
 router.post(
   "/listsubjectsection",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { sectionID } = req.body;
@@ -1373,9 +1438,9 @@ router.post(
     const data = await SubjectSection.findAll({
       where: {
         sectionID,
-        schoolYearID
-      }
-    }).then(async ss => {
+        schoolYearID,
+      },
+    }).then(async (ss) => {
       if (ss.length != 0) {
         let data = [];
         for (const [index, value] of ss.entries()) {
@@ -1386,7 +1451,7 @@ router.post(
             data.push({
               subsectID,
               subjectName,
-              teacher
+              teacher,
             });
           } else {
             if (subjectType == "1ST_SEM") {
@@ -1394,7 +1459,7 @@ router.post(
                 data.push({
                   subsectID,
                   subjectName,
-                  teacher
+                  teacher,
                 });
               }
             } else if (subjectType == "2ND_SEM") {
@@ -1402,7 +1467,7 @@ router.post(
                 data.push({
                   subsectID,
                   subjectName,
-                  teacher
+                  teacher,
                 });
               }
             }
@@ -1414,7 +1479,7 @@ router.post(
       }
     });
     res.status(200).json({
-      subjectList: data
+      subjectList: data,
     });
   }
 );
@@ -1426,24 +1491,24 @@ router.post(
 router.post(
   "/changequartersy",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { schoolYearID, quarter } = req.body;
     SchoolYear.findOne({
       where: {
-        schoolYearID
-      }
-    }).then(sy => {
+        schoolYearID,
+      },
+    }).then((sy) => {
       if (sy) {
         sy.update({
-          quarter
+          quarter,
         }).then(async () => {
           const classRecordIDs = await SubjectSection.findAll({
             where: {
-              schoolYearID
-            }
-          }).then(async ss => {
+              schoolYearID,
+            },
+          }).then(async (ss) => {
             if (ss) {
               let data = [];
               for (const [index, value] of ss.entries())
@@ -1454,10 +1519,10 @@ router.post(
           ClassRecordStatus.findAll({
             where: {
               classRecordID: {
-                [Op.in]: classRecordIDs
-              }
-            }
-          }).then(async crs => {
+                [Op.in]: classRecordIDs,
+              },
+            },
+          }).then(async (crs) => {
             if (crs) {
               for (const [index, value] of crs.entries()) {
                 const subjectType = await utils.getSubjectTypeByClassRecordID(
@@ -1465,14 +1530,14 @@ router.post(
                 );
                 const { sectionID, subjectID } = await SubjectSection.findOne({
                   where: {
-                    classRecordID: value.classRecordID
-                  }
-                }).then(ss => {
+                    classRecordID: value.classRecordID,
+                  },
+                }).then((ss) => {
                   if (ss) {
                     const { sectionID, subjectID } = ss;
                     return {
                       sectionID,
-                      subjectID
+                      subjectID,
                     };
                   }
                 });
@@ -1483,7 +1548,7 @@ router.post(
                   ) {
                     await value.update(
                       {
-                        q1: "E"
+                        q1: "E",
                       },
                       {
                         position: "Registrar",
@@ -1494,7 +1559,7 @@ router.post(
                         subjectID,
                         oldVal: "L",
                         newVal: "E",
-                        quarter: "Q1"
+                        quarter: "Q1",
                       }
                     );
                   }
@@ -1504,7 +1569,7 @@ router.post(
                   ) {
                     await value.update(
                       {
-                        q2: "L"
+                        q2: "L",
                       },
                       {
                         position: "Registrar",
@@ -1515,14 +1580,14 @@ router.post(
                         subjectID,
                         oldVal: "E",
                         newVal: "L",
-                        quarter: "Q2"
+                        quarter: "Q2",
                       }
                     );
                   }
                   if (value.q3 == "E" && subjectType == "NON_SHS") {
                     await value.update(
                       {
-                        q3: "L"
+                        q3: "L",
                       },
                       {
                         position: "Registrar",
@@ -1533,14 +1598,14 @@ router.post(
                         subjectID,
                         oldVal: "E",
                         newVal: "L",
-                        quarter: "Q3"
+                        quarter: "Q3",
                       }
                     );
                   }
                   if (value.q1 == "E" && subjectType == "2ND_SEM") {
                     await value.update(
                       {
-                        q1: "L"
+                        q1: "L",
                       },
                       {
                         position: "Registrar",
@@ -1551,14 +1616,14 @@ router.post(
                         subjectID,
                         oldVal: "E",
                         newVal: "L",
-                        quarter: "Q1"
+                        quarter: "Q1",
                       }
                     );
                   }
                   if (value.q4 == "E" && subjectType == "NON_SHS") {
                     await value.update(
                       {
-                        q4: "L"
+                        q4: "L",
                       },
                       {
                         position: "Registrar",
@@ -1569,7 +1634,7 @@ router.post(
                         subjectID,
                         oldVal: "E",
                         newVal: "L",
-                        quarter: "Q4"
+                        quarter: "Q4",
                       }
                     );
                   }
@@ -1577,7 +1642,7 @@ router.post(
                   if (value.q2 == "E" && subjectType == "2ND_SEM") {
                     await value.update(
                       {
-                        q2: "L"
+                        q2: "L",
                       },
                       {
                         position: "Registrar",
@@ -1588,7 +1653,7 @@ router.post(
                         subjectID,
                         oldVal: "E",
                         newVal: "L",
-                        quarter: "Q2"
+                        quarter: "Q2",
                       }
                     );
                   }
@@ -1601,7 +1666,7 @@ router.post(
                   ) {
                     await value.update(
                       {
-                        q2: "E"
+                        q2: "E",
                       },
                       {
                         position: "Registrar",
@@ -1612,7 +1677,7 @@ router.post(
                         subjectID,
                         oldVal: "L",
                         newVal: "E",
-                        quarter: "Q2"
+                        quarter: "Q2",
                       }
                     );
                   }
@@ -1622,7 +1687,7 @@ router.post(
                   ) {
                     await value.update(
                       {
-                        q1: "L"
+                        q1: "L",
                       },
                       {
                         position: "Registrar",
@@ -1633,14 +1698,14 @@ router.post(
                         subjectID,
                         oldVal: "E",
                         newVal: "L",
-                        quarter: "Q1"
+                        quarter: "Q1",
                       }
                     );
                   }
                   if (value.q3 == "E" && subjectType == "NON_SHS") {
                     await value.update(
                       {
-                        q3: "L"
+                        q3: "L",
                       },
                       {
                         position: "Registrar",
@@ -1651,14 +1716,14 @@ router.post(
                         subjectID,
                         oldVal: "E",
                         newVal: "L",
-                        quarter: "Q3"
+                        quarter: "Q3",
                       }
                     );
                   }
                   if (value.q1 == "E" && subjectType == "2ND_SEM") {
                     await value.update(
                       {
-                        q1: "L"
+                        q1: "L",
                       },
                       {
                         position: "Registrar",
@@ -1669,14 +1734,14 @@ router.post(
                         subjectID,
                         oldVal: "E",
                         newVal: "L",
-                        quarter: "Q1"
+                        quarter: "Q1",
                       }
                     );
                   }
                   if (value.q4 == "E" && subjectType == "NON_SHS") {
                     await value.update(
                       {
-                        q4: "L"
+                        q4: "L",
                       },
                       {
                         position: "Registrar",
@@ -1687,14 +1752,14 @@ router.post(
                         subjectID,
                         oldVal: "E",
                         newVal: "L",
-                        quarter: "Q4"
+                        quarter: "Q4",
                       }
                     );
                   }
                   if (value.q2 == "E" && subjectType == "2ND_SEM") {
                     await value.update(
                       {
-                        q2: "L"
+                        q2: "L",
                       },
                       {
                         position: "Registrar",
@@ -1705,7 +1770,7 @@ router.post(
                         subjectID,
                         oldVal: "E",
                         newVal: "L",
-                        quarter: "Q2"
+                        quarter: "Q2",
                       }
                     );
                   }
@@ -1715,7 +1780,7 @@ router.post(
                   if (value.q3 == "L" && subjectType == "NON_SHS") {
                     await value.update(
                       {
-                        q3: "E"
+                        q3: "E",
                       },
                       {
                         position: "Registrar",
@@ -1726,14 +1791,14 @@ router.post(
                         subjectID,
                         oldVal: "L",
                         newVal: "E",
-                        quarter: "Q3"
+                        quarter: "Q3",
                       }
                     );
                   }
                   if (value.q1 == "L" && subjectType == "2ND_SEM") {
                     await value.update(
                       {
-                        q1: "E"
+                        q1: "E",
                       },
                       {
                         position: "Registrar",
@@ -1744,7 +1809,7 @@ router.post(
                         subjectID,
                         oldVal: "L",
                         newVal: "E",
-                        quarter: "Q1"
+                        quarter: "Q1",
                       }
                     );
                   }
@@ -1754,7 +1819,7 @@ router.post(
                   ) {
                     await value.update(
                       {
-                        q2: "L"
+                        q2: "L",
                       },
                       {
                         position: "Registrar",
@@ -1765,7 +1830,7 @@ router.post(
                         subjectID,
                         oldVal: "E",
                         newVal: "L",
-                        quarter: "Q2"
+                        quarter: "Q2",
                       }
                     );
                   }
@@ -1775,7 +1840,7 @@ router.post(
                   ) {
                     await value.update(
                       {
-                        q1: "L"
+                        q1: "L",
                       },
                       {
                         position: "Registrar",
@@ -1786,14 +1851,14 @@ router.post(
                         subjectID,
                         oldVal: "E",
                         newVal: "L",
-                        quarter: "Q1"
+                        quarter: "Q1",
                       }
                     );
                   }
                   if (value.q4 == "E" && subjectType == "NON_SHS") {
                     await value.update(
                       {
-                        q4: "L"
+                        q4: "L",
                       },
                       {
                         position: "Registrar",
@@ -1804,14 +1869,14 @@ router.post(
                         subjectID,
                         oldVal: "E",
                         newVal: "L",
-                        quarter: "Q4"
+                        quarter: "Q4",
                       }
                     );
                   }
                   if (value.q2 == "E" && subjectType == "2ND_SEM") {
                     await value.update(
                       {
-                        q2: "L"
+                        q2: "L",
                       },
                       {
                         position: "Registrar",
@@ -1822,7 +1887,7 @@ router.post(
                         subjectID,
                         oldVal: "E",
                         newVal: "L",
-                        quarter: "Q2"
+                        quarter: "Q2",
                       }
                     );
                   }
@@ -1832,7 +1897,7 @@ router.post(
                   if (value.q4 == "L" && subjectType == "NON_SHS") {
                     await value.update(
                       {
-                        q4: "E"
+                        q4: "E",
                       },
                       {
                         position: "Registrar",
@@ -1843,14 +1908,14 @@ router.post(
                         subjectID,
                         oldVal: "L",
                         newVal: "E",
-                        quarter: "Q4"
+                        quarter: "Q4",
                       }
                     );
                   }
                   if (value.q2 == "L" && subjectType == "2ND_SEM") {
                     await value.update(
                       {
-                        q2: "E"
+                        q2: "E",
                       },
                       {
                         position: "Registrar",
@@ -1861,7 +1926,7 @@ router.post(
                         subjectID,
                         oldVal: "L",
                         newVal: "E",
-                        quarter: "Q2"
+                        quarter: "Q2",
                       }
                     );
                   }
@@ -1871,7 +1936,7 @@ router.post(
                   ) {
                     await value.update(
                       {
-                        q2: "L"
+                        q2: "L",
                       },
                       {
                         position: "Registrar",
@@ -1882,14 +1947,14 @@ router.post(
                         subjectID,
                         oldVal: "E",
                         newVal: "L",
-                        quarter: "Q2"
+                        quarter: "Q2",
                       }
                     );
                   }
                   if (value.q3 == "E" && subjectType == "NON_SHS") {
                     await value.update(
                       {
-                        q3: "L"
+                        q3: "L",
                       },
                       {
                         position: "Registrar",
@@ -1900,14 +1965,14 @@ router.post(
                         subjectID,
                         oldVal: "E",
                         newVal: "L",
-                        quarter: "Q3"
+                        quarter: "Q3",
                       }
                     );
                   }
                   if (value.q1 == "E" && subjectType == "2ND_SEM") {
                     await value.update(
                       {
-                        q1: "L"
+                        q1: "L",
                       },
                       {
                         position: "Registrar",
@@ -1918,7 +1983,7 @@ router.post(
                         subjectID,
                         oldVal: "E",
                         newVal: "L",
-                        quarter: "Q1"
+                        quarter: "Q1",
                       }
                     );
                   }
@@ -1928,7 +1993,7 @@ router.post(
                   ) {
                     await value.update(
                       {
-                        q1: "L"
+                        q1: "L",
                       },
                       {
                         position: "Registrar",
@@ -1939,7 +2004,7 @@ router.post(
                         subjectID,
                         oldVal: "E",
                         newVal: "L",
-                        quarter: "Q1"
+                        quarter: "Q1",
                       }
                     );
                   }
@@ -1947,14 +2012,14 @@ router.post(
               }
 
               res.status(200).json({
-                msg: "Quarter successfully updated"
+                msg: "Quarter successfully updated",
               });
             }
           });
         });
       } else {
         res.status(404).json({
-          msg: "School year not found!"
+          msg: "School year not found!",
         });
       }
     });
@@ -1967,11 +2032,16 @@ router.post(
 
 router.post(
   "/getsy",
-  passport.authenticate("registrar", { session: false }),
+  passport.authenticate(["registrar", "director"], {
+    session: false,
+  }),
   async (req, res) => {
     let { schoolYearID } = req.body;
     let schoolYear = await utils.getSYname(schoolYearID);
-    res.status(200).json({ schoolYear, schoolYearID });
+    res.status(200).json({
+      schoolYear,
+      schoolYearID,
+    });
   }
 );
 
@@ -1980,8 +2050,8 @@ router.post(
 // @access Private
 router.get(
   "/getsy",
-  passport.authenticate("registrar", {
-    session: false
+  passport.authenticate(["registrar", "director"], {
+    session: false,
   }),
   async (req, res) => {
     let { schoolYearID, quarter } = await utils.getActiveSY();
@@ -1990,11 +2060,11 @@ router.get(
       res.status(200).json({
         schoolYear,
         schoolYearID,
-        quarter
+        quarter,
       });
     } else {
       res.status(404).json({
-        msg: "There is no active school year"
+        msg: "There is no active school year",
       });
     }
   }
@@ -2006,19 +2076,23 @@ router.get(
 
 router.get(
   "/getallsy",
-  passport.authenticate("registrar", { session: false }),
+  passport.authenticate(["registrar", "director"], {
+    session: false,
+  }),
   async (req, res) => {
-    SchoolYear.findAll().then(async sys => {
+    SchoolYear.findAll().then(async (sys) => {
       if (sys) {
         let data = [];
         for (const [index, value] of sys.entries()) {
           data.push({
             schoolYearID: value.schoolYearID,
-            schoolYear: value.schoolYear
+            schoolYear: value.schoolYear,
           });
         }
         data.sort((a, b) => (a.schoolYear < b.schoolYear ? 1 : -1));
-        res.status(200).json({ schoolYearList: data });
+        res.status(200).json({
+          schoolYearList: data,
+        });
       }
     });
   }
@@ -2031,14 +2105,14 @@ router.get(
 router.get(
   "/getpastsy",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     let pastSY = await utils.getPastSY();
     let pastSYID = await utils.getSYID(pastSY);
     res.status(200).json({
       schoolYearID: pastSYID,
-      schoolYear: pastSY
+      schoolYear: pastSY,
     });
   }
 );
@@ -2050,13 +2124,13 @@ router.get(
 router.post(
   "/sectionname",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     let { sectionID } = req.body;
     let sectionName = await utils.getSectionName(sectionID);
     res.status(200).json({
-      sectionName
+      sectionName,
     });
   }
 );
@@ -2068,7 +2142,7 @@ router.post(
 router.post(
   "/getcurrentenrolled",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     let { page, pageSize } = req.body;
@@ -2083,16 +2157,16 @@ router.post(
       offset,
       where: {
         schoolYearID,
-        sectionID
-      }
+        sectionID,
+      },
     })
-      .then(studentsections => {
+      .then((studentsections) => {
         let studentData = [];
         if (studentsections.length == 0) {
           res.status(200).json({
             numOfPages: 1,
             studentList: [],
-            gradeLevel
+            gradeLevel,
           });
         } else {
           studentsections
@@ -2115,33 +2189,33 @@ router.post(
                 imageUrl,
                 gradeLevel,
                 sectionName,
-                studsectID
+                studsectID,
               });
               if (key == arr.length - 1) {
                 StudentSection.findAndCountAll({
                   where: {
                     schoolYearID,
-                    sectionID
-                  }
+                    sectionID,
+                  },
                 })
-                  .then(count => {
+                  .then((count) => {
                     studentData.sort((a, b) => {
                       a.name > b.name ? 1 : -1;
                     });
                     res.status(200).json({
                       numOfPages: Math.ceil(count.count / pageSize),
                       studentList: studentData,
-                      gradeLevel
+                      gradeLevel,
                     });
                   })
-                  .catch(err => {
+                  .catch((err) => {
                     res.status(404);
                   });
               }
             });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         res.status(404);
       });
   }
@@ -2154,47 +2228,47 @@ router.post(
 router.post(
   "/createstudentsection",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   (req, res) => {
     const { studentID, sectionID, schoolYearID } = req.body;
     if (studentID == -1) {
       res.status(400).json({
-        studentName: "You must select a student"
+        studentName: "You must select a student",
       });
     }
     StudentSection.findOne({
       where: {
         studentID,
-        schoolYearID
-      }
-    }).then(studentsection => {
+        schoolYearID,
+      },
+    }).then((studentsection) => {
       if (studentsection) {
         res.status(400).json({
-          studentName: "Student is already enrolled in a section"
+          studentName: "Student is already enrolled in a section",
         });
       } else {
         StudentSection.create({
           studentID,
           sectionID,
-          schoolYearID
-        }).then(async studentsection2 => {
+          schoolYearID,
+        }).then(async (studentsection2) => {
           await StudentFinalGrade.create({
             studsectID: studentsection2.studsectID,
             grade: -1,
-            schoolYearID
+            schoolYearID,
           });
           for (const [index, value] of ["Q1", "Q2", "Q3", "Q4"].entries()) {
             await StudentGrades.create({
               schoolYearID,
               quarter: value,
               studsectID: studentsection2.studsectID,
-              grade: -1
+              grade: -1,
             });
           }
           res.status(200).json({
             studentName: "Student enrolled successfully!",
-            studsectID: studentsection2.studsectID
+            studsectID: studentsection2.studsectID,
           });
         });
       }
@@ -2209,7 +2283,7 @@ router.post(
 router.post(
   "/deletestudentsection",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { studentID, sectionID, schoolYearID } = req.body;
@@ -2217,28 +2291,28 @@ router.post(
       where: {
         studentID,
         sectionID,
-        schoolYearID
-      }
-    }).then(studentsection => {
+        schoolYearID,
+      },
+    }).then((studentsection) => {
       if (!studentsection) {
         res.status(400).json({
-          msg: "Student section not found"
+          msg: "Student section not found",
         });
       } else {
         SubjectSectionStudent.findAll({
           where: {
-            studsectID: studentsection.studsectID
-          }
-        }).then(async ss => {
+            studsectID: studentsection.studsectID,
+          },
+        }).then(async (ss) => {
           if (ss.length != 0) {
             res.status(400).json({
               msg:
-                "Operation could not be completed. This student is actively enrolled in a subject."
+                "Operation could not be completed. This student is actively enrolled in a subject.",
             });
           } else {
             studentsection.destroy().then(() => {
               res.status(200).json({
-                msg: "Student unenrolled successfully!"
+                msg: "Student unenrolled successfully!",
               });
             });
           }
@@ -2255,7 +2329,7 @@ router.post(
 router.post(
   "/createsubjectsection",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { schoolYearID, quarter } = await utils.getActiveSY();
@@ -2263,9 +2337,9 @@ router.post(
     const teacherID = await utils.getTeacherID(accountID);
     const subjectType = await Subject.findOne({
       where: {
-        subjectID
-      }
-    }).then(subj => {
+        subjectID,
+      },
+    }).then((subj) => {
       if (subj) {
         return subj.subjectType;
       }
@@ -2283,7 +2357,7 @@ router.post(
       "G7",
       "G8",
       "G9",
-      "G10"
+      "G10",
     ].includes(subjectType);
     let compareIn =
       quarter == "Q1" || quarter == "Q2"
@@ -2297,13 +2371,13 @@ router.post(
         teacherID,
         schoolYearID,
         subjectType: {
-          [Op.in]: compareIn
-        }
-      }
-    }).then(ss => {
+          [Op.in]: compareIn,
+        },
+      },
+    }).then((ss) => {
       if (ss) {
         res.status(400).json({
-          msg: "Subject load already exists!"
+          msg: "Subject load already exists!",
         });
       } else {
         ClassRecord.create({
@@ -2313,9 +2387,9 @@ router.post(
           q1Transmu: "50",
           q2Transmu: "50",
           q3Transmu: "50",
-          q4Transmu: "50"
+          q4Transmu: "50",
         })
-          .then(classrecord => {
+          .then((classrecord) => {
             SubjectSection.create({
               subjectID,
               sectionID,
@@ -2326,15 +2400,15 @@ router.post(
                 ? quarter == "Q1" || quarter == "Q2"
                   ? "1ST_SEM"
                   : "2ND_SEM"
-                : "NON_SHS"
+                : "NON_SHS",
             })
-              .then(async subjectsection => {
+              .then(async (subjectsection) => {
                 let objectSet = {
                   classRecordID: classrecord.classRecordID,
                   q1: "L",
                   q2: "L",
                   q3: "L",
-                  q4: "L"
+                  q4: "L",
                 };
                 let subjectType = isSHS
                   ? quarter == "Q1" || quarter == "Q2"
@@ -2352,8 +2426,8 @@ router.post(
                 for (i; i < payload.length; i++) {
                   SubjectSectionStudent.create({
                     subsectID: subjectsection.subsectID,
-                    studsectID: payload[i].studsectID
-                  }).then(subsectstud => {
+                    studsectID: payload[i].studsectID,
+                  }).then((subsectstud) => {
                     let q = isSHS ? ["Q1", "Q2"] : ["Q1", "Q2", "Q3", "Q4"];
                     let i = 0;
                     for (i = 0; i < q.length; i++) {
@@ -2365,42 +2439,42 @@ router.post(
                         ptWS: -1,
                         qeWS: -1,
                         finalGrade: -1,
-                        quarter: q[i]
+                        quarter: q[i],
                       });
                     }
                     StudentSubjectGrades.create({
                       subsectstudID: subsectstud.subsectstudID,
-                      classRecordID: classrecord.classRecordID
+                      classRecordID: classrecord.classRecordID,
                     });
                   });
                 }
                 Component.findOne({
                   where: {
                     subjectID,
-                    component: "FA"
-                  }
-                }).then(comp1 => {
+                    component: "FA",
+                  },
+                }).then((comp1) => {
                   if (comp1) {
                     Component.findOne({
                       where: {
                         subjectID,
-                        component: "WW"
-                      }
-                    }).then(comp2 => {
+                        component: "WW",
+                      },
+                    }).then((comp2) => {
                       if (comp2) {
                         Component.findOne({
                           where: {
                             subjectID,
-                            component: "PT"
-                          }
-                        }).then(comp3 => {
+                            component: "PT",
+                          },
+                        }).then((comp3) => {
                           if (comp3) {
                             Component.findOne({
                               where: {
                                 subjectID,
-                                component: "QE"
-                              }
-                            }).then(comp4 => {
+                                component: "QE",
+                              },
+                            }).then((comp4) => {
                               if (comp4) {
                                 let q = isSHS
                                   ? ["Q1", "Q2"]
@@ -2412,67 +2486,67 @@ router.post(
                                     name: "Subcomponent 1",
                                     componentID: comp1.componentID,
                                     compWeight: 100,
-                                    quarter: q[j]
+                                    quarter: q[j],
                                   });
                                   Subcomponent.create({
                                     classRecordID: classrecord.classRecordID,
                                     name: "Subcomponent 1",
                                     componentID: comp2.componentID,
                                     compWeight: 100,
-                                    quarter: q[j]
+                                    quarter: q[j],
                                   });
                                   Subcomponent.create({
                                     classRecordID: classrecord.classRecordID,
                                     name: "Subcomponent 1",
                                     componentID: comp3.componentID,
                                     compWeight: 100,
-                                    quarter: q[j]
+                                    quarter: q[j],
                                   });
                                   Subcomponent.create({
                                     classRecordID: classrecord.classRecordID,
                                     name: "Quarterly Exam",
                                     componentID: comp4.componentID,
                                     compWeight: 100,
-                                    quarter: q[j]
+                                    quarter: q[j],
                                   });
                                 }
                                 res.status(200).json({
-                                  msg: "Added successfully!"
+                                  msg: "Added successfully!",
                                 });
                               } else {
                                 res.status(404).json({
-                                  msg: "QE component not found!"
+                                  msg: "QE component not found!",
                                 });
                               }
                             });
                           } else {
                             res.status(404).json({
-                              msg: "PT component not found!"
+                              msg: "PT component not found!",
                             });
                           }
                         });
                       } else {
                         res.status(404).json({
-                          msg: "WW component not found!"
+                          msg: "WW component not found!",
                         });
                       }
                     });
                   } else {
                     res.status(404).json({
-                      msg: "FA component not found!"
+                      msg: "FA component not found!",
                     });
                   }
                 });
               })
-              .catch(err => {
+              .catch((err) => {
                 res.status(400).json({
-                  msg: "Error adding subject section"
+                  msg: "Error adding subject section",
                 });
               });
           })
-          .catch(err => {
+          .catch((err) => {
             res.status(400).json({
-              msg: "Error adding class record"
+              msg: "Error adding class record",
             });
           });
       }
@@ -2487,37 +2561,37 @@ router.post(
 router.post(
   "/deletesubjectsection",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { subsectID } = req.body;
     SubjectSection.findOne({
       where: {
-        subsectID
-      }
-    }).then(async subjectsection => {
+        subsectID,
+      },
+    }).then(async (subjectsection) => {
       if (subjectsection) {
         SubjectSectionStudent.findAll({
           where: {
-            subsectID
-          }
-        }).then(async sss => {
+            subsectID,
+          },
+        }).then(async (sss) => {
           if (sss.length != 0) {
             res.status(400).json({
               msg:
-                "Operation could not be completed. Remove all students under this subject first."
+                "Operation could not be completed. Remove all students under this subject first.",
             });
           } else {
             await subjectsection.destroy().then(() => {
               res.status(200).json({
-                msg: "Subject load deleted successfully!"
+                msg: "Subject load deleted successfully!",
               });
             });
           }
         });
       } else {
         res.status(400).json({
-          msg: "Error deleting subject load! 2"
+          msg: "Error deleting subject load! 2",
         });
       }
     });
@@ -2531,21 +2605,21 @@ router.post(
 router.post(
   "/studentprofile",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { studentID } = req.body;
     Student.findOne({
       where: {
-        studentID
-      }
+        studentID,
+      },
     })
-      .then(student => {
+      .then((student) => {
         UserAccount.findOne({
           where: {
-            accountID: student.accountID
-          }
-        }).then(user => {
+            accountID: student.accountID,
+          },
+        }).then((user) => {
           const payload = {
             firstName: user.firstName,
             lastName: user.lastName,
@@ -2560,14 +2634,14 @@ router.post(
             zipcode: user.zipcode,
             civilStatus: user.civilStatus,
             sex: user.sex,
-            citizenship: user.citizenship
+            citizenship: user.citizenship,
           };
           res.status(200).json(payload);
         });
       })
-      .catch(err => {
+      .catch((err) => {
         res.status(404).json({
-          msg: "Student not found!"
+          msg: "Student not found!",
         });
       });
   }
@@ -2580,7 +2654,7 @@ router.post(
 router.post(
   "/advisorytable",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     let { page, pageSize, keyword } = req.body;
@@ -2590,14 +2664,14 @@ router.post(
     const { schoolYearID } = await utils.getActiveSY();
     if (schoolYearID == 0) {
       res.status(404).json({
-        msg: "There is no active school year"
+        msg: "There is no active school year",
       });
     } else {
       let data = [];
       let sectionsID = await utils.getSectionsID({
         limit,
         offset,
-        keyword
+        keyword,
       });
       let advisersData = await utils.getTeacherSectionBySchoolYearID(
         schoolYearID
@@ -2614,13 +2688,13 @@ router.post(
           sectionName,
           adviser,
           teacherID,
-          gradeLevel
+          gradeLevel,
         });
       }
       i = 0;
       for (i; i < advisersData.length; i++) {
         let index = data.findIndex(
-          val => val.sectionID == advisersData[i].sectionID
+          (val) => val.sectionID == advisersData[i].sectionID
         );
         if (index != -1) {
           data[index].adviser = advisersData[i].teacherName;
@@ -2631,13 +2705,13 @@ router.post(
         where: {
           archived: 0,
           sectionName: {
-            [Op.like]: `%${keyword}%`
-          }
-        }
-      }).then(count => {
+            [Op.like]: `%${keyword}%`,
+          },
+        },
+      }).then((count) => {
         res.status(200).json({
           numOfPages: Math.ceil(count.count / pageSize),
-          advisoryData: data
+          advisoryData: data,
         });
       });
     }
@@ -2651,7 +2725,7 @@ router.post(
 router.post(
   "/unassignadviser",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { schoolYearID, sectionID, teacherID } = req.body;
@@ -2659,18 +2733,18 @@ router.post(
       where: {
         schoolYearID,
         sectionID,
-        teacherID
-      }
-    }).then(adviser => {
+        teacherID,
+      },
+    }).then((adviser) => {
       if (adviser) {
         adviser.destroy().then(() => {
           res.status(200).json({
-            msg: "You have successfully unassigned an adviser!"
+            msg: "You have successfully unassigned an adviser!",
           });
         });
       } else {
         res.status(404).json({
-          teacherName: "Unassigning failed"
+          teacherName: "Unassigning failed",
         });
       }
     });
@@ -2684,34 +2758,34 @@ router.post(
 router.post(
   "/assignadviser",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { schoolYearID, sectionID, teacherID } = req.body;
     TeacherSection.findOne({
       where: {
         schoolYearID,
-        teacherID
-      }
-    }).then(adivser => {
+        teacherID,
+      },
+    }).then((adivser) => {
       if (adivser) {
         res.status(404).json({
-          teacherName: "There's already assigned adviser!"
+          teacherName: "There's already assigned adviser!",
         });
       } else {
         TeacherSection.create({
           schoolYearID,
           sectionID,
-          teacherID
+          teacherID,
         })
-          .then(adivser2 => {
+          .then((adivser2) => {
             res.status(200).json({
-              msg: "You have successfully assigned an adviser"
+              msg: "You have successfully assigned an adviser",
             });
           })
-          .catch(err =>
+          .catch((err) =>
             res.status(404).json({
-              teacherName: "Assigning failed"
+              teacherName: "Assigning failed",
             })
           );
       }
@@ -2726,7 +2800,7 @@ router.post(
 router.post(
   "/getsubjects",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     let { page, pageSize, keyword } = req.body;
@@ -2738,11 +2812,11 @@ router.post(
       offset,
       where: {
         subjectName: {
-          [Op.like]: `%${keyword}%`
-        }
-      }
+          [Op.like]: `%${keyword}%`,
+        },
+      },
     })
-      .then(subjects => {
+      .then((subjects) => {
         let subjectData = [];
         if (subjects.length != 0) {
           subjects.slice(0, pageSize).forEach(async (subject, key, arr) => {
@@ -2752,41 +2826,41 @@ router.post(
               key: keyID,
               subjectCode,
               subjectName,
-              subjectType
+              subjectType,
             });
             if (key == arr.length - 1) {
               Subject.findAndCountAll({
                 where: {
                   subjectName: {
-                    [Op.like]: `%${keyword}%`
-                  }
-                }
+                    [Op.like]: `%${keyword}%`,
+                  },
+                },
               })
-                .then(count => {
+                .then((count) => {
                   subjectData.sort((a, b) =>
                     a.subjectName > b.subjectName ? 1 : -1
                   );
                   res.status(200).json({
                     numOfPages: Math.ceil(count.count / pageSize),
-                    subjectList: subjectData
+                    subjectList: subjectData,
                   });
                 })
-                .catch(err => {
+                .catch((err) => {
                   res.status(404).json({
-                    msg: "Not found"
+                    msg: "Not found",
                   });
                 });
             }
           });
         } else {
           res.status(404).json({
-            msg: "Not found"
+            msg: "Not found",
           });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         res.status(404).json({
-          msg: "Not found"
+          msg: "Not found",
         });
       });
   }
@@ -2798,21 +2872,25 @@ router.post(
 
 router.post(
   "/teacherinfo",
-  passport.authenticate("registrar", { session: false }),
+  passport.authenticate(directorRegistrar, {
+    session: false,
+  }),
   async (req, res) => {
     const { teacherID } = req.body;
-    const accountID = await Teacher.findOne({ where: { teacherID } }).then(
-      t => {
-        if (t) {
-          return t.accountID;
-        }
+    const accountID = await Teacher.findOne({
+      where: {
+        teacherID,
+      },
+    }).then((t) => {
+      if (t) {
+        return t.accountID;
       }
-    );
+    });
     UserAccount.findOne({
       where: {
-        accountID
-      }
-    }).then(async user => {
+        accountID,
+      },
+    }).then(async (user) => {
       if (user) {
         const { accountID, email, imageUrl } = user;
         const name = `${utils.capitalize(user.lastName)}, ${utils.capitalize(
@@ -2822,11 +2900,11 @@ router.post(
           accountID,
           email,
           imageUrl,
-          name
+          name,
         });
       } else {
         res.status(404).json({
-          msg: "User not found"
+          msg: "User not found",
         });
       }
     });
@@ -2839,21 +2917,25 @@ router.post(
 
 router.post(
   "/studentinfo",
-  passport.authenticate("registrar", { session: false }),
+  passport.authenticate(directorRegistrar, {
+    session: false,
+  }),
   async (req, res) => {
     const { studentID } = req.body;
-    const accountID = await Student.findOne({ where: { studentID } }).then(
-      s => {
-        if (s) {
-          return s.accountID;
-        }
+    const accountID = await Student.findOne({
+      where: {
+        studentID,
+      },
+    }).then((s) => {
+      if (s) {
+        return s.accountID;
       }
-    );
+    });
     UserAccount.findOne({
       where: {
-        accountID
-      }
-    }).then(async user => {
+        accountID,
+      },
+    }).then(async (user) => {
       if (user) {
         const { accountID, email, imageUrl } = user;
         const name = `${utils.capitalize(user.lastName)}, ${utils.capitalize(
@@ -2863,11 +2945,11 @@ router.post(
           accountID,
           email,
           imageUrl,
-          name
+          name,
         });
       } else {
         res.status(404).json({
-          msg: "User not found"
+          msg: "User not found",
         });
       }
     });
@@ -2881,15 +2963,15 @@ router.post(
 router.post(
   "/userinfo",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { accountID } = req.body;
     UserAccount.findOne({
       where: {
-        accountID
-      }
-    }).then(async user => {
+        accountID,
+      },
+    }).then(async (user) => {
       if (user) {
         const { accountID, email, imageUrl } = user;
         const name = `${utils.capitalize(user.lastName)}, ${utils.capitalize(
@@ -2899,11 +2981,11 @@ router.post(
           accountID,
           email,
           imageUrl,
-          name
+          name,
         });
       } else {
         res.status(404).json({
-          msg: "User not found"
+          msg: "User not found",
         });
       }
     });
@@ -2917,7 +2999,7 @@ router.post(
 router.post(
   "/getsubjectsection",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     let { accountID, page, pageSize } = req.body;
@@ -2937,13 +3019,13 @@ router.post(
         teacherID,
         schoolYearID,
         subjectType: {
-          [Op.in]: compareIn
-        }
-      }
-    }).then(async subjectsections => {
+          [Op.in]: compareIn,
+        },
+      },
+    }).then(async (subjectsections) => {
       if (subjectsections.length == 0) {
         res.status(404).json({
-          msg: "No record"
+          msg: "No record",
         });
       } else {
         let subjectsectionData = [];
@@ -2967,7 +3049,7 @@ router.post(
             subjectCode,
             subjectName,
             gradeLevel,
-            sectionName
+            sectionName,
           });
         }
         SubjectSection.findAndCountAll({
@@ -2975,13 +3057,13 @@ router.post(
             teacherID,
             schoolYearID,
             subjectType: {
-              [Op.in]: compareIn
-            }
-          }
-        }).then(count => {
+              [Op.in]: compareIn,
+            },
+          },
+        }).then((count) => {
           res.status(200).json({
             numOfPages: Math.ceil(count.count / pageSize),
-            subjectSectionData: subjectsectionData
+            subjectSectionData: subjectsectionData,
           });
         });
       }
@@ -2995,17 +3077,17 @@ router.post(
 
 router.post(
   "/getsectionbygradelevel",
-  passport.authenticate("registrar", {
-    session: false
+  passport.authenticate(directorRegistrar, {
+    session: false,
   }),
   async (req, res) => {
     const { gradeLevel } = req.body;
     Section.findAll({
       where: {
         gradeLevel,
-        archived: 0
-      }
-    }).then(sections => {
+        archived: 0,
+      },
+    }).then((sections) => {
       if (sections.length != 0) {
         let sectionsData = [];
         let i = 0;
@@ -3013,15 +3095,15 @@ router.post(
           const { sectionID, sectionName } = sections[i];
           sectionsData.push({
             sectionID,
-            sectionName
+            sectionName,
           });
         }
         res.status(200).json({
-          sectionsList: sectionsData
+          sectionsList: sectionsData,
         });
       } else {
         res.status(404).json({
-          msg: "Not found!"
+          msg: "Not found!",
         });
       }
     });
@@ -3035,7 +3117,7 @@ router.post(
 router.post(
   "/getsubjectbygradelevel",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     let { gradeLevel } = req.body;
@@ -3049,20 +3131,20 @@ router.post(
       "G7",
       "G8",
       "G9",
-      "G10"
+      "G10",
     ];
     if (["G11", "G12"].includes(gradeLevel)) {
       Subject.findAll({
         where: {
           subjectType: {
-            [Op.notIn]: nonSHSGradeLevel
+            [Op.notIn]: nonSHSGradeLevel,
           },
-          archived: 0
-        }
-      }).then(subjects => {
+          archived: 0,
+        },
+      }).then((subjects) => {
         if (subjects.length == 0) {
           res.status(404).json({
-            msg: "Not found"
+            msg: "Not found",
           });
         } else {
           let subjectsData = [];
@@ -3072,11 +3154,11 @@ router.post(
             subjectsData.push({
               subjectID,
               subjectCode,
-              subjectName
+              subjectName,
             });
           }
           res.status(200).json({
-            subjectsList: subjectsData
+            subjectsList: subjectsData,
           });
         }
       });
@@ -3084,12 +3166,12 @@ router.post(
       Subject.findAll({
         where: {
           subjectType: gradeLevel,
-          archived: 0
-        }
-      }).then(subjects => {
+          archived: 0,
+        },
+      }).then((subjects) => {
         if (subjects.length == 0) {
           res.status(404).json({
-            msg: "Not found"
+            msg: "Not found",
           });
         } else {
           let subjectsData = [];
@@ -3099,11 +3181,11 @@ router.post(
             subjectsData.push({
               subjectID,
               subjectCode,
-              subjectName
+              subjectName,
             });
           }
           res.status(200).json({
-            subjectsList: subjectsData
+            subjectsList: subjectsData,
           });
         }
       });
@@ -3118,21 +3200,21 @@ router.post(
 router.post(
   "/getsubsectinfo",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { subsectID } = req.body;
     SubjectSection.findOne({
       where: {
-        subsectID
-      }
-    }).then(subjectsection => {
+        subsectID,
+      },
+    }).then((subjectsection) => {
       if (subjectsection) {
         SubjectSectionStudent.findAll({
           where: {
-            subsectID
-          }
-        }).then(async subjectsectionstudents => {
+            subsectID,
+          },
+        }).then(async (subjectsectionstudents) => {
           if (subjectsectionstudents.length == 0) {
             const sectionName = await utils.getSectionName(
               subjectsection.sectionID
@@ -3147,7 +3229,7 @@ router.post(
               sectionName,
               gradeLevel,
               subjectName,
-              studentList: []
+              studentList: [],
             });
           } else {
             let i = 0;
@@ -3184,20 +3266,20 @@ router.post(
                 email,
                 sectionName,
                 imageUrl,
-                gradeLevel
+                gradeLevel,
               });
             }
             res.status(200).json({
               sectionName,
               gradeLevel,
               subjectName,
-              studentList: studarr
+              studentList: studarr,
             });
           }
         });
       } else {
         res.status(404).json({
-          msg: "Subject section not found!"
+          msg: "Subject section not found!",
         });
       }
     });
@@ -3211,7 +3293,7 @@ router.post(
 router.post(
   "/addsubsectstud",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { studsectID, subsectID } = req.body;
@@ -3219,29 +3301,29 @@ router.post(
     SubjectSectionStudent.findOne({
       where: {
         studsectID,
-        subsectID
-      }
-    }).then(async subjectsectionstudent => {
+        subsectID,
+      },
+    }).then(async (subjectsectionstudent) => {
       if (subjectsectionstudent) {
         res.status(400).json({
-          msg: "Student already enrolled in the subject!"
+          msg: "Student already enrolled in the subject!",
         });
       } else {
         SubjectSectionStudent.create({
           studsectID,
-          subsectID
-        }).then(async subsectstud => {
+          subsectID,
+        }).then(async (subsectstud) => {
           SubjectSection.findOne({
             where: {
-              subsectID
-            }
-          }).then(async ss => {
+              subsectID,
+            },
+          }).then(async (ss) => {
             if (ss) {
               const subjectType = await Subject.findOne({
                 where: {
-                  subjectID: ss.subjectID
-                }
-              }).then(subj => {
+                  subjectID: ss.subjectID,
+                },
+              }).then((subj) => {
                 if (subj) {
                   return subj.subjectType;
                 }
@@ -3259,7 +3341,7 @@ router.post(
                 "G7",
                 "G8",
                 "G9",
-                "G10"
+                "G10",
               ].includes(subjectType);
               let q = isSHS ? ["Q1", "Q2"] : ["Q1", "Q2", "Q3", "Q4"];
               let i = 0;
@@ -3272,31 +3354,31 @@ router.post(
                   ptWS: -1,
                   qeWS: -1,
                   finalGrade: -1,
-                  quarter: q[i]
+                  quarter: q[i],
                 });
               }
               StudentSubjectGrades.create({
                 subsectstudID: subsectstud.subsectstudID,
-                classRecordID: ss.classRecordID
+                classRecordID: ss.classRecordID,
               });
 
               Grade.findAll({
                 attributes: [
                   [
                     Sequelize.fn("DISTINCT", Sequelize.col("description")),
-                    "description"
+                    "description",
                   ],
                   [Sequelize.col("total"), "total"],
                   [Sequelize.col("dateGiven"), "dateGiven"],
                   [Sequelize.col("componentID"), "componentID"],
                   [Sequelize.col("subcomponentID"), "subcomponentID"],
                   [Sequelize.col("classRecordID"), "classRecordID"],
-                  [Sequelize.col("quarter"), "quarter"]
+                  [Sequelize.col("quarter"), "quarter"],
                 ],
                 where: {
-                  classRecordID: ss.classRecordID
-                }
-              }).then(async res => {
+                  classRecordID: ss.classRecordID,
+                },
+              }).then(async (res) => {
                 if (res.length != 0) {
                   for (const [index, value] of res.entries()) {
                     await Grade.create({
@@ -3312,7 +3394,7 @@ router.post(
                       quarter: value.quarter,
                       attendance: "P",
                       showLog: 0,
-                      isUpdated: 0
+                      isUpdated: 0,
                     });
                   }
                   await utils.refreshStudentWeightedScoreBySubsectID(
@@ -3321,11 +3403,11 @@ router.post(
                 }
               });
               res.status(200).json({
-                msg: "Student added to subject successfully!"
+                msg: "Student added to subject successfully!",
               });
             } else {
               res.status(404).json({
-                msg: "Subject section does not exist!"
+                msg: "Subject section does not exist!",
               });
             }
           });
@@ -3342,24 +3424,24 @@ router.post(
 router.post(
   "/deletesubsectstud",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { subsectstudID } = req.body;
     SubjectSectionStudent.findOne({
       where: {
-        subsectstudID
-      }
-    }).then(data => {
+        subsectstudID,
+      },
+    }).then((data) => {
       if (data) {
         data.destroy().then(() => {
           res.status(200).json({
-            msg: "Student deleted to subject successfully!"
+            msg: "Student deleted to subject successfully!",
           });
         });
       } else {
         res.status(404).json({
-          msg: "Not found!"
+          msg: "Not found!",
         });
       }
     });
@@ -3373,7 +3455,7 @@ router.post(
 router.post(
   "/getsubmittedsubsect",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     let { accountID, page, pageSize, quarter } = req.body;
@@ -3386,9 +3468,9 @@ router.post(
     const deadline = await SubmissionDeadline.findOne({
       where: {
         teacherID,
-        isActive: 1
-      }
-    }).then(sd => {
+        isActive: 1,
+      },
+    }).then((sd) => {
       if (sd) {
         return sd.deadline;
       } else {
@@ -3403,17 +3485,17 @@ router.post(
           [Op.in]:
             quarter == "Q1" || quarter == "Q2"
               ? ["NON_SHS", "1ST_SEM"]
-              : ["NON_SHS", "2ND_SEM"]
-        }
-      }
-    }).then(async ss => {
+              : ["NON_SHS", "2ND_SEM"],
+        },
+      },
+    }).then(async (ss) => {
       if (ss) {
         let data = [];
         for (const [i, v] of ss.entries()) {
           const crs = await ClassRecordStatus.findOne({
             where: {
-              classRecordID: v.classRecordID
-            }
+              classRecordID: v.classRecordID,
+            },
           });
           if (quarter == "Q1" || quarter == "Q2") {
             if (crs[quarter.toLowerCase()] == "D") {
@@ -3450,22 +3532,22 @@ router.post(
       res.status(200).json({
         classRecordList: [],
         numOfPages: 1,
-        deadline
+        deadline,
       });
     } else {
       let condition = {};
       condition["classRecordID"] = {
-        [Op.in]: classRecordIDs
+        [Op.in]: classRecordIDs,
       };
       await ClassRecordStatus.findAll({
         limit,
         offset,
-        where: condition
-      }).then(async crs => {
+        where: condition,
+      }).then(async (crs) => {
         if (crs) {
           if (crs.length == 0) {
             res.status(404).json({
-              msg: "No class record for deliberation found"
+              msg: "No class record for deliberation found",
             });
           } else {
             let data2 = [];
@@ -3487,12 +3569,12 @@ router.post(
                 subjectCode,
                 subjectName,
                 section,
-                subsectID
+                subsectID,
               } = await SubjectSection.findOne({
                 where: {
-                  classRecordID
-                }
-              }).then(async cr => {
+                  classRecordID,
+                },
+              }).then(async (cr) => {
                 if (cr) {
                   const subjectCode = await utils.getSubjectCode(cr.subjectID);
                   const { subsectID } = cr;
@@ -3502,7 +3584,7 @@ router.post(
                     subjectCode,
                     subsectID,
                     subjectName,
-                    section
+                    section,
                   };
                 }
               });
@@ -3513,18 +3595,18 @@ router.post(
                 subjectCode,
                 subjectName,
                 section,
-                subsectID
+                subsectID,
               });
               if (k == r.length - 1) {
                 numOfPages = await ClassRecordStatus.findAndCountAll({
-                  where: condition
-                }).then(count => {
+                  where: condition,
+                }).then((count) => {
                   return Math.ceil(count.count / pageSize);
                 });
                 res.status(200).json({
                   classRecordList: data2,
                   numOfPages,
-                  deadline
+                  deadline,
                 });
               }
             });
@@ -3541,13 +3623,18 @@ router.post(
 
 router.post(
   "/condenseddeliberationgrade",
-  passport.authenticate("registrar", { session: false }),
+  passport.authenticate("registrar", {
+    session: false,
+  }),
   async (req, res) => {
     const { sectionID, quarter } = req.body;
     const { schoolYearID } = await utils.getActiveSY();
     const studsectIDs = await StudentSection.findAll({
-      where: { sectionID, schoolYearID }
-    }).then(ss => {
+      where: {
+        sectionID,
+        schoolYearID,
+      },
+    }).then((ss) => {
       if (ss) {
         let data = [];
         for (const [i, v] of ss.entries()) {
@@ -3557,14 +3644,20 @@ router.post(
       }
     });
     SubjectSectionStudent.findAll({
-      where: { studsectID: { [Op.in]: studsectIDs } }
-    }).then(async sss => {
+      where: {
+        studsectID: {
+          [Op.in]: studsectIDs,
+        },
+      },
+    }).then(async (sss) => {
       if (sss) {
         let data3 = [];
         for (const [i, x] of sss.entries()) {
           const grades = await SubjectSectionStudent.findAll({
-            where: { studsectID: x.studsectID }
-          }).then(async sss2 => {
+            where: {
+              studsectID: x.studsectID,
+            },
+          }).then(async (sss2) => {
             if (sss2) {
               let data2 = [];
               for (const [i, v] of sss2.entries()) {
@@ -3580,20 +3673,24 @@ router.post(
                 let studsectID = v.studsectID;
                 let {
                   subjectType,
-                  classRecordID
+                  classRecordID,
                 } = await SubjectSection.findOne({
-                  where: { subsectID: v.subsectID }
-                }).then(async ss => {
+                  where: {
+                    subsectID: v.subsectID,
+                  },
+                }).then(async (ss) => {
                   if (ss) {
                     return {
                       subjectType: ss.subjectType,
-                      classRecordID: ss.classRecordID
+                      classRecordID: ss.classRecordID,
                     };
                   }
                 });
                 let status = await ClassRecordStatus.findOne({
-                  where: { classRecordID }
-                }).then(async crs => {
+                  where: {
+                    classRecordID,
+                  },
+                }).then(async (crs) => {
                   if (crs) {
                     if (quarter == "Q1") {
                       if (
@@ -3627,10 +3724,13 @@ router.post(
                 if (typeof status !== "undefined") {
                   let {
                     score,
-                    subjectName
+                    subjectName,
                   } = await StudentSubjectGrades.findOne({
-                    where: { classRecordID, subsectstudID: v.subsectstudID }
-                  }).then(async ssg => {
+                    where: {
+                      classRecordID,
+                      subsectstudID: v.subsectstudID,
+                    },
+                  }).then(async (ssg) => {
                     if (ssg) {
                       let score;
                       let subjectID = await utils.getSubjectIDBySubsectstudID(
@@ -3666,17 +3766,21 @@ router.post(
                           }
                         }
                       }
-                      return { score, subjectName };
+                      return {
+                        score,
+                        subjectName,
+                      };
                     }
                   });
                   if (typeof score !== "undefined" && typeof score !== "null") {
                     data2.push({
+                      status,
                       imageUrl,
                       sex,
                       score,
                       subjectName,
                       name,
-                      studsectID
+                      studsectID,
                     });
                   }
                 }
@@ -3689,10 +3793,10 @@ router.post(
         const resData = utils.formatCondensedDeliberationGrade(data3);
         res.status(200).json({
           data: [
-            ...resData.data.filter(a => a.sex == "M"),
-            ...resData.data.filter(a => a.sex == "F")
+            ...resData.data.filter((a) => a.sex == "M"),
+            ...resData.data.filter((a) => a.sex == "F"),
           ],
-          columns: resData.columns
+          columns: resData.columns,
         });
       }
     });
@@ -3705,13 +3809,17 @@ router.post(
 
 router.post(
   "/condensedfinalgrade",
-  passport.authenticate("registrar", { session: false }),
+  passport.authenticate(directorRegistrar, {
+    session: false,
+  }),
   async (req, res) => {
-    const { sectionID, quarter } = req.body;
-    const { schoolYearID } = await utils.getActiveSY();
+    const { sectionID, quarter, schoolYearID } = req.body;
     const studsectIDs = await StudentSection.findAll({
-      where: { sectionID, schoolYearID }
-    }).then(ss => {
+      where: {
+        sectionID,
+        schoolYearID,
+      },
+    }).then((ss) => {
       if (ss) {
         let data = [];
         for (const [i, v] of ss.entries()) {
@@ -3721,14 +3829,20 @@ router.post(
       }
     });
     SubjectSectionStudent.findAll({
-      where: { studsectID: { [Op.in]: studsectIDs } }
-    }).then(async sss => {
+      where: {
+        studsectID: {
+          [Op.in]: studsectIDs,
+        },
+      },
+    }).then(async (sss) => {
       if (sss) {
         let data3 = [];
         for (const [i, x] of sss.entries()) {
           const grades = await SubjectSectionStudent.findAll({
-            where: { studsectID: x.studsectID }
-          }).then(async sss2 => {
+            where: {
+              studsectID: x.studsectID,
+            },
+          }).then(async (sss2) => {
             if (sss2) {
               let data2 = [];
               for (const [i, v] of sss2.entries()) {
@@ -3736,8 +3850,10 @@ router.post(
                   v.subsectstudID
                 );
                 let studentID = await StudentSection.findOne({
-                  where: { studsectID: v.studsectID }
-                }).then(ss => ss.studentID);
+                  where: {
+                    studsectID: v.studsectID,
+                  },
+                }).then((ss) => ss.studentID);
                 let sex = await utils.getStudentSexBySubsectstudID(
                   v.subsectstudID
                 );
@@ -3747,20 +3863,29 @@ router.post(
                 let studsectID = v.studsectID;
                 let {
                   subjectType,
-                  classRecordID
+                  classRecordID,
                 } = await SubjectSection.findOne({
-                  where: { subsectID: v.subsectID }
-                }).then(async ss => {
+                  where: {
+                    subsectID: v.subsectID,
+                  },
+                }).then(async (ss) => {
                   if (ss) {
                     return {
                       subjectType: ss.subjectType,
-                      classRecordID: ss.classRecordID
+                      classRecordID: ss.classRecordID,
                     };
                   }
                 });
+                let teacher = await SubjectSection.findOne({
+                  where: {
+                    classRecordID,
+                  },
+                }).then(async (ss) => await utils.getTeacherName(ss.teacherID));
                 let status = await ClassRecordStatus.findOne({
-                  where: { classRecordID }
-                }).then(async crs => {
+                  where: {
+                    classRecordID,
+                  },
+                }).then(async (crs) => {
                   if (crs) {
                     if (quarter == "Q1") {
                       if (
@@ -3794,17 +3919,20 @@ router.post(
                 if (typeof status !== "undefined") {
                   let {
                     score,
-                    subjectName
+                    subjectName,
                   } = await StudentSubjectGrades.findOne({
-                    where: { classRecordID, subsectstudID: v.subsectstudID }
-                  }).then(async ssg => {
+                    where: {
+                      classRecordID,
+                      subsectstudID: v.subsectstudID,
+                    },
+                  }).then(async (ssg) => {
                     if (ssg) {
                       let score;
                       let subjectID = await utils.getSubjectIDBySubsectstudID(
                         ssg.subsectstudID
                       );
                       let subjectName = await utils.getSubjectCode(subjectID);
-                      if (status == "F") {
+                      if (status == "F" || status == "D") {
                         if (quarter == "Q1") {
                           if (
                             subjectType == "NON_SHS" ||
@@ -3833,18 +3961,24 @@ router.post(
                           }
                         }
                       }
-                      return { score, subjectName };
+                      return {
+                        score,
+                        subjectName,
+                      };
                     }
                   });
                   if (typeof score !== "undefined" && typeof score !== "null") {
                     data2.push({
+                      teacher,
+                      classRecordID,
+                      status,
                       imageUrl,
                       studentID,
                       sex,
                       score,
                       subjectName,
                       name,
-                      studsectID
+                      studsectID,
                     });
                   }
                 }
@@ -3857,10 +3991,10 @@ router.post(
         const resData = utils.formatCondensedDeliberationGrade(data3);
         res.status(200).json({
           data: [
-            ...resData.data.filter(a => a.sex == "M"),
-            ...resData.data.filter(a => a.sex == "F")
+            ...resData.data.filter((a) => a.sex == "M"),
+            ...resData.data.filter((a) => a.sex == "F"),
           ],
-          columns: resData.columns
+          columns: resData.columns,
         });
       }
     });
@@ -3873,10 +4007,14 @@ router.post(
 
 router.post(
   "/getsectionname",
-  passport.authenticate("registrar", { session: false }),
+  passport.authenticate(directorRegistrar, {
+    session: false,
+  }),
   async (req, res) => {
     const response = await utils.getSectionName(req.body.sectionID);
-    res.status(200).json({ sectionName: response });
+    res.status(200).json({
+      sectionName: response,
+    });
   }
 );
 
@@ -3886,10 +4024,14 @@ router.post(
 
 router.post(
   "/getsyname",
-  passport.authenticate("registrar", { session: false }),
+  passport.authenticate(directorRegistrar, {
+    session: false,
+  }),
   async (req, res) => {
     const response = await utils.getSYname(req.body.schoolYearID);
-    res.status(200).json({ schoolYear: response });
+    res.status(200).json({
+      schoolYear: response,
+    });
   }
 );
 
@@ -3900,7 +4042,7 @@ router.post(
 router.post(
   "/getnotsubmittedsubsect",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     let { accountID, page, pageSize, quarter } = req.body;
@@ -3912,9 +4054,9 @@ router.post(
     const deadline = await SubmissionDeadline.findOne({
       where: {
         teacherID,
-        isActive: 1
-      }
-    }).then(sd => {
+        isActive: 1,
+      },
+    }).then((sd) => {
       if (sd) {
         return sd.deadline;
       } else {
@@ -3929,17 +4071,17 @@ router.post(
           [Op.in]:
             quarter == "Q1" || quarter == "Q2"
               ? ["NON_SHS", "1ST_SEM"]
-              : ["NON_SHS", "2ND_SEM"]
-        }
-      }
-    }).then(async ss => {
+              : ["NON_SHS", "2ND_SEM"],
+        },
+      },
+    }).then(async (ss) => {
       if (ss) {
         let data = [];
         for (const [i, v] of ss.entries()) {
           const crs = await ClassRecordStatus.findOne({
             where: {
-              classRecordID: v.classRecordID
-            }
+              classRecordID: v.classRecordID,
+            },
           });
           if (quarter == "Q1" || quarter == "Q2") {
             if (crs[quarter.toLowerCase()] == "E") {
@@ -3976,24 +4118,24 @@ router.post(
       res.status(200).json({
         classRecordList: [],
         numOfPages: 1,
-        deadline: "NOT SET"
+        deadline: "NOT SET",
       });
     } else {
       let condition = {};
       condition["classRecordID"] = {
-        [Op.in]: classRecordIDs
+        [Op.in]: classRecordIDs,
       };
       await ClassRecordStatus.findAll({
         limit,
         offset,
-        where: condition
-      }).then(async crs => {
+        where: condition,
+      }).then(async (crs) => {
         if (crs) {
           if (crs.length == 0) {
             res.status(200).json({
               classRecordList: [],
               numOfPages: 1,
-              deadline: "NOT SET"
+              deadline: "NOT SET",
             });
           } else {
             let data2 = [];
@@ -4015,12 +4157,12 @@ router.post(
                 subjectCode,
                 subjectName,
                 section,
-                subsectID
+                subsectID,
               } = await SubjectSection.findOne({
                 where: {
-                  classRecordID
-                }
-              }).then(async cr => {
+                  classRecordID,
+                },
+              }).then(async (cr) => {
                 if (cr) {
                   const subjectCode = await utils.getSubjectCode(cr.subjectID);
                   const { subsectID } = cr;
@@ -4030,7 +4172,7 @@ router.post(
                     subjectCode,
                     subsectID,
                     subjectName,
-                    section
+                    section,
                   };
                 }
               });
@@ -4040,18 +4182,18 @@ router.post(
                 subjectCode,
                 subjectName,
                 section,
-                subsectID
+                subsectID,
               });
               if (k == r.length - 1) {
                 numOfPages = await ClassRecordStatus.findAndCountAll({
-                  where: condition
-                }).then(count => {
+                  where: condition,
+                }).then((count) => {
                   return Math.ceil(count.count / pageSize);
                 });
                 res.status(200).json({
                   classRecordList: data2,
                   numOfPages,
-                  deadline
+                  deadline,
                 });
               }
             });
@@ -4068,8 +4210,8 @@ router.post(
 
 router.post(
   "/getclassrecinfo",
-  passport.authenticate("registrar", {
-    session: false
+  passport.authenticate(directorRegistrar, {
+    session: false,
   }),
   async (req, res) => {
     let { classRecordID, quarter } = req.body;
@@ -4083,26 +4225,35 @@ router.post(
 
     const { IDs, data, numOfPages } = await StudentSubjectGrades.findAll({
       where: {
-        classRecordID
-      }
-    }).then(async sg => {
+        classRecordID,
+      },
+    }).then(async (sg) => {
       if (sg) {
         if (sg.length == 0) {
           res.status(200).json({
             numOfPages: 1,
-            studentList: []
+            studentList: [],
           });
         } else {
           let data = [];
           let IDs = [];
           for (const [index, value] of sg.entries()) {
             const { subsectstudID } = value;
+            let add = {};
             let grade = value[`${quarter.toLowerCase()}FinalGrade`];
+            var i = 0;
+            for (i = 1; i < parseInt(quarter.charAt(1)); i = i + 1) {
+              add[`q${i}Grade`] = value[`q${i}FinalGrade`];
+            }
+            // if (quarter != "Q1") {
+            //   add[`q${parseInt(quarter.charAt(1))-1}Grade`] = value[`q${parseInt(quarter.charAt(1))-1}FinalGrade`]
+            // }
             if (subjectType == "2ND_SEM") {
               if (quarter == "Q3") {
                 grade = value["q1FinalGrade"];
               } else if (quarter == "Q4") {
                 grade = value["q2FinalGrade"];
+                add["q1Grade"] = value["q1FinalGrade"];
               } else {
                 grade = -1;
               }
@@ -4115,16 +4266,17 @@ router.post(
               subsectstudID
             );
             data.push({
+              ...add,
               subsectstudID,
               grade,
-              accountID
+              accountID,
             });
             IDs.push(accountID);
           }
           return {
             IDs,
             data,
-            numOfPages: Math.ceil(data.length / pageSize)
+            numOfPages: Math.ceil(data.length / pageSize),
           };
         }
       }
@@ -4133,38 +4285,50 @@ router.post(
     UserAccount.findAll({
       where: {
         accountID: {
-          [Op.in]: IDs
-        }
+          [Op.in]: IDs,
+        },
       },
       order: [
         ["lastName", "ASC"],
-        ["sex", "DESC"]
-      ]
-    }).then(async ua => {
+        ["sex", "DESC"],
+      ],
+    }).then(async (ua) => {
       if (ua) {
         let newData = [];
         for (const [index, value] of ua.entries()) {
           const name = `${utils.capitalize(value.lastName)}, ${utils.capitalize(
             value.firstName
           )} ${value.middleName.charAt(0).toUpperCase()}.`;
-          const subsectID = data.find(a => a.accountID == value.accountID)
+          const subsectID = data.find((a) => a.accountID == value.accountID)
             .subsectID;
-          const grade = data.find(a => a.accountID == value.accountID).grade;
+          const grade = data.find((a) => a.accountID == value.accountID).grade;
+          const q1Grade = data.find((a) => a.accountID == value.accountID)
+            .q1Grade;
+          const q2Grade = data.find((a) => a.accountID == value.accountID)
+            .q2Grade;
+          const q3Grade = data.find((a) => a.accountID == value.accountID)
+            .q3Grade;
+          const q4Grade = data.find((a) => a.accountID == value.accountID)
+            .q4Grade;
           const { imageUrl, sex } = value;
           newData.push({
+            q1Grade,
+            q2Grade,
+            q3Grade,
+            q4Grade,
             sex,
             name,
             subsectID,
             grade,
-            imageUrl
+            imageUrl,
           });
         }
         res.status(200).json({
           numOfPages,
           studentList: [
-            ...newData.filter(a => a.sex == "M"),
-            ...newData.filter(a => a.sex == "F")
-          ].slice(page * pageSize, (page + 1) * pageSize)
+            ...newData.filter((a) => a.sex == "M"),
+            ...newData.filter((a) => a.sex == "F"),
+          ].slice(page * pageSize, (page + 1) * pageSize),
         });
       }
     });
@@ -4178,7 +4342,7 @@ router.post(
 router.post(
   "/postclassrecord",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     let { classRecordID, quarter } = req.body;
@@ -4186,18 +4350,18 @@ router.post(
       subjectID,
       sectionID,
       subjectType,
-      subsectID
+      subsectID,
     } = await SubjectSection.findOne({
       where: {
-        classRecordID
-      }
-    }).then(ss => {
+        classRecordID,
+      },
+    }).then((ss) => {
       if (ss) {
         return {
           subjectID: ss.subjectID,
           sectionID: ss.sectionID,
           subjectType: ss.subjectType,
-          subsectID: ss.subsectID
+          subsectID: ss.subsectID,
         };
       }
     });
@@ -4211,9 +4375,9 @@ router.post(
 
     ClassRecordStatus.findOne({
       where: {
-        classRecordID
-      }
-    }).then(async crs => {
+        classRecordID,
+      },
+    }).then(async (crs) => {
       if (crs) {
         let quarterObj = {};
         quarterObj[quarter.toLowerCase()] = "F";
@@ -4223,7 +4387,7 @@ router.post(
           crs[quarter.toLowerCase()] == "E";
         if (invalid) {
           res.status(400).json({
-            msg: "You are not authorized to edit this class record."
+            msg: "You are not authorized to edit this class record.",
           });
         } else {
           crs
@@ -4236,12 +4400,12 @@ router.post(
               sectionID,
               oldVal: "D",
               newVal: "F",
-              quarter
+              quarter,
             })
             .then(async () => {
               await utils.refreshStudentGradesBySubsectID(subsectID);
               res.status(200).json({
-                msg: "Class record is now posted!"
+                msg: "Class record is now posted!",
               });
             });
         }
@@ -4257,7 +4421,7 @@ router.post(
 router.post(
   "/revertclassrecord",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     let { classRecordID, quarter } = req.body;
@@ -4265,18 +4429,18 @@ router.post(
       subjectID,
       sectionID,
       subjectType,
-      subsectID
+      subsectID,
     } = await SubjectSection.findOne({
       where: {
-        classRecordID
-      }
-    }).then(ss => {
+        classRecordID,
+      },
+    }).then((ss) => {
       if (ss) {
         return {
           subjectID: ss.subjectID,
           sectionID: ss.sectionID,
           subjectType: ss.subjectType,
-          subsectID: ss.subsectID
+          subsectID: ss.subsectID,
         };
       }
     });
@@ -4290,9 +4454,9 @@ router.post(
 
     ClassRecordStatus.findOne({
       where: {
-        classRecordID
-      }
-    }).then(async crs => {
+        classRecordID,
+      },
+    }).then(async (crs) => {
       if (crs) {
         let quarterObj = {};
         quarterObj[quarter.toLowerCase()] = "D";
@@ -4302,7 +4466,7 @@ router.post(
           crs[quarter.toLowerCase()] == "E";
         if (invalid) {
           res.status(400).json({
-            msg: "You are not authorized to edit this class record."
+            msg: "You are not authorized to edit this class record.",
           });
         } else {
           crs
@@ -4315,12 +4479,12 @@ router.post(
               sectionID,
               oldVal: "F",
               newVal: "D",
-              quarter
+              quarter,
             })
             .then(async () => {
               await utils.refreshStudentGradesBySubsectID(subsectID);
               res.status(200).json({
-                msg: "Class record is now ready for deliberation!"
+                msg: "Class record is now ready for deliberation!",
               });
             });
         }
@@ -4335,23 +4499,23 @@ router.post(
 
 router.post(
   "/getsubjecttype",
-  passport.authenticate("registrar", {
-    session: false
+  passport.authenticate(directorRegistrar, {
+    session: false,
   }),
   async (req, res) => {
     const { classRecordID } = req.body;
     SubjectSection.findOne({
       where: {
-        classRecordID
-      }
-    }).then(ss => {
+        classRecordID,
+      },
+    }).then((ss) => {
       if (ss) {
         res.status(200).json({
-          subjectType: ss.subjectType
+          subjectType: ss.subjectType,
         });
       } else {
         res.status(404).json({
-          msg: "Subject section not found!"
+          msg: "Subject section not found!",
         });
       }
     });
@@ -4364,41 +4528,41 @@ router.post(
 
 router.post(
   "/getcomponents",
-  passport.authenticate("registrar", {
-    session: false
+  passport.authenticate(directorRegistrar, {
+    session: false,
   }),
   async (req, res) => {
     const { classRecordID, quarter } = req.body;
     SubjectSection.findOne({
       where: {
-        classRecordID
-      }
-    }).then(subjectsection => {
+        classRecordID,
+      },
+    }).then((subjectsection) => {
       if (subjectsection) {
         Component.findOne({
           where: {
             subjectID: subjectsection.subjectID,
-            component: "FA"
-          }
-        }).then(comp1 => {
+            component: "FA",
+          },
+        }).then((comp1) => {
           Component.findOne({
             where: {
               subjectID: subjectsection.subjectID,
-              component: "WW"
-            }
-          }).then(comp2 => {
+              component: "WW",
+            },
+          }).then((comp2) => {
             Component.findOne({
               where: {
                 subjectID: subjectsection.subjectID,
-                component: "PT"
-              }
-            }).then(comp3 => {
+                component: "PT",
+              },
+            }).then((comp3) => {
               Component.findOne({
                 where: {
                   subjectID: subjectsection.subjectID,
-                  component: "QE"
-                }
-              }).then(async comp4 => {
+                  component: "QE",
+                },
+              }).then(async (comp4) => {
                 let faSubcompData = [];
                 let wwSubcompData = [];
                 let ptSubcompData = [];
@@ -4407,9 +4571,9 @@ router.post(
                   where: {
                     classRecordID: subjectsection.classRecordID,
                     componentID: comp1.componentID,
-                    quarter
-                  }
-                }).then(async subcomp1 => {
+                    quarter,
+                  },
+                }).then(async (subcomp1) => {
                   if (subcomp1.length != 0) {
                     let i = 0;
                     for (i = 0; i < subcomp1.length; i++) {
@@ -4417,7 +4581,7 @@ router.post(
                       faSubcompData.push({
                         name,
                         compWeight,
-                        subcompID
+                        subcompID,
                       });
                     }
                   }
@@ -4426,9 +4590,9 @@ router.post(
                   where: {
                     classRecordID: subjectsection.classRecordID,
                     componentID: comp2.componentID,
-                    quarter
-                  }
-                }).then(async subcomp2 => {
+                    quarter,
+                  },
+                }).then(async (subcomp2) => {
                   if (subcomp2.length != 0) {
                     let i = 0;
                     for (i = 0; i < subcomp2.length; i++) {
@@ -4436,7 +4600,7 @@ router.post(
                       wwSubcompData.push({
                         name,
                         compWeight,
-                        subcompID
+                        subcompID,
                       });
                     }
                   }
@@ -4445,9 +4609,9 @@ router.post(
                   where: {
                     classRecordID: subjectsection.classRecordID,
                     componentID: comp3.componentID,
-                    quarter
-                  }
-                }).then(async subcomp3 => {
+                    quarter,
+                  },
+                }).then(async (subcomp3) => {
                   if (subcomp3.length != 0) {
                     let i = 0;
                     for (i = 0; i < subcomp3.length; i++) {
@@ -4455,7 +4619,7 @@ router.post(
                       ptSubcompData.push({
                         name,
                         compWeight,
-                        subcompID
+                        subcompID,
                       });
                     }
                   }
@@ -4464,9 +4628,9 @@ router.post(
                   where: {
                     classRecordID: subjectsection.classRecordID,
                     componentID: comp4.componentID,
-                    quarter
-                  }
-                }).then(async subcomp4 => {
+                    quarter,
+                  },
+                }).then(async (subcomp4) => {
                   if (subcomp4.length != 0) {
                     let i = 0;
                     for (i = 0; i < subcomp4.length; i++) {
@@ -4474,7 +4638,7 @@ router.post(
                       qeSubcompData.push({
                         name,
                         compWeight,
-                        subcompID
+                        subcompID,
                       });
                     }
                   }
@@ -4500,23 +4664,23 @@ router.post(
                   FA: {
                     componentID: comp1.componentID,
                     weight: comp1.compWeight,
-                    subcomponents: faSubcompData
+                    subcomponents: faSubcompData,
                   },
                   WW: {
                     componentID: comp2.componentID,
                     weight: comp2.compWeight,
-                    subcomponents: wwSubcompData
+                    subcomponents: wwSubcompData,
                   },
                   PT: {
                     componentID: comp3.componentID,
                     weight: comp3.compWeight,
-                    subcomponents: ptSubcompData
+                    subcomponents: ptSubcompData,
                   },
                   QE: {
                     componentID: comp4.componentID,
                     weight: comp4.compWeight,
-                    subcomponents: qeSubcompData
-                  }
+                    subcomponents: qeSubcompData,
+                  },
                 });
               });
             });
@@ -4524,7 +4688,7 @@ router.post(
         });
       } else {
         res.status(404).json({
-          msg: "Subject Section not found!"
+          msg: "Subject Section not found!",
         });
       }
     });
@@ -4538,16 +4702,16 @@ router.post(
 router.post(
   "/editsubcomp",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const reg = /^-?[0-9]*(\.[0-9]*)?$/;
     const { payload, classRecordID, quarter } = req.body;
     ClassRecordStatus.findOne({
       where: {
-        classRecordID
-      }
-    }).then(async crs => {
+        classRecordID,
+      },
+    }).then(async (crs) => {
       if (crs) {
         let invalid = false;
         if (quarter == "Q1") {
@@ -4561,18 +4725,18 @@ router.post(
         }
         if (invalid) {
           res.status(400).json({
-            msg: "You are not authorized to edit this class record."
+            msg: "You are not authorized to edit this class record.",
           });
         } else {
           let i = 0;
           let sum = 0;
           for (i = 0; i < payload.length; i++) {
             let { errors, isValid } = validateSubcomponent({
-              name: payload[i].name
+              name: payload[i].name,
             });
             if (!isValid) {
               return res.status(400).json({
-                msg: errors.msg
+                msg: errors.msg,
               });
             } else {
               let valid =
@@ -4586,7 +4750,7 @@ router.post(
                 !valid
               ) {
                 return res.status(400).json({
-                  msg: "Invalid component weight input"
+                  msg: "Invalid component weight input",
                 });
               } else {
                 sum = sum + parseFloat(payload[i].compWeight);
@@ -4596,22 +4760,22 @@ router.post(
 
           if (sum != 100) {
             return res.status(400).json({
-              msg: "Sum of component weights must be 100!"
+              msg: "Sum of component weights must be 100!",
             });
           }
 
           payload.forEach(async (val, arr, index) => {
             await Subcomponent.findOne({
               where: {
-                subcompID: val.subcompID
-              }
-            }).then(subcomp => {
+                subcompID: val.subcompID,
+              },
+            }).then((subcomp) => {
               if (subcomp) {
                 SubjectSection.findOne({
                   where: {
-                    classRecordID: subcomp.classRecordID
-                  }
-                }).then(async subjectsection => {
+                    classRecordID: subcomp.classRecordID,
+                  },
+                }).then(async (subjectsection) => {
                   if (subjectsection) {
                     let { name, compWeight } = val;
                     const componentName = await utils.getComponentName(
@@ -4622,7 +4786,7 @@ router.post(
                       .update(
                         {
                           name,
-                          compWeight
+                          compWeight,
                         },
                         {
                           showLog: true,
@@ -4638,7 +4802,7 @@ router.post(
                           oldVal: subcomp.compWeight,
                           newVal: compWeight,
                           oldName: subcomp.name,
-                          newName: name
+                          newName: name,
                         }
                       )
                       .then(async () => {
@@ -4648,24 +4812,24 @@ router.post(
                       });
                   } else {
                     res.status(400).json({
-                      msg: "Subject Section not found!"
+                      msg: "Subject Section not found!",
                     });
                   }
                 });
               } else {
                 res.status(400).json({
-                  msg: "Subcomponent not found!"
+                  msg: "Subcomponent not found!",
                 });
               }
             });
           });
           res.status(200).json({
-            msg: "Subcomponent updated successfully!"
+            msg: "Subcomponent updated successfully!",
           });
         }
       } else {
         res.status(404).json({
-          msg: "Class record status not found!"
+          msg: "Class record status not found!",
         });
       }
     });
@@ -4679,36 +4843,36 @@ router.post(
 router.post(
   "/addnewsubcomp",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { classRecordID, componentID, name, quarter } = req.body;
     const { errors, isValid } = validateSubcomponent({
-      name
+      name,
     });
 
     if (!isValid) {
       return res.status(400).json({
-        msg: errors.msg
+        msg: errors.msg,
       });
     }
 
     SubjectSection.findOne({
       where: {
-        classRecordID
-      }
-    }).then(subjectsection => {
+        classRecordID,
+      },
+    }).then((subjectsection) => {
       if (subjectsection) {
         ClassRecordStatus.findOne({
           where: {
-            classRecordID
-          }
-        }).then(async crs => {
+            classRecordID,
+          },
+        }).then(async (crs) => {
           if (crs) {
             if (quarter == "Q1") {
               if (crs.q1 == "L" || crs.q1 == "E" || crs.q1 == "F") {
                 res.status(400).json({
-                  msg: "You are not authorized to edit this class record."
+                  msg: "You are not authorized to edit this class record.",
                 });
               } else {
                 const componentName = await utils.getComponentName(componentID);
@@ -4718,7 +4882,7 @@ router.post(
                     componentID,
                     classRecordID,
                     compWeight: 0,
-                    quarter
+                    quarter,
                   },
                   {
                     showLog: true,
@@ -4730,18 +4894,18 @@ router.post(
                     quarter,
                     subcompName: name,
                     componentName,
-                    classRecordID
+                    classRecordID,
                   }
-                ).then(subcomponent => {
+                ).then((subcomponent) => {
                   res.status(200).json({
-                    msg: "Successfully added a new subcomponent!"
+                    msg: "Successfully added a new subcomponent!",
                   });
                 });
               }
             } else if (quarter == "Q2") {
               if (crs.q2 == "L" || crs.q2 == "E" || crs.q2 == "F") {
                 res.status(400).json({
-                  msg: "You are not authorized to edit this class record."
+                  msg: "You are not authorized to edit this class record.",
                 });
               } else {
                 const componentName = await utils.getComponentName(componentID);
@@ -4751,7 +4915,7 @@ router.post(
                     componentID,
                     classRecordID,
                     compWeight: 0,
-                    quarter
+                    quarter,
                   },
                   {
                     showLog: true,
@@ -4763,18 +4927,18 @@ router.post(
                     quarter,
                     subcompName: name,
                     componentName,
-                    classRecordID
+                    classRecordID,
                   }
-                ).then(subcomponent => {
+                ).then((subcomponent) => {
                   res.status(200).json({
-                    msg: "Successfully added a new subcomponent!"
+                    msg: "Successfully added a new subcomponent!",
                   });
                 });
               }
             } else if (quarter == "Q3") {
               if (crs.q3 == "L" || crs.q3 == "E" || crs.q3 == "F") {
                 res.status(400).json({
-                  msg: "You are not authorized to edit this class record."
+                  msg: "You are not authorized to edit this class record.",
                 });
               } else {
                 const componentName = await utils.getComponentName(componentID);
@@ -4784,7 +4948,7 @@ router.post(
                     componentID,
                     classRecordID,
                     compWeight: 0,
-                    quarter
+                    quarter,
                   },
                   {
                     showLog: true,
@@ -4796,18 +4960,18 @@ router.post(
                     quarter,
                     subcompName: name,
                     componentName,
-                    classRecordID
+                    classRecordID,
                   }
-                ).then(subcomponent => {
+                ).then((subcomponent) => {
                   res.status(200).json({
-                    msg: "Successfully added a new subcomponent!"
+                    msg: "Successfully added a new subcomponent!",
                   });
                 });
               }
             } else {
               if (crs.q4 == "L" || crs.q4 == "E" || crs.q4 == "F") {
                 res.status(400).json({
-                  msg: "You are not authorized to edit this class record."
+                  msg: "You are not authorized to edit this class record.",
                 });
               } else {
                 const componentName = await utils.getComponentName(componentID);
@@ -4817,7 +4981,7 @@ router.post(
                     componentID,
                     classRecordID,
                     compWeight: 0,
-                    quarter
+                    quarter,
                   },
                   {
                     showLog: true,
@@ -4829,24 +4993,24 @@ router.post(
                     quarter,
                     subcompName: name,
                     componentName,
-                    classRecordID
+                    classRecordID,
                   }
-                ).then(subcomponent => {
+                ).then((subcomponent) => {
                   res.status(200).json({
-                    msg: "Successfully added a new subcomponent!"
+                    msg: "Successfully added a new subcomponent!",
                   });
                 });
               }
             }
           } else {
             res.status(404).json({
-              msg: "Class record status does not exist."
+              msg: "Class record status does not exist.",
             });
           }
         });
       } else {
         res.status(404).json({
-          msg: "Subject section not found!"
+          msg: "Subject section not found!",
         });
       }
     });
@@ -4860,15 +5024,15 @@ router.post(
 router.post(
   "/deletesubcomp",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { subcompID, quarter, classRecordID } = req.body;
     ClassRecordStatus.findOne({
       where: {
-        classRecordID
-      }
-    }).then(async crs => {
+        classRecordID,
+      },
+    }).then(async (crs) => {
       if (crs) {
         let invalid = false;
         if (quarter == "Q1") {
@@ -4882,58 +5046,58 @@ router.post(
         }
         if (invalid) {
           res.status(400).json({
-            msg: "You are not authorized to edit this class record."
+            msg: "You are not authorized to edit this class record.",
           });
         } else {
           Subcomponent.findOne({
             where: {
-              subcompID
-            }
-          }).then(subcomponent => {
+              subcompID,
+            },
+          }).then((subcomponent) => {
             if (subcomponent) {
               Subcomponent.findAll({
                 where: {
                   classRecordID: subcomponent.classRecordID,
-                  componentID: subcomponent.componentID
-                }
-              }).then(c => {
+                  componentID: subcomponent.componentID,
+                },
+              }).then((c) => {
                 if (c.length == 1) {
                   res.status(400).json({
                     msg:
-                      "Subcomponent can't be deleted. There must be at least one subcomponent."
+                      "Subcomponent can't be deleted. There must be at least one subcomponent.",
                   });
                 } else {
                   let compweight = subcomponent.compWeight;
                   if (compweight != 0) {
                     res.status(400).json({
                       msg:
-                        "Subcomponent can't be deleted. Set component weight to 0 first."
+                        "Subcomponent can't be deleted. Set component weight to 0 first.",
                     });
                   } else {
                     Grade.findOne({
                       where: {
-                        subcomponentID: subcomponent.subcompID
-                      }
-                    }).then(async g => {
+                        subcomponentID: subcomponent.subcompID,
+                      },
+                    }).then(async (g) => {
                       if (g) {
                         res.status(400).json({
                           msg:
-                            "Operation could not be completed. Delete all grades under this subcomponent first."
+                            "Operation could not be completed. Delete all grades under this subcomponent first.",
                         });
                       } else {
                         const {
                           sectionID,
-                          subjectID
+                          subjectID,
                         } = await SubjectSection.findOne({
                           where: {
-                            classRecordID
-                          }
-                        }).then(ss => {
+                            classRecordID,
+                          },
+                        }).then((ss) => {
                           if (ss) {
                             return {
                               sectionID: ss.sectionID,
                               subjectID: ss.subjectID,
-                              subjectType: ss.subjectType
+                              subjectType: ss.subjectType,
                             };
                           }
                         });
@@ -4953,11 +5117,11 @@ router.post(
                             subjectID,
                             quarter,
                             subcompName,
-                            componentName
+                            componentName,
                           })
                           .then(() => {
                             res.status(200).json({
-                              msg: "Subcomponent deleted successfully!"
+                              msg: "Subcomponent deleted successfully!",
                             });
                           });
                       }
@@ -4967,14 +5131,14 @@ router.post(
               });
             } else {
               res.status(404).json({
-                msg: "Subcomponent not found!"
+                msg: "Subcomponent not found!",
               });
             }
           });
         }
       } else {
         res.status(404).json({
-          msg: "Class record status does not exist."
+          msg: "Class record status does not exist.",
         });
       }
     });
@@ -4988,17 +5152,17 @@ router.post(
 router.post(
   "/getactivitylog",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { classRecordID, quarter } = req.body;
     const responseData = await ActivityLog.findAll({
       where: {
         classRecordID,
-        quarter
+        quarter,
       },
-      order: [["timestamp", "DESC"]]
-    }).then(async activitylogs => {
+      order: [["timestamp", "DESC"]],
+    }).then(async (activitylogs) => {
       if (activitylogs) {
         let activitylogData = [];
         for (const [index, al] of activitylogs.entries()) {
@@ -5009,13 +5173,13 @@ router.post(
             subject,
             type,
             logID,
-            timestamp
+            timestamp,
           } = al;
           const logDetails = await LogDetails.findAll({
             where: {
-              logID
-            }
-          }).then(async lds => {
+              logID,
+            },
+          }).then(async (lds) => {
             if (lds) {
               let logDetailsData = [];
               for (const [index2, ld] of lds.entries()) {
@@ -5025,7 +5189,7 @@ router.post(
                   subcomponent,
                   description,
                   oldValue,
-                  newValue
+                  newValue,
                 } = ld;
                 logDetailsData.push({
                   student,
@@ -5033,7 +5197,7 @@ router.post(
                   subcomponent,
                   description,
                   oldValue,
-                  newValue
+                  newValue,
                 });
               }
 
@@ -5048,7 +5212,7 @@ router.post(
             subject,
             type,
             timestamp,
-            logDetails
+            logDetails,
           });
         }
 
@@ -5057,7 +5221,7 @@ router.post(
     });
 
     res.status(200).json({
-      activityLog: responseData
+      activityLog: responseData,
     });
   }
 );
@@ -5067,8 +5231,8 @@ router.post(
 
 router.post(
   "/compinfo",
-  passport.authenticate("registrar", {
-    session: false
+  passport.authenticate(directorRegistrar, {
+    session: false,
   }),
   async (req, res) => {
     const { classRecordID, componentID, quarter } = req.body;
@@ -5076,27 +5240,27 @@ router.post(
     const teacherID = await utils.getTeacherID(accountID);
     SubjectSection.findOne({
       where: {
-        classRecordID
-      }
-    }).then(async subjectsection => {
+        classRecordID,
+      },
+    }).then(async (subjectsection) => {
       if (subjectsection) {
         Component.findOne({
           where: {
-            componentID
-          }
-        }).then(async component => {
+            componentID,
+          },
+        }).then(async (component) => {
           if (component) {
             let component = await utils.getComponentName(componentID);
             let grades = await Subcomponent.findAll({
               where: {
                 componentID,
                 classRecordID: subjectsection.classRecordID,
-                quarter
-              }
-            }).then(async subcomp => {
+                quarter,
+              },
+            }).then(async (subcomp) => {
               if (subcomp.length == 0) {
                 res.status(404).json({
-                  msg: "Subcomponents not found!"
+                  msg: "Subcomponents not found!",
                 });
               } else {
                 let i = 0;
@@ -5107,12 +5271,12 @@ router.post(
                   name = name + ` (${subcomp[i].compWeight}%)`;
                   const data2 = await SubjectSectionStudent.findAll({
                     where: {
-                      subsectID: subjectsection.subsectID
-                    }
-                  }).then(async subsectstud => {
+                      subsectID: subjectsection.subsectID,
+                    },
+                  }).then(async (subsectstud) => {
                     if (subsectstud.length == 0) {
                       res.status(404).json({
-                        msg: "Subject section student not found!"
+                        msg: "Subject section student not found!",
                       });
                     } else {
                       let j = 0;
@@ -5134,10 +5298,10 @@ router.post(
                             subcomponentID: subcomp[i].subcompID,
                             classRecordID: subjectsection.classRecordID,
                             subsectstudID: subsectstud[j].subsectstudID,
-                            quarter
+                            quarter,
                           },
-                          order: [["dateGiven", "DESC"]]
-                        }).then(async grades => {
+                          order: [["dateGiven", "DESC"]],
+                        }).then(async (grades) => {
                           if (grades.length == 0) {
                             return [];
                           } else {
@@ -5149,14 +5313,14 @@ router.post(
                                 dateGiven,
                                 score,
                                 total,
-                                attendance
+                                attendance,
                               } = grades[k];
                               gradesData.push({
                                 gradeID,
                                 dateGiven,
                                 score,
                                 total,
-                                attendance
+                                attendance,
                               });
                             }
                             return gradesData;
@@ -5192,7 +5356,7 @@ router.post(
                           subsectstudID,
                           name,
                           grades,
-                          ps
+                          ps,
                         });
                       }
                       return studentData;
@@ -5200,13 +5364,13 @@ router.post(
                   });
                   data2.sort((a, b) => (a.name > b.name ? 1 : -1));
                   let tempData = [
-                    ...data2.filter(a => a.sex == "M"),
-                    ...data2.filter(a => a.sex == "F")
+                    ...data2.filter((a) => a.sex == "M"),
+                    ...data2.filter((a) => a.sex == "F"),
                   ];
                   data1.push({
                     subcompID,
                     name,
-                    data: tempData
+                    data: tempData,
                   });
                 }
                 return data1;
@@ -5215,9 +5379,9 @@ router.post(
             let ave = await StudentWeightedScore.findAll({
               where: {
                 classRecordID: subjectsection.classRecordID,
-                quarter
-              }
-            }).then(async studweightedscore => {
+                quarter,
+              },
+            }).then(async (studweightedscore) => {
               if (studweightedscore.length == 0) {
                 return [];
               } else {
@@ -5230,7 +5394,7 @@ router.post(
                     wwWS,
                     ptWS,
                     qeWS,
-                    actualGrade
+                    actualGrade,
                   } = studweightedscore[l];
                   const name = await utils.getStudentNameBySubsectstudID(
                     subsectstudID
@@ -5263,7 +5427,7 @@ router.post(
                     sex,
                     subsectstudID,
                     ws,
-                    name
+                    name,
                   });
                 }
                 return aveData;
@@ -5271,24 +5435,24 @@ router.post(
             });
             ave.sort((a, b) => (a.name > b.name ? 1 : -1));
             let tempData2 = [
-              ...ave.filter(a => a.sex == "M"),
-              ...ave.filter(a => a.sex == "F")
+              ...ave.filter((a) => a.sex == "M"),
+              ...ave.filter((a) => a.sex == "F"),
             ];
             res.status(200).json({
               componentID,
               component,
               grades,
-              ave: tempData2
+              ave: tempData2,
             });
           } else {
             res.status(404).json({
-              msg: "Component not found!"
+              msg: "Component not found!",
             });
           }
         });
       } else {
         res.status(404).json({
-          msg: "Subject section not found!"
+          msg: "Subject section not found!",
         });
       }
     });
@@ -5301,27 +5465,27 @@ router.post(
 
 router.post(
   "/subcompinfo",
-  passport.authenticate("registrar", {
-    session: false
+  passport.authenticate(directorRegistrar, {
+    session: false,
   }),
   async (req, res) => {
     const { classRecordID, componentID, subcompID, quarter } = req.body;
     SubjectSection.findOne({
       where: {
-        classRecordID
-      }
-    }).then(async subjectsection => {
+        classRecordID,
+      },
+    }).then(async (subjectsection) => {
       if (subjectsection) {
         if (false) {
           res.status(400).json({
-            msg: "Not authorized!"
+            msg: "Not authorized!",
           });
         } else {
           Component.findOne({
             where: {
-              componentID
-            }
-          }).then(async component => {
+              componentID,
+            },
+          }).then(async (component) => {
             if (component) {
               let component = await utils.getComponentName(componentID);
               let { subcomponentID, name, data } = await Subcomponent.findOne({
@@ -5329,12 +5493,12 @@ router.post(
                   componentID,
                   classRecordID: subjectsection.classRecordID,
                   subcompID,
-                  quarter
-                }
-              }).then(async subcomp => {
+                  quarter,
+                },
+              }).then(async (subcomp) => {
                 if (!subcomp) {
                   res.status(404).json({
-                    msg: "Subcomponents not found!"
+                    msg: "Subcomponents not found!",
                   });
                 } else {
                   const subcomponentID = subcomp.subcompID;
@@ -5342,12 +5506,12 @@ router.post(
                   name = name + ` (${subcomp.compWeight}%)`;
                   const data2 = await SubjectSectionStudent.findAll({
                     where: {
-                      subsectID: subjectsection.subsectID
-                    }
-                  }).then(async subsectstud => {
+                      subsectID: subjectsection.subsectID,
+                    },
+                  }).then(async (subsectstud) => {
                     if (subsectstud.length == 0) {
                       res.status(404).json({
-                        msg: "Subject section student not found!"
+                        msg: "Subject section student not found!",
                       });
                     } else {
                       let j = 0;
@@ -5369,10 +5533,10 @@ router.post(
                             subcomponentID: subcomp.subcompID,
                             classRecordID: subjectsection.classRecordID,
                             subsectstudID: subsectstud[j].subsectstudID,
-                            quarter
+                            quarter,
                           },
-                          order: [["date", "DESC"]]
-                        }).then(async grades => {
+                          order: [["date", "DESC"]],
+                        }).then(async (grades) => {
                           if (grades.length == 0) {
                             return [];
                           } else {
@@ -5385,7 +5549,7 @@ router.post(
                                 score,
                                 total,
                                 description,
-                                attendance
+                                attendance,
                               } = grades[k];
                               gradesData.push({
                                 gradeID,
@@ -5393,7 +5557,7 @@ router.post(
                                 score,
                                 total,
                                 description,
-                                attendance
+                                attendance,
                               });
                             }
                             return gradesData;
@@ -5429,13 +5593,13 @@ router.post(
                           subsectstudID,
                           name,
                           grades,
-                          ps
+                          ps,
                         });
                       }
                       studentData.sort((a, b) => (a.name > b.name ? 1 : -1));
                       return [
-                        ...studentData.filter(a => a.sex == "M"),
-                        ...studentData.filter(a => a.sex == "F")
+                        ...studentData.filter((a) => a.sex == "M"),
+                        ...studentData.filter((a) => a.sex == "F"),
                       ];
                     }
                   });
@@ -5443,16 +5607,16 @@ router.post(
                   return {
                     subcomponentID,
                     name,
-                    data: data2
+                    data: data2,
                   };
                 }
               });
               let ave = await StudentWeightedScore.findAll({
                 where: {
                   classRecordID: subjectsection.classRecordID,
-                  quarter
-                }
-              }).then(async studweightedscore => {
+                  quarter,
+                },
+              }).then(async (studweightedscore) => {
                 if (studweightedscore.length == 0) {
                   return [];
                 } else {
@@ -5465,7 +5629,7 @@ router.post(
                       wwWS,
                       ptWS,
                       qeWS,
-                      actualGrade
+                      actualGrade,
                     } = studweightedscore[l];
                     const name = await utils.getStudentNameBySubsectstudID(
                       subsectstudID
@@ -5494,7 +5658,7 @@ router.post(
                       sex,
                       subsectstudID,
                       ws,
-                      name
+                      name,
                     });
                   }
                   return aveData;
@@ -5508,20 +5672,20 @@ router.post(
                 subcompName: name,
                 data,
                 ave: [
-                  ...ave.filter(a => a.sex == "M"),
-                  ...ave.filter(a => a.sex == "F")
-                ]
+                  ...ave.filter((a) => a.sex == "M"),
+                  ...ave.filter((a) => a.sex == "F"),
+                ],
               });
             } else {
               res.status(404).json({
-                msg: "Component not found!"
+                msg: "Component not found!",
               });
             }
           });
         }
       } else {
         res.status(404).json({
-          msg: "Subject section not found!"
+          msg: "Subject section not found!",
         });
       }
     });
@@ -5535,7 +5699,7 @@ router.post(
 router.post(
   "/deleterecord",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const {
@@ -5544,24 +5708,24 @@ router.post(
       dateGiven,
       subcompID,
       componentID,
-      quarter
+      quarter,
     } = req.body;
     SubjectSection.findOne({
       where: {
-        classRecordID
-      }
-    }).then(subsect => {
+        classRecordID,
+      },
+    }).then((subsect) => {
       if (subsect) {
         if (false) {
           res.status(401).json({
-            msg: "Not authorized!"
+            msg: "Not authorized!",
           });
         } else {
           ClassRecordStatus.findOne({
             where: {
-              classRecordID: subsect.classRecordID
-            }
-          }).then(async crs => {
+              classRecordID: subsect.classRecordID,
+            },
+          }).then(async (crs) => {
             if (crs) {
               let invalid = false;
               if (quarter == "Q1") {
@@ -5575,7 +5739,7 @@ router.post(
               }
               if (invalid) {
                 res.status(400).json({
-                  msg: "You are not authorized to edit this class record."
+                  msg: "You are not authorized to edit this class record.",
                 });
               } else {
                 Grade.findAll({
@@ -5584,9 +5748,9 @@ router.post(
                     dateGiven,
                     subcomponentID: subcompID,
                     componentID,
-                    quarter
-                  }
-                }).then(async grades => {
+                    quarter,
+                  },
+                }).then(async (grades) => {
                   if (grades.length != 0) {
                     const name = await utils.getAccountName(req.user.accountID);
                     const section = await utils.getSectionName(
@@ -5603,8 +5767,8 @@ router.post(
                       section,
                       subject,
                       quarter,
-                      timestamp: new Date()
-                    }).then(async al => {
+                      timestamp: new Date(),
+                    }).then(async (al) => {
                       if (al) {
                         return al.logID;
                       }
@@ -5616,32 +5780,32 @@ router.post(
                         subsectstudID: value.subsectstudID,
                         componentID,
                         subcompID,
-                        value: value.score
+                        value: value.score,
                       });
                     }
                     await utils.refreshStudentWeightedScoreBySubsectID(
                       subsect.subsectID
                     );
                     res.status(200).json({
-                      msg: "Deleted successfully!"
+                      msg: "Deleted successfully!",
                     });
                   } else {
                     res.status(404).json({
-                      msg: "Grades not found!"
+                      msg: "Grades not found!",
                     });
                   }
                 });
               }
             } else {
               res.status(404).json({
-                msg: "Class record status does not exist"
+                msg: "Class record status does not exist",
               });
             }
           });
         }
       } else {
         res.status(404).json({
-          msg: "Subject section not found!"
+          msg: "Subject section not found!",
         });
       }
     });
@@ -5655,7 +5819,7 @@ router.post(
 router.post(
   "/getrecinfo",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const {
@@ -5663,32 +5827,32 @@ router.post(
       componentID,
       subcompID,
       quarter,
-      gradeID
+      gradeID,
     } = req.body;
     SubjectSection.findOne({
       where: {
-        classRecordID
-      }
-    }).then(async ss => {
+        classRecordID,
+      },
+    }).then(async (ss) => {
       if (ss) {
         if (false) {
           res.status(401).json({
-            msg: "Not authorized!"
+            msg: "Not authorized!",
           });
         } else {
           Grade.findOne({
             where: {
-              gradeID
-            }
-          }).then(async grade => {
+              gradeID,
+            },
+          }).then(async (grade) => {
             if (grade) {
               const { description, dateGiven, total } = grade;
               const component = await utils.getComponentName(componentID);
               const weight = await Subcomponent.findOne({
                 where: {
-                  subcompID
-                }
-              }).then(sc => {
+                  subcompID,
+                },
+              }).then((sc) => {
                 if (sc) {
                   return sc.compWeight;
                 }
@@ -5701,12 +5865,12 @@ router.post(
                   subcomponentID: subcompID,
                   componentID,
                   description: grade.description,
-                  dateGiven: grade.dateGiven
-                }
-              }).then(async grades => {
+                  dateGiven: grade.dateGiven,
+                },
+              }).then(async (grades) => {
                 if (grades.length == 0) {
                   res.status(404).json({
-                    msg: "Grades not found!"
+                    msg: "Grades not found!",
                   });
                 } else {
                   let data = [];
@@ -5728,7 +5892,7 @@ router.post(
                           ? "E"
                           : score,
                       name,
-                      imageUrl
+                      imageUrl,
                     });
                   }
                   res.status(200).json({
@@ -5739,20 +5903,20 @@ router.post(
                     dateGiven,
                     total,
                     description,
-                    data
+                    data,
                   });
                 }
               });
             } else {
               res.status(404).json({
-                msg: "Grade not found!"
+                msg: "Grade not found!",
               });
             }
           });
         }
       } else {
         res.status(404).json({
-          msg: "Subject section not found!"
+          msg: "Subject section not found!",
         });
       }
     });
@@ -5766,7 +5930,7 @@ router.post(
 router.post(
   "/editrecord",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const reg = /^-?[0-9]*(\.[0-9]*)?$/;
@@ -5778,21 +5942,21 @@ router.post(
       subcompID,
       componentID,
       quarter,
-      payload
+      payload,
     } = req.body;
     let totalValid =
       !isNaN(total) && reg.test(total) && total !== "" && total !== "-";
     SubjectSection.findOne({
       where: {
-        classRecordID
-      }
-    }).then(async ss => {
+        classRecordID,
+      },
+    }).then(async (ss) => {
       if (ss) {
         ClassRecordStatus.findOne({
           where: {
-            classRecordID: ss.classRecordID
-          }
-        }).then(async crs => {
+            classRecordID: ss.classRecordID,
+          },
+        }).then(async (crs) => {
           if (crs) {
             let invalid = false;
             if (quarter == "Q1") {
@@ -5806,45 +5970,45 @@ router.post(
             }
             if (invalid) {
               res.status(400).json({
-                msg: "You are not authorized to edit this class record."
+                msg: "You are not authorized to edit this class record.",
               });
             } else {
               if (!totalValid) {
                 res.status(400).json({
-                  msg: "Total score is invalid. Enter numbers only."
+                  msg: "Total score is invalid. Enter numbers only.",
                 });
               } else {
                 if (total <= 0) {
                   return res.status(400).json({
-                    msg: "Total must be more than 0"
+                    msg: "Total must be more than 0",
                   });
                 } else {
                   SubjectSection.findOne({
                     where: {
-                      classRecordID
-                    }
-                  }).then(async subjectsection => {
+                      classRecordID,
+                    },
+                  }).then(async (subjectsection) => {
                     if (subjectsection) {
                       if (false) {
                         return res.status(401).json({
-                          msg: "Not authorized!"
+                          msg: "Not authorized!",
                         });
                       } else {
                         const isSubmitted = await ClassRecord.findOne({
                           where: {
-                            classRecordID: subjectsection.classRecordID
-                          }
-                        }).then(cr => {
+                            classRecordID: subjectsection.classRecordID,
+                          },
+                        }).then((cr) => {
                           if (cr) {
                             return cr.isSubmitted;
                           }
                         });
                         let { errors, isValid } = validateSubcomponent({
-                          name: description
+                          name: description,
                         });
                         if (!isValid) {
                           return res.status(400).json({
-                            msg: "Error input: Description"
+                            msg: "Error input: Description",
                           });
                         } else {
                           let i = 0;
@@ -5859,15 +6023,15 @@ router.post(
                                 quarter,
                                 subsectstudID: value.subsectstudID,
                                 gradeID: {
-                                  [Op.ne]: value.gradeID
-                                }
-                              }
-                            }).then(async grades2 => {
+                                  [Op.ne]: value.gradeID,
+                                },
+                              },
+                            }).then(async (grades2) => {
                               let sum = 0;
                               let totalTemp = 0;
                               for (const [
                                 index2,
-                                value2
+                                value2,
                               ] of grades2.entries()) {
                                 if (value2.score == "A") {
                                   sum = sum + 0;
@@ -5907,7 +6071,7 @@ router.post(
                               invalid = true;
                               return res.status(400).json({
                                 msg:
-                                  "Invalid score input. Enter numbers, E, or B only"
+                                  "Invalid score input. Enter numbers, E, or B only",
                               });
                             }
                           }
@@ -5921,13 +6085,13 @@ router.post(
                               classRecordID: subjectsection.classRecordID,
                               quarter,
                               gradeID: {
-                                [Op.notIn]: gradeIDchecker
-                              }
-                            }
-                          }).then(async gr => {
+                                [Op.notIn]: gradeIDchecker,
+                              },
+                            },
+                          }).then(async (gr) => {
                             if (gr) {
                               res.status(400).json({
-                                msg: "Descrption already exists!"
+                                msg: "Descrption already exists!",
                               });
                             } else {
                               if (!invalid) {
@@ -5948,8 +6112,8 @@ router.post(
                                   section,
                                   subject,
                                   quarter,
-                                  timestamp: new Date()
-                                }).then(async al => {
+                                  timestamp: new Date(),
+                                }).then(async (al) => {
                                   if (al) {
                                     return al.logID;
                                   }
@@ -5959,13 +6123,13 @@ router.post(
                                 let oldTotal = -1;
                                 for (const [
                                   index,
-                                  value3
+                                  value3,
                                 ] of payload.entries()) {
                                   await Grade.findOne({
                                     where: {
-                                      gradeID: value3.gradeID
-                                    }
-                                  }).then(async gr2 => {
+                                      gradeID: value3.gradeID,
+                                    },
+                                  }).then(async (gr2) => {
                                     if (gr2) {
                                       const score = gr2.score;
                                       let attendance = "";
@@ -5988,7 +6152,7 @@ router.post(
                                           attendance,
                                           score: value3.score,
                                           isUpdated: 1,
-                                          showLog: isSubmitted
+                                          showLog: isSubmitted,
                                         },
                                         {
                                           showLog: true,
@@ -5998,20 +6162,24 @@ router.post(
                                           subcompID,
                                           oldValue: gr2.score,
                                           newValue: value3.score,
-                                          description
+                                          description,
                                         }
                                       );
                                     }
                                   });
                                 }
                                 await LogDetails.findAll({
-                                  where: { logID }
-                                }).then(lds => {
+                                  where: {
+                                    logID,
+                                  },
+                                }).then((lds) => {
                                   if (lds) {
                                     if (lds.length == 0) {
                                       ActivityLog.findOne({
-                                        where: { logID }
-                                      }).then(async al => {
+                                        where: {
+                                          logID,
+                                        },
+                                      }).then(async (al) => {
                                         if (al) {
                                           al.destroy({}).then(() => {
                                             if (oldDesc != description) {
@@ -6023,8 +6191,8 @@ router.post(
                                                 section,
                                                 subject,
                                                 quarter,
-                                                timestamp: new Date()
-                                              }).then(async al2 => {
+                                                timestamp: new Date(),
+                                              }).then(async (al2) => {
                                                 if (al2) {
                                                   const component = await utils.getComponentName(
                                                     componentID
@@ -6036,7 +6204,7 @@ router.post(
                                                     logID: al2.logID,
                                                     description: `Changed description from '${oldDesc}' to '${description}'`,
                                                     subcomponent,
-                                                    component
+                                                    component,
                                                   });
                                                 }
                                               });
@@ -6051,8 +6219,8 @@ router.post(
                                                 section,
                                                 subject,
                                                 quarter,
-                                                timestamp: new Date()
-                                              }).then(async al2 => {
+                                                timestamp: new Date(),
+                                              }).then(async (al2) => {
                                                 if (al2) {
                                                   const component = await utils.getComponentName(
                                                     componentID
@@ -6064,7 +6232,7 @@ router.post(
                                                     logID: al2.logID,
                                                     description: `Changed total from '${oldTotal}' to '${total}'`,
                                                     subcomponent,
-                                                    component
+                                                    component,
                                                   });
                                                 }
                                               });
@@ -6082,8 +6250,8 @@ router.post(
                                           section,
                                           subject,
                                           quarter,
-                                          timestamp: new Date()
-                                        }).then(async al2 => {
+                                          timestamp: new Date(),
+                                        }).then(async (al2) => {
                                           if (al2) {
                                             const component = await utils.getComponentName(
                                               componentID
@@ -6095,7 +6263,7 @@ router.post(
                                               logID: al2.logID,
                                               description: `Changed description from '${oldDesc}' to '${description}'`,
                                               subcomponent,
-                                              component
+                                              component,
                                             });
                                           }
                                         });
@@ -6110,8 +6278,8 @@ router.post(
                                           section,
                                           subject,
                                           quarter,
-                                          timestamp: new Date()
-                                        }).then(async al2 => {
+                                          timestamp: new Date(),
+                                        }).then(async (al2) => {
                                           if (al2) {
                                             const component = await utils.getComponentName(
                                               componentID
@@ -6123,7 +6291,7 @@ router.post(
                                               logID: al2.logID,
                                               description: `Changed total from '${oldTotal}' to '${total}'`,
                                               subcomponent,
-                                              component
+                                              component,
                                             });
                                           }
                                         });
@@ -6136,7 +6304,7 @@ router.post(
                                 );
 
                                 res.status(200).json({
-                                  msg: "Record updated successfully!"
+                                  msg: "Record updated successfully!",
                                 });
                               }
                             }
@@ -6145,7 +6313,7 @@ router.post(
                       }
                     } else {
                       res.status(404).json({
-                        msg: "Subject section not found!"
+                        msg: "Subject section not found!",
                       });
                     }
                   });
@@ -6154,13 +6322,13 @@ router.post(
             }
           } else {
             res.status(404).json({
-              msg: "Class record status does not exist"
+              msg: "Class record status does not exist",
             });
           }
         });
       } else {
         res.status(404).json({
-          msg: "Subject section does not exist"
+          msg: "Subject section does not exist",
         });
       }
     });
@@ -6174,7 +6342,7 @@ router.post(
 router.post(
   "/addnewrecord",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const reg = /^-?[0-9]*(\.[0-9]*)?$/;
@@ -6186,21 +6354,21 @@ router.post(
       description,
       total,
       classRecordID,
-      quarter
+      quarter,
     } = req.body;
     let totalValid =
       !isNaN(total) && reg.test(total) && total !== "" && total !== "-";
     SubjectSection.findOne({
       where: {
-        classRecordID
-      }
-    }).then(async ss => {
+        classRecordID,
+      },
+    }).then(async (ss) => {
       if (ss) {
         ClassRecordStatus.findOne({
           where: {
-            classRecordID: ss.classRecordID
-          }
-        }).then(async crs => {
+            classRecordID: ss.classRecordID,
+          },
+        }).then(async (crs) => {
           if (crs) {
             let invalid = false;
             if (quarter == "Q1") {
@@ -6214,36 +6382,36 @@ router.post(
             }
             if (invalid) {
               res.status(400).json({
-                msg: "You are not authorized to edit this class record."
+                msg: "You are not authorized to edit this class record.",
               });
             } else {
               if (!totalValid) {
                 res.status(400).json({
-                  msg: "Total score is invalid. Enter numbers only."
+                  msg: "Total score is invalid. Enter numbers only.",
                 });
               } else {
                 if (total <= 0) {
                   res.status(400).json({
-                    msg: "Total must be more than 0"
+                    msg: "Total must be more than 0",
                   });
                 }
                 SubjectSection.findOne({
                   where: {
-                    classRecordID
-                  }
-                }).then(async subjectsection => {
+                    classRecordID,
+                  },
+                }).then(async (subjectsection) => {
                   if (subjectsection) {
                     if (false) {
                       return res.status(400).json({
-                        msg: "Not authorized!"
+                        msg: "Not authorized!",
                       });
                     } else {
                       let { errors, isValid } = validateSubcomponent({
-                        name: description
+                        name: description,
                       });
                       if (!isValid) {
                         return res.status(400).json({
-                          msg: "Error input: Description"
+                          msg: "Error input: Description",
                         });
                       } else {
                         let i = 0;
@@ -6261,7 +6429,7 @@ router.post(
                             invalid = true;
                             return res.status(400).json({
                               msg:
-                                "Invalid score input. Enter numbers, E, or B only"
+                                "Invalid score input. Enter numbers, E, or B only",
                             });
                           }
                         }
@@ -6272,9 +6440,9 @@ router.post(
                               componentID,
                               subcomponentID: subcompID,
                               quarter,
-                              subsectstudID: value.subsectstudID
-                            }
-                          }).then(async grades2 => {
+                              subsectstudID: value.subsectstudID,
+                            },
+                          }).then(async (grades2) => {
                             let sum = 0;
                             let totalTemp = 0;
                             for (const [index2, value2] of grades2.entries()) {
@@ -6310,12 +6478,12 @@ router.post(
                             componentID,
                             subcomponentID: subcompID,
                             classRecordID: subjectsection.classRecordID,
-                            quarter
-                          }
-                        }).then(async gr => {
+                            quarter,
+                          },
+                        }).then(async (gr) => {
                           if (gr) {
                             res.status(400).json({
-                              msg: "Description already exists"
+                              msg: "Description already exists",
                             });
                           } else {
                             const name = await utils.getAccountName(
@@ -6335,8 +6503,8 @@ router.post(
                               section,
                               subject,
                               quarter,
-                              timestamp: new Date()
-                            }).then(async al => {
+                              timestamp: new Date(),
+                            }).then(async (al) => {
                               if (al) {
                                 return al.logID;
                               }
@@ -6366,7 +6534,7 @@ router.post(
                                     subsectstudID,
                                     showLog: 0,
                                     isUpdated: 0,
-                                    quarter: quarter
+                                    quarter: quarter,
                                   },
                                   {
                                     showLog: true,
@@ -6374,7 +6542,7 @@ router.post(
                                     subsectstudID,
                                     componentID,
                                     subcompID,
-                                    value: score
+                                    value: score,
                                   }
                                 );
                               }
@@ -6383,7 +6551,7 @@ router.post(
                               subjectsection.subsectID
                             );
                             return res.status(200).json({
-                              msg: "Record has been added successfully!"
+                              msg: "Record has been added successfully!",
                             });
                           }
                         });
@@ -6391,7 +6559,7 @@ router.post(
                     }
                   } else {
                     res.status(404).json({
-                      msg: "Subject section not found!"
+                      msg: "Subject section not found!",
                     });
                   }
                 });
@@ -6399,13 +6567,13 @@ router.post(
             }
           } else {
             res.status(404).json({
-              msg: "Class record status does not exist"
+              msg: "Class record status does not exist",
             });
           }
         });
       } else {
         res.status(404).json({
-          msg: "Subject section does not exist"
+          msg: "Subject section does not exist",
         });
       }
     });
@@ -6419,26 +6587,26 @@ router.post(
 router.post(
   "/changetransmutation",
   passport.authenticate("registrar", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { classRecordID, quarter, transmutation } = req.body;
     SubjectSection.findOne({
       where: {
-        classRecordID
-      }
-    }).then(async ss => {
+        classRecordID,
+      },
+    }).then(async (ss) => {
       if (ss) {
         if (false) {
           res.status(401).json({
-            msg: "Not authorized!"
+            msg: "Not authorized!",
           });
         } else {
           ClassRecordStatus.findOne({
             where: {
-              classRecordID: ss.classRecordID
-            }
-          }).then(async crs => {
+              classRecordID: ss.classRecordID,
+            },
+          }).then(async (crs) => {
             if (crs) {
               let invalid = false;
               if (quarter == "Q1") {
@@ -6452,20 +6620,20 @@ router.post(
               }
               if (invalid) {
                 res.status(400).json({
-                  msg: "You are not authorized to edit this class record."
+                  msg: "You are not authorized to edit this class record.",
                 });
               } else {
                 ClassRecord.findOne({
                   where: {
-                    classRecordID: ss.classRecordID
-                  }
-                }).then(async cr => {
+                    classRecordID: ss.classRecordID,
+                  },
+                }).then(async (cr) => {
                   if (cr) {
                     switch (quarter) {
                       case "Q1": {
                         await cr.update(
                           {
-                            q1Transmu: transmutation
+                            q1Transmu: transmutation,
                           },
                           {
                             showLog: true,
@@ -6477,7 +6645,7 @@ router.post(
                             quarter,
                             classRecordID,
                             oldVal: cr.q1Transmu,
-                            newVal: transmutation
+                            newVal: transmutation,
                           }
                         );
                         break;
@@ -6485,7 +6653,7 @@ router.post(
                       case "Q2": {
                         await cr.update(
                           {
-                            q2Transmu: transmutation
+                            q2Transmu: transmutation,
                           },
                           {
                             showLog: true,
@@ -6497,7 +6665,7 @@ router.post(
                             quarter,
                             classRecordID,
                             oldVal: cr.q2Transmu,
-                            newVal: transmutation
+                            newVal: transmutation,
                           }
                         );
                         break;
@@ -6505,7 +6673,7 @@ router.post(
                       case "Q3": {
                         await cr.update(
                           {
-                            q3Transmu: transmutation
+                            q3Transmu: transmutation,
                           },
                           {
                             showLog: true,
@@ -6517,7 +6685,7 @@ router.post(
                             quarter,
                             classRecordID,
                             oldVal: cr.q3Transmu,
-                            newVal: transmutation
+                            newVal: transmutation,
                           }
                         );
                         break;
@@ -6525,7 +6693,7 @@ router.post(
                       case "Q4": {
                         await cr.update(
                           {
-                            q4Transmu: transmutation
+                            q4Transmu: transmutation,
                           },
                           {
                             showLog: true,
@@ -6537,7 +6705,7 @@ router.post(
                             quarter,
                             classRecordID,
                             oldVal: cr.q4Transmu,
-                            newVal: transmutation
+                            newVal: transmutation,
                           }
                         );
                         break;
@@ -6549,25 +6717,25 @@ router.post(
                       ss.subsectID
                     );
                     res.status(200).json({
-                      msg: "Transmutation changed successfully!"
+                      msg: "Transmutation changed successfully!",
                     });
                   } else {
                     res.status(404).json({
-                      msg: "Class Record not found!"
+                      msg: "Class Record not found!",
                     });
                   }
                 });
               }
             } else {
               res.status(404).json({
-                msg: "Subject Section not found!"
+                msg: "Subject Section not found!",
               });
             }
           });
         }
       } else {
         res.status(404).json({
-          msg: "Class record status does not exist"
+          msg: "Class record status does not exist",
         });
       }
     });
@@ -6580,27 +6748,27 @@ router.post(
 
 router.post(
   "/getquartersummary",
-  passport.authenticate("registrar", {
-    session: false
+  passport.authenticate(directorRegistrar, {
+    session: false,
   }),
   async (req, res) => {
     const { classRecordID, quarter } = req.body;
     SubjectSection.findOne({
       where: {
-        classRecordID
-      }
-    }).then(async subsect => {
+        classRecordID,
+      },
+    }).then(async (subsect) => {
       if (subsect) {
         if (false) {
           res.status(401).json({
-            msg: "Not authorized!"
+            msg: "Not authorized!",
           });
         } else {
           const transmutation = await ClassRecord.findOne({
             where: {
-              classRecordID: subsect.classRecordID
-            }
-          }).then(async cr => {
+              classRecordID: subsect.classRecordID,
+            },
+          }).then(async (cr) => {
             if (cr) {
               switch (quarter) {
                 case "Q1": {
@@ -6631,9 +6799,9 @@ router.post(
           const schoolYear = await utils.getSYname(schoolYearID);
           const subsectstudIDs = await SubjectSectionStudent.findAll({
             where: {
-              subsectID: subsect.subsectID
-            }
-          }).then(async sss => {
+              subsectID: subsect.subsectID,
+            },
+          }).then(async (sss) => {
             if (sss.length == 0) {
               return [];
             } else {
@@ -6649,9 +6817,9 @@ router.post(
             const temp = await StudentWeightedScore.findOne({
               where: {
                 subsectstudID: value,
-                quarter
-              }
-            }).then(async sws => {
+                quarter,
+              },
+            }).then(async (sws) => {
               if (sws) {
                 const {
                   subsectstudID,
@@ -6662,7 +6830,7 @@ router.post(
                   actualGrade,
                   transmutedGrade50,
                   transmutedGrade55,
-                  transmutedGrade60
+                  transmutedGrade60,
                 } = sws;
                 let finalGrade = 0;
                 switch (transmutation) {
@@ -6703,7 +6871,7 @@ router.post(
                   transmutedGrade50,
                   transmutedGrade55,
                   transmutedGrade60,
-                  finalGrade
+                  finalGrade,
                 };
               }
             });
@@ -6719,14 +6887,14 @@ router.post(
             schoolYear,
             classRecordID: subsect.classRecordID,
             data: [
-              ...data.filter(a => a.sex == "M"),
-              ...data.filter(a => a.sex == "F")
-            ]
+              ...data.filter((a) => a.sex == "M"),
+              ...data.filter((a) => a.sex == "F"),
+            ],
           });
         }
       } else {
         res.status(404).json({
-          msg: "Subject section not found!"
+          msg: "Subject section not found!",
         });
       }
     });
@@ -6739,7 +6907,9 @@ router.post(
 
 router.post(
   "/getsubmittedsubsectbysectionid",
-  passport.authenticate("registrar", { session: false }),
+  passport.authenticate("registrar", {
+    session: false,
+  }),
   async (req, res) => {
     let = { sectionID, page, pageSize, quarter } = req.body;
     page = page - 1;
@@ -6755,17 +6925,17 @@ router.post(
           [Op.in]:
             quarter == "Q1" || quarter == "Q2"
               ? ["NON_SHS", "1ST_SEM"]
-              : ["NON_SHS", "2ND_SEM"]
-        }
-      }
-    }).then(async ss => {
+              : ["NON_SHS", "2ND_SEM"],
+        },
+      },
+    }).then(async (ss) => {
       if (ss) {
         let data = [];
         for (const [i, v] of ss.entries()) {
           const crs = await ClassRecordStatus.findOne({
             where: {
-              classRecordID: v.classRecordID
-            }
+              classRecordID: v.classRecordID,
+            },
           });
           if (quarter == "Q1" || quarter == "Q2") {
             if (crs[quarter.toLowerCase()] == "D") {
@@ -6803,22 +6973,22 @@ router.post(
         sectionName,
         classRecordList: [],
         numOfPages: 1,
-        deadline: "NOT SET"
+        deadline: "NOT SET",
       });
     } else {
       let condition = {};
       condition["classRecordID"] = {
-        [Op.in]: classRecordIDs
+        [Op.in]: classRecordIDs,
       };
       await ClassRecordStatus.findAll({
         limit,
         offset,
-        where: condition
-      }).then(async crs => {
+        where: condition,
+      }).then(async (crs) => {
         if (crs) {
           if (crs.length == 0) {
             res.status(404).json({
-              msg: "No class record for deliberation found"
+              msg: "No class record for deliberation found",
             });
           } else {
             let data2 = [];
@@ -6842,16 +7012,19 @@ router.post(
                 section,
                 subsectID,
                 deadline,
-                teacher
+                teacher,
               } = await SubjectSection.findOne({
                 where: {
-                  classRecordID
-                }
-              }).then(async cr => {
+                  classRecordID,
+                },
+              }).then(async (cr) => {
                 if (cr) {
                   const deadline = await SubmissionDeadline.findOne({
-                    where: { teacherID: cr.teacherID, isActive: 1 }
-                  }).then(sd => {
+                    where: {
+                      teacherID: cr.teacherID,
+                      isActive: 1,
+                    },
+                  }).then((sd) => {
                     if (sd) {
                       return sd.deadline;
                     } else {
@@ -6869,7 +7042,7 @@ router.post(
                     subsectID,
                     subjectName,
                     section,
-                    deadline
+                    deadline,
                   };
                 }
               });
@@ -6881,19 +7054,19 @@ router.post(
                 subjectName,
                 section,
                 subsectID,
-                deadline
+                deadline,
               });
               if (k == r.length - 1) {
                 numOfPages = await ClassRecordStatus.findAndCountAll({
-                  where: condition
-                }).then(count => {
+                  where: condition,
+                }).then((count) => {
                   return Math.ceil(count.count / pageSize);
                 });
                 res.status(200).json({
                   sectionName,
                   classRecordList: data2,
                   numOfPages,
-                  deadline
+                  deadline,
                 });
               }
             });
@@ -6910,7 +7083,9 @@ router.post(
 
 router.post(
   "/getnotsubmittedsubsectbysectionid",
-  passport.authenticate("registrar", { session: false }),
+  passport.authenticate("registrar", {
+    session: false,
+  }),
   async (req, res) => {
     let = { sectionID, page, pageSize, quarter } = req.body;
     page = page - 1;
@@ -6926,17 +7101,17 @@ router.post(
           [Op.in]:
             quarter == "Q1" || quarter == "Q2"
               ? ["NON_SHS", "1ST_SEM"]
-              : ["NON_SHS", "2ND_SEM"]
-        }
-      }
-    }).then(async ss => {
+              : ["NON_SHS", "2ND_SEM"],
+        },
+      },
+    }).then(async (ss) => {
       if (ss) {
         let data = [];
         for (const [i, v] of ss.entries()) {
           const crs = await ClassRecordStatus.findOne({
             where: {
-              classRecordID: v.classRecordID
-            }
+              classRecordID: v.classRecordID,
+            },
           });
           if (quarter == "Q1" || quarter == "Q2") {
             if (crs[quarter.toLowerCase()] == "E") {
@@ -6970,21 +7145,23 @@ router.post(
       }
     });
     if (classRecordIDs.length == 0) {
-      res.status(404).json({ msg: "Class Record not found!" });
+      res.status(404).json({
+        msg: "Class Record not found!",
+      });
     } else {
       let condition = {};
       condition["classRecordID"] = {
-        [Op.in]: classRecordIDs
+        [Op.in]: classRecordIDs,
       };
       await ClassRecordStatus.findAll({
         limit,
         offset,
-        where: condition
-      }).then(async crs => {
+        where: condition,
+      }).then(async (crs) => {
         if (crs) {
           if (crs.length == 0) {
             res.status(404).json({
-              msg: "No class record for deliberation found"
+              msg: "No class record for deliberation found",
             });
           } else {
             let data2 = [];
@@ -6998,16 +7175,19 @@ router.post(
                 section,
                 subsectID,
                 deadline,
-                teacher
+                teacher,
               } = await SubjectSection.findOne({
                 where: {
-                  classRecordID
-                }
-              }).then(async cr => {
+                  classRecordID,
+                },
+              }).then(async (cr) => {
                 if (cr) {
                   const deadline = await SubmissionDeadline.findOne({
-                    where: { teacherID: cr.teacherID, isActive: 1 }
-                  }).then(sd => {
+                    where: {
+                      teacherID: cr.teacherID,
+                      isActive: 1,
+                    },
+                  }).then((sd) => {
                     if (sd) {
                       return sd.deadline;
                     } else {
@@ -7025,7 +7205,7 @@ router.post(
                     subsectID,
                     subjectName,
                     section,
-                    deadline
+                    deadline,
                   };
                 }
               });
@@ -7037,19 +7217,19 @@ router.post(
                 subjectName,
                 section,
                 subsectID,
-                deadline
+                deadline,
               });
               if (k == r.length - 1) {
                 numOfPages = await ClassRecordStatus.findAndCountAll({
-                  where: condition
-                }).then(count => {
+                  where: condition,
+                }).then((count) => {
                   return Math.ceil(count.count / pageSize);
                 });
                 res.status(200).json({
                   sectionName,
                   classRecordList: data2,
                   numOfPages,
-                  deadline
+                  deadline,
                 });
               }
             });
@@ -7066,35 +7246,44 @@ router.post(
 
 router.post(
   "/studentdeliberationrecord",
-  passport.authenticate("registrar", { session: false }),
+  passport.authenticate("registrar", {
+    session: false,
+  }),
   async (req, res) => {
     const { studsectID } = req.body;
     const { schoolYearID, quarter } = await utils.getActiveSY();
     const data = await SubjectSectionStudent.findAll({
-      where: { studsectID }
-    }).then(async sss2 => {
+      where: {
+        studsectID,
+      },
+    }).then(async (sss2) => {
       if (sss2) {
         let data2 = [];
         for (const [i, v] of sss2.entries()) {
           let {
             subjectType,
             classRecordID,
-            subjectID
+            subjectID,
           } = await SubjectSection.findOne({
-            where: { subsectID: v.subsectID, schoolYearID }
-          }).then(async ss => {
+            where: {
+              subsectID: v.subsectID,
+              schoolYearID,
+            },
+          }).then(async (ss) => {
             if (ss) {
               return {
                 subjectType: ss.subjectType,
                 classRecordID: ss.classRecordID,
-                subjectID: ss.subjectID
+                subjectID: ss.subjectID,
               };
             }
           });
 
           let status = await ClassRecordStatus.findOne({
-            where: { classRecordID }
-          }).then(async crs => {
+            where: {
+              classRecordID,
+            },
+          }).then(async (crs) => {
             if (crs) {
               if (quarter == "Q1") {
                 if (subjectType == "NON_SHS" || subjectType == "1ST_SEM") {
@@ -7122,8 +7311,11 @@ router.post(
           let subjectName = await utils.getSubjectName(subjectID);
           if (typeof status !== "undefined") {
             let score = await StudentSubjectGrades.findOne({
-              where: { classRecordID, subsectstudID: v.subsectstudID }
-            }).then(ssg => {
+              where: {
+                classRecordID,
+                subsectstudID: v.subsectstudID,
+              },
+            }).then((ssg) => {
               if (status == "F" || status == "D") {
                 if (quarter == "Q1") {
                   if (subjectType == "NON_SHS" || subjectType == "1ST_SEM") {
@@ -7149,14 +7341,19 @@ router.post(
               }
             });
             if (typeof score !== "undefined") {
-              data2.push({ score, subjectName });
+              data2.push({
+                score,
+                subjectName,
+              });
             }
           }
         }
         return data2;
       }
     });
-    res.status(200).json({ data });
+    res.status(200).json({
+      data,
+    });
   }
 );
 
@@ -7166,39 +7363,59 @@ router.post(
 
 router.post(
   "/studentfinalgrade",
-  passport.authenticate("registrar", { session: false }),
+  passport.authenticate([...directorRegistrar, "teacher"], {
+    session: false,
+  }),
   async (req, res) => {
     const { studentID, schoolYearID } = req.body;
     const studsectID = await StudentSection.findOne({
-      where: { studentID, schoolYearID }
-    }).then(std => {
+      where: {
+        studentID,
+        schoolYearID,
+      },
+    }).then((std) => {
       if (std) {
         return std.studsectID;
       } else return -1;
     });
     if (studsectID == -1) {
-      res.status(200).json({ finalGrade: -1, data: [] });
+      res.status(200).json({
+        finalGrade: -1,
+        data: [],
+      });
     } else {
       let finalGrade = await StudentFinalGrade.findOne({
-        where: { studsectID, schoolYearID }
-      }).then(sfg => {
+        where: {
+          studsectID,
+          schoolYearID,
+        },
+      }).then((sfg) => {
         if (sfg) {
           return sfg.grade;
         }
       });
       let data = await StudentGrades.findAll({
-        where: { studsectID, schoolYearID }
-      }).then(sg => {
+        where: {
+          studsectID,
+          schoolYearID,
+        },
+      }).then((sg) => {
         if (sg) {
           let data2 = [];
           for (const [index, value] of sg.entries()) {
-            data2.push({ quarter: value.quarter, grade: value.grade });
+            data2.push({
+              quarter: value.quarter,
+              grade: value.grade,
+            });
           }
           return data2;
         }
       });
       data.sort((a, b) => (a.quarter > b.quarter ? 1 : -1));
-      res.status(200).json({ finalGrade, data });
+      res.status(200).json({
+        finalGrade,
+        data,
+      });
     }
   }
 );
@@ -7209,13 +7426,18 @@ router.post(
 
 router.post(
   "/studentfinalrecord",
-  passport.authenticate("registrar", { session: false }),
+  passport.authenticate(directorRegistrar, {
+    session: false,
+  }),
   async (req, res) => {
     const { studentID } = req.body;
     const { schoolYearID, quarter } = req.body;
     const studsectID = await StudentSection.findOne({
-      where: { studentID, schoolYearID }
-    }).then(std => {
+      where: {
+        studentID,
+        schoolYearID,
+      },
+    }).then((std) => {
       if (std) {
         return std.studsectID;
       } else {
@@ -7223,33 +7445,43 @@ router.post(
       }
     });
     if (studsectID == -1) {
-      res.status(200).json({ data: [], finalGrade: -1 });
+      res.status(200).json({
+        data: [],
+        finalGrade: -1,
+      });
     } else {
       const data = await SubjectSectionStudent.findAll({
-        where: { studsectID }
-      }).then(async sss2 => {
+        where: {
+          studsectID,
+        },
+      }).then(async (sss2) => {
         if (sss2) {
           let data2 = [];
           for (const [i, v] of sss2.entries()) {
             let {
               subjectType,
               classRecordID,
-              subjectID
+              subjectID,
             } = await SubjectSection.findOne({
-              where: { subsectID: v.subsectID, schoolYearID }
-            }).then(async ss => {
+              where: {
+                subsectID: v.subsectID,
+                schoolYearID,
+              },
+            }).then(async (ss) => {
               if (ss) {
                 return {
                   subjectType: ss.subjectType,
                   classRecordID: ss.classRecordID,
-                  subjectID: ss.subjectID
+                  subjectID: ss.subjectID,
                 };
               }
             });
 
             let status = await ClassRecordStatus.findOne({
-              where: { classRecordID }
-            }).then(async crs => {
+              where: {
+                classRecordID,
+              },
+            }).then(async (crs) => {
               if (crs) {
                 if (quarter == "Q1") {
                   if (subjectType == "NON_SHS" || subjectType == "1ST_SEM") {
@@ -7277,8 +7509,11 @@ router.post(
             let subjectName = await utils.getSubjectName(subjectID);
             if (typeof status !== "undefined") {
               let score = await StudentSubjectGrades.findOne({
-                where: { classRecordID, subsectstudID: v.subsectstudID }
-              }).then(ssg => {
+                where: {
+                  classRecordID,
+                  subsectstudID: v.subsectstudID,
+                },
+              }).then((ssg) => {
                 if (status == "F") {
                   if (quarter == "Q1") {
                     if (subjectType == "NON_SHS" || subjectType == "1ST_SEM") {
@@ -7304,7 +7539,10 @@ router.post(
                 }
               });
               if (typeof score !== "undefined") {
-                data2.push({ score, subjectName });
+                data2.push({
+                  score,
+                  subjectName,
+                });
               }
             }
           }
@@ -7312,13 +7550,19 @@ router.post(
         }
       });
       let finalGrade = await StudentGrades.findOne({
-        where: { studsectID, quarter }
-      }).then(sg => {
+        where: {
+          studsectID,
+          quarter,
+        },
+      }).then((sg) => {
         if (sg) {
           return sg.grade;
         }
       });
-      res.status(200).json({ data, finalGrade });
+      res.status(200).json({
+        data,
+        finalGrade,
+      });
     }
   }
 );
@@ -7329,13 +7573,31 @@ router.post(
 
 router.post(
   "/getsectionstudent",
-  passport.authenticate("registrar", { session: false }),
+  passport.authenticate(directorRegistrar, {
+    session: false,
+  }),
   async (req, res) => {
     const { studentID, schoolYearID } = req.body;
     const section = await StudentSection.findOne({
-      where: { studentID, schoolYearID }
-    }).then(async ss => await utils.getSectionName(ss.sectionID));
-    res.status(200).json({ sectionName: section });
+      where: {
+        studentID,
+        schoolYearID,
+      },
+    }).then(async (ss) => {
+      if (ss) {
+        console.log(ss);
+        await utils.getSectionName(ss.sectionID);
+      } else {
+        return null;
+      }
+    });
+    if (section !== null && section !== undefined) {
+      res.status(200).json({
+        sectionName: section,
+      });
+    } else {
+      res.status(200).json({ sectionName: "" });
+    }
   }
 );
 
@@ -7345,7 +7607,9 @@ router.post(
 
 router.post(
   "/reportcardstudent",
-  passport.authenticate("registrar", { session: false }),
+  passport.authenticate("registrar", {
+    session: false,
+  }),
   async (req, res) => {
     let doc = new PDFDocument();
     const { studentID, schoolYearID, quarter } = req.body;
@@ -7373,10 +7637,12 @@ router.post(
 
 router.post(
   "/reportcardsection",
-  passport.authenticate("registrar", { session: false }),
+  passport.authenticate(["registrar", "teacher"], {
+    session: false,
+  }),
   async (req, res) => {
     let doc = new PDFDocument();
-    let headerSent = false
+    let headerSent = false;
     const { studentIDs, schoolYearID, quarter } = req.body;
     let filename = encodeURIComponent("final_grade") + ".pdf";
     res.setHeader(
@@ -7386,7 +7652,7 @@ router.post(
     res.setHeader("Content-type", "application/pdf");
     doc.pipe(res);
     for (const [index, value] of studentIDs.entries()) {
-      if (!headerSent){
+      if (!headerSent) {
         await utils.generateReportCardStudent(
           doc,
           res,
@@ -7398,6 +7664,386 @@ router.post(
         );
       }
     }
+  }
+);
+
+// @route POST api/registrar/getpassedfailed
+// @desc Get number of passed/failed students by schoolYearID, quarter, and gradeLevel
+// @access Private
+
+router.post(
+  "/getpassedfailed",
+  passport.authenticate(directorRegistrar, {
+    session: false,
+  }),
+  async (req, res) => {
+    const { schoolYearID, quarter, gradeLevel } = req.body;
+    Section.findAll({
+      where: {
+        gradeLevel,
+      },
+    }).then(async (section) => {
+      if (section) {
+        let data = [];
+        for (const [index, value] of section.entries()) {
+          let name = await utils.getSectionName(value.sectionID);
+          let sectionID = value.sectionID;
+          let failedInfo = [];
+          const { numOfPassed, numOfFailed } = await StudentSection.findAll({
+            where: {
+              sectionID: value.sectionID,
+              schoolYearID,
+            },
+          }).then(async (ss) => {
+            if (ss) {
+              let numOfPassed = 0;
+              let numOfFailed = 0;
+              for (const [index2, value2] of ss.entries()) {
+                const passed = await SubjectSectionStudent.findAll({
+                  where: {
+                    studsectID: value2.studsectID,
+                  },
+                }).then(async (sss) => {
+                  if (sss) {
+                    let passed2 = 0;
+                    for (const [index3, value3] of sss.entries()) {
+                      passed2 = await StudentSubjectGrades.findAll({
+                        where: {
+                          subsectstudID: value3.subsectstudID,
+                        },
+                      }).then(async (ssg) => {
+                        if (ssg) {
+                          let passed4 = 0;
+                          for (const [index4, value4] of ssg.entries()) {
+                            let subjectType = await utils.getSubjectTypeByClassRecordID(
+                              value4.classRecordID
+                            );
+                            if (subjectType == "NON_SHS") {
+                              let status = await ClassRecordStatus.findOne({
+                                where: {
+                                  classRecordID: value4.classRecordID,
+                                },
+                              }).then((crs) => crs[`${quarter.toLowerCase()}`]);
+                              if (status == "D" || status == "F") {
+                                if (
+                                  parseFloat(
+                                    value4[`${quarter.toLowerCase()}FinalGrade`]
+                                  ) < 75 &&
+                                  parseFloat(
+                                    value4[`${quarter.toLowerCase()}FinalGrade`]
+                                  ) != -1
+                                ) {
+                                  let name = await utils.getStudentNameBySubsectstudID(
+                                    value4.subsectstudID
+                                  );
+                                  let classRecordID = value4.classRecordID;
+                                  let grade = parseFloat(
+                                    value4[`${quarter.toLowerCase()}FinalGrade`]
+                                  );
+                                  let subjectID = await utils.getSubjectIDBySubsectstudID(
+                                    value4.subsectstudID
+                                  );
+                                  let subjectName = await utils.getSubjectName(
+                                    subjectID
+                                  );
+                                  let teacher = await SubjectSectionStudent.findOne(
+                                    {
+                                      where: {
+                                        subsectstudID: value4.subsectstudID,
+                                      },
+                                    }
+                                  )
+                                    .then(
+                                      async (subsectstud) =>
+                                        await SubjectSection.findOne({
+                                          where: {
+                                            subsectID: subsectstud.subsectID,
+                                          },
+                                        })
+                                    )
+                                    .then(
+                                      async (ss2) =>
+                                        await utils.getTeacherName(
+                                          ss2.teacherID
+                                        )
+                                    );
+                                  failedInfo.push({
+                                    name,
+                                    classRecordID,
+                                    grade,
+                                    subjectName,
+                                    teacher,
+                                  });
+                                  passed4 = -1;
+                                } else {
+                                  passed4 = 1;
+                                }
+                              }
+                            } else if (subjectType == "1ST_SEM") {
+                              if (quarter == "Q1" || quarter == "Q2") {
+                                let status = await ClassRecordStatus.findOne({
+                                  where: {
+                                    classRecordID: value4.classRecordID,
+                                  },
+                                }).then(
+                                  (crs) => crs[`${quarter.toLowerCase()}`]
+                                );
+                                if (status == "D" || status == "F") {
+                                  if (
+                                    parseFloat(
+                                      value4[
+                                        `${quarter.toLowerCase()}FinalGrade`
+                                      ]
+                                    ) < 75 &&
+                                    parseFloat(
+                                      value4[
+                                        `${quarter.toLowerCase()}FinalGrade`
+                                      ]
+                                    ) != -1
+                                  ) {
+                                    let name = await utils.getStudentNameBySubsectstudID(
+                                      value4.subsectstudID
+                                    );
+                                    let classRecordID = value4.classRecordID;
+                                    let grade = parseFloat(
+                                      value4[
+                                        `${quarter.toLowerCase()}FinalGrade`
+                                      ]
+                                    );
+                                    let subjectID = await utils.getSubjectIDBySubsectstudID(
+                                      value4.subsectstudID
+                                    );
+                                    let subjectName = await utils.getSubjectName(
+                                      subjectID
+                                    );
+                                    let teacher = await SubjectSectionStudent.findOne(
+                                      {
+                                        where: {
+                                          subsectstudID: value4.subsectstudID,
+                                        },
+                                      }
+                                    )
+                                      .then(
+                                        async (subsectstud) =>
+                                          await SubjectSection.findOne({
+                                            where: {
+                                              subsectID: subsectstud.subsectID,
+                                            },
+                                          })
+                                      )
+                                      .then(
+                                        async (ss2) =>
+                                          await utils.getTeacherName(
+                                            ss2.teacherID
+                                          )
+                                      );
+                                    failedInfo.push({
+                                      name,
+                                      classRecordID,
+                                      grade,
+                                      subjectName,
+                                      teacher,
+                                    });
+                                    passed4 = -1;
+                                  } else {
+                                    passed4 = 1;
+                                  }
+                                }
+                              }
+                            } else {
+                              if (quarter == "Q3" || quarter == "Q4") {
+                                let status = await ClassRecordStatus.findOne({
+                                  where: {
+                                    classRecordID: value4.classRecordID,
+                                  },
+                                }).then(
+                                  (crs) =>
+                                    crs[`q${parseInt(quarter.charAt(1)) - 2}`]
+                                );
+                                if (status == "D" || status == "F") {
+                                  if (
+                                    parseFloat(
+                                      value4[
+                                        `q${
+                                          parseInt(quarter.charAt(1)) - 2
+                                        }FinalGrade`
+                                      ]
+                                    ) < 75 &&
+                                    parseFloat(
+                                      value4[
+                                        `q${
+                                          parseInt(quarter.charAt(1)) - 2
+                                        }FinalGrade`
+                                      ]
+                                    ) != 0
+                                  ) {
+                                    let name = await utils.getStudentNameBySubsectstudID(
+                                      value4.subsectstudID
+                                    );
+                                    let classRecordID = value4.classRecordID;
+                                    let grade = parseFloat(
+                                      value4[
+                                        `q${
+                                          parseInt(quarter.charAt(1)) - 2
+                                        }FinalGrade`
+                                      ]
+                                    );
+                                    let subjectID = await utils.getSubjectIDBySubsectstudID(
+                                      value4.subsectstudID
+                                    );
+                                    let subjectName = await utils.getSubjectName(
+                                      subjectID
+                                    );
+                                    let teacher = await SubjectSectionStudent.findOne(
+                                      {
+                                        where: {
+                                          subsectstudID: value4.subsectstudID,
+                                        },
+                                      }
+                                    )
+                                      .then(
+                                        async (subsectstud) =>
+                                          await SubjectSection.findOne({
+                                            where: {
+                                              subsectID: subsectstud.subsectID,
+                                            },
+                                          })
+                                      )
+                                      .then(
+                                        async (ss2) =>
+                                          await utils.getTeacherName(
+                                            ss2.teacherID
+                                          )
+                                      );
+                                    failedInfo.push({
+                                      name,
+                                      classRecordID,
+                                      grade,
+                                      subjectName,
+                                      teacher,
+                                    });
+                                    passed4 = -1;
+                                  } else {
+                                    passed4 = 1;
+                                  }
+                                }
+                              }
+                            }
+                          }
+                          return passed4;
+                        }
+                      });
+                    }
+                    return passed2;
+                  }
+                });
+                if (passed == 1) {
+                  numOfPassed = numOfPassed + 1;
+                } else if (passed == -1) {
+                  numOfFailed = numOfFailed + 1;
+                }
+              }
+              return {
+                numOfFailed,
+                numOfPassed,
+              };
+            }
+          });
+          data.push({
+            failedInfo,
+            numOfPassed,
+            numOfFailed,
+            name,
+            sectionID,
+          });
+        }
+        res.status(200).json({
+          data,
+          failed: data
+            .reduce((a, b) => [...a, b.numOfFailed], [])
+            .reduce((a, b) => a + parseInt(b), 0),
+        });
+      }
+    });
+  }
+);
+
+// @route POST api/registrar/gethonorstudents
+// @desc Get number of honor students by schoolYearID, and gradeLevel
+// @access Private
+
+router.post(
+  "/gethonorstudents",
+  passport.authenticate(directorRegistrar, {
+    session: false,
+  }),
+  async (req, res) => {
+    const { schoolYearID, gradeLevel } = req.body;
+    Section.findAll({
+      where: {
+        gradeLevel,
+      },
+    }).then(async (section) => {
+      if (section) {
+        let data = [];
+        for (const [index, value] of section.entries()) {
+          let name = await utils.getSectionName(value.sectionID);
+          let sectionID = value.sectionID;
+          let honorInfo = [];
+          const numOfHonors = await StudentSection.findAll({
+            where: {
+              sectionID: value.sectionID,
+              schoolYearID,
+            },
+          }).then(async (ss) => {
+            if (ss) {
+              let numOfHonors = 0;
+              for (const [index2, value2] of ss.entries()) {
+                const isHonors = await StudentFinalGrade.findOne({
+                  where: {
+                    studsectID: value2.studsectID,
+                    schoolYearID,
+                  },
+                }).then(async (sfg) => {
+                  if (sfg) {
+                    if (parseFloat(sfg.grade) >= 90) {
+                      let name = await utils.getStudentNameByStudsectID(
+                        value2.studsectID
+                      );
+                      let grade = sfg.grade;
+                      honorInfo.push({
+                        name,
+                        grade,
+                        studentID: ss.studentID,
+                      });
+                      return true;
+                    } else {
+                      return false;
+                    }
+                  }
+                });
+                if (isHonors) {
+                  numOfHonors = numOfHonors + 1;
+                }
+              }
+              return numOfHonors;
+            }
+          });
+          data.push({
+            name,
+            sectionID,
+            numOfHonors,
+            honorInfo,
+          });
+        }
+        res.status(200).json({
+          data,
+          numOfHonors: data
+            .reduce((a, b) => [...a, b.numOfHonors], [])
+            .reduce((a, b) => a + parseInt(b), 0),
+        });
+      }
+    });
   }
 );
 module.exports = router;

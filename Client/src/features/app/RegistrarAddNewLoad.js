@@ -17,8 +17,7 @@ import {
   message,
   Descriptions,
 } from 'antd';
-import placeholder from '../../images/placeholder.jpg';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 const { Option } = Select;
 
 export class RegistrarAddNewLoad extends Component {
@@ -267,7 +266,9 @@ export class RegistrarAddNewLoad extends Component {
       displayOptions.push(
         <Option key={value.key} text={value.name}>
           <div>
-            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)} />
+            <Avatar
+              imageURL={value.imageUrl == 'NA' ? getPlaceholder() : getImageUrl(value.imageUrl)}
+            />
             <span style={{ margin: '16px', verticalAlign: 'text-top' }}>{value.name}</span>
           </div>
         </Option>,
@@ -277,7 +278,9 @@ export class RegistrarAddNewLoad extends Component {
       displayStudentData.push(
         <Table.Row>
           <Table.Col className="w-1">
-            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)} />
+            <Avatar
+              imageURL={value.imageUrl == 'NA' ? getPlaceholder() : getImageUrl(value.imageUrl)}
+            />
           </Table.Col>
           <Table.Col>{value.name}</Table.Col>
           <Table.Col>{value.email}</Table.Col>
@@ -515,4 +518,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegistrarAddNewLoad);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RegistrarAddNewLoad);

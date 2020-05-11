@@ -2,8 +2,7 @@ const Sequelize = require("sequelize");
 const sequelize = require("../config/db/database");
 
 const ParentGuardian = sequelize.define(
-  "parent guardian",
-  {
+  "parent guardian", {
     parentID: {
       type: Sequelize.INTEGER,
       primaryKey: true,
@@ -12,11 +11,12 @@ const ParentGuardian = sequelize.define(
     accountID: {
       type: Sequelize.INTEGER
     },
-    studentID: {
-      type: Sequelize.INTEGER
+    studentIDs: {
+      type: Sequelize.STRING(1000)
     }
-  },
-  { freezeTableName: true }
+  }, {
+    freezeTableName: true
+  }
 );
 
 module.exports = ParentGuardian;

@@ -29,7 +29,7 @@ export class RegistrarViewStudentRecordStudentView extends Component {
     if (!this.props.app.auth.isAuthenticated) {
       this.props.history.push('/login');
     } else {
-      if (this.props.app.auth.user.position != 2) {
+      if (![2, true].includes(this.props.app.auth.user.position)) {
         this.props.history.push('/page401');
       } else {
         axios

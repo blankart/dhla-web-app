@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import * as actions from './redux/actions';
 import { Card, Container, Form, Grid, Button, Table, Avatar } from 'tabler-react';
 import { Spin, Pagination, Modal } from 'antd';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 import placeholder from '../../images/placeholder.jpg';
 import axios from 'axios';
 import moment from 'moment';
@@ -144,7 +144,9 @@ export class RegistrarSetSubmissionDeadline extends Component {
       DisplayData.push(
         <Table.Row>
           <Table.Col className="w-1">
-            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)} />
+            <Avatar
+              imageURL={value.imageUrl == 'NA' ? getPlaceholder() : getImageUrl(value.imageUrl)}
+            />
           </Table.Col>
           <Table.Col>{value.name}</Table.Col>
           <Table.Col>{value.email}</Table.Col>
@@ -327,4 +329,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegistrarSetSubmissionDeadline);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RegistrarSetSubmissionDeadline);

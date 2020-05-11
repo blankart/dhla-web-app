@@ -14,7 +14,7 @@ export const deleteSubjectSectionStudent = data => dispatch => {
     .post('api/registrar/deletesubsectstud', data)
     .then(res => {
       dispatch(actions.setLoading(false));
-      message.success('Subject load added successfully!');
+      message.success('Student dropped successfully!');
       dispatch({ type: APP_GET_ERRORS, payload: {} });
     })
     .catch(err => {

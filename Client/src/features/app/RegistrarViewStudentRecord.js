@@ -11,8 +11,10 @@ import { Modal, Popconfirm, Search, Breadcrumb, AutoComplete, Input, message } f
 import cn from 'classnames';
 import placeholder from '../../images/placeholder.jpg';
 import bg from '../../images/BG.png';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 import ClassRecordInformation from './ClassRecordInformation';
+import ViewHonorStudents from './ViewHonorStudents';
+import ViewFailedStudents from './ViewFailedStudents';
 const { Option } = AutoComplete;
 
 export class RegistrarViewStudentRecord extends Component {
@@ -245,7 +247,7 @@ export class RegistrarViewStudentRecord extends Component {
           <Table.Row>
             <Table.Col className="w-1">
               <Avatar
-                imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)}
+                imageURL={value.imageUrl == 'NA' ? getPlaceholder() : getImageUrl(value.imageUrl)}
               />
             </Table.Col>
             <Table.Col>{value.name}</Table.Col>
@@ -291,6 +293,16 @@ export class RegistrarViewStudentRecord extends Component {
               <Breadcrumb.Item>{this.state.selectedSearchBy}s List</Breadcrumb.Item>
             </Breadcrumb>
           </Card.Title>
+          <Grid.Row>
+            <Grid.Col sm={12} xs={12} md={12}>
+              <Container>
+                <Button.List align="right" style={{ marginBottom: '10px' }}>
+                  <ViewHonorStudents />
+                  <ViewFailedStudents />
+                </Button.List>
+              </Container>
+            </Grid.Col>
+          </Grid.Row>
           <Card.Title>View Student Records</Card.Title>
           <Container>
             <Spin spinning={this.state.isLoading}>
@@ -424,4 +436,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegistrarViewStudentRecord);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RegistrarViewStudentRecord);

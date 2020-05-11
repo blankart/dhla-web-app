@@ -8,7 +8,7 @@ import { Pagination, Spin, Breadcrumb } from 'antd';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import placeholder from '../../images/placeholder.jpg';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 
 export class RegistrarAssignSubjectLoad extends Component {
   static propTypes = {
@@ -105,7 +105,9 @@ export class RegistrarAssignSubjectLoad extends Component {
       DisplayData.push(
         <Table.Row>
           <Table.Col className="w-1">
-            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)} />
+            <Avatar
+              imageURL={value.imageUrl == 'NA' ? getPlaceholder() : getImageUrl(value.imageUrl)}
+            />
           </Table.Col>
           <Table.Col>{value.name}</Table.Col>
           <Table.Col>{value.email}</Table.Col>
@@ -200,4 +202,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegistrarAssignSubjectLoad);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RegistrarAssignSubjectLoad);

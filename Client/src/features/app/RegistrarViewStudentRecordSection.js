@@ -4,12 +4,12 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from './redux/actions';
 import { Link } from 'react-router-dom';
-import { Card, Button, Grid, Table, Container, Text, Avatar } from 'tabler-react';
+import { Card, Button, Grid, Table, Container, Text, Avatar, Alert } from 'tabler-react';
 import axios from 'axios';
-import { Pagination, Spin, Tooltip, Modal } from 'antd';
+import { Pagination, Spin, Tooltip, Modal, Popover } from 'antd';
 import AllStudentFinalGrades from './AllStudentFinalGrades';
 import placeholder from '../../images/placeholder.jpg';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 
 export class RegistrarViewStudentRecordSection extends Component {
   static propTypes = {
@@ -42,6 +42,7 @@ export class RegistrarViewStudentRecordSection extends Component {
           .post('api/registrar/condensedfinalgrade', {
             sectionID: this.props.id,
             quarter: this.props.quarter,
+            schoolYearID: this.props.schoolYearID,
           })
           .then(res => {
             this.setState({
@@ -49,6 +50,14 @@ export class RegistrarViewStudentRecordSection extends Component {
               data: res.data.data,
               columns: res.data.columns,
               studentIDs: res.data.data.map(a => a.studentID),
+            });
+          })
+          .catch(err => {
+            this.setState({
+              isLoading: false,
+              data: [],
+              columns: [],
+              studentIDs: [],
             });
           });
       });
@@ -65,21 +74,58 @@ export class RegistrarViewStudentRecordSection extends Component {
       for (const [index2, value2] of value.grades.entries()) {
         tempCol.push(
           <Table.Col>
-            {value2.grade == -1 ? 'N/A' : value2.grade == 'N/A' ? 'Not enrolled' : value2.grade}
+            <Popover
+              placement="top"
+              content={
+                <div>
+                  {this.state.columns.length != 0 && this.state.data.length != 0 && (
+                    <React.Fragment>
+                      <p>Subject Name: {value2.subjectName}</p>
+                      <p>
+                        Teacher Name:{' '}
+                        {this.state.columns.find(a => value2.subjectName == a.subjectName).teacher}
+                      </p>
+                      <p>
+                        <Link
+                          to={`/viewstudentrecord/classrecord/${
+                            this.state.columns.find(a => value2.subjectName == a.subjectName)
+                              .classRecordID
+                          }/q/${this.props.quarter}`}
+                          target="_blank"
+                        >
+                          <Button icon="eye" block color="primary" size="sm" pill>
+                            View Class Record
+                          </Button>
+                        </Link>
+                      </p>
+                    </React.Fragment>
+                  )}
+                </div>
+              }
+            >
+              {(value2.grade != -1 || value2.grade != 'N/A') && (
+                <span
+                  className={`status-icon bg-${parseFloat(value2.grade) >= 75 ? 'green' : 'red'}`}
+                />
+              )}
+              {value2.grade == -1 ? 'N/A' : value2.grade == 'N/A' ? 'Not enrolled' : value2.grade}
+            </Popover>
           </Table.Col>,
         );
       }
       DisplayData3.push(
         <Table.Row>
           <Table.Col className="w-1">
-            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)} />
+            <Avatar
+              imageURL={value.imageUrl == 'NA' ? getPlaceholder() : getImageUrl(value.imageUrl)}
+            />
           </Table.Col>
           <Table.Col>{value.name}</Table.Col>
           {tempCol}
           <Table.Col>
             <Tooltip placement="top" title="View all grades">
               <AllStudentFinalGrades
-                text="View All Grades"
+                text="View Condensed Grade"
                 schoolYear={this.state.schoolYear}
                 id={value.studentID}
                 schoolYearID={this.props.schoolYearID}
@@ -90,7 +136,12 @@ export class RegistrarViewStudentRecordSection extends Component {
       );
     }
     for (const [index, value] of this.state.columns.entries()) {
-      DisplayColumns.push(<Table.ColHeader>{value}</Table.ColHeader>);
+      DisplayColumns.push(
+        <Table.ColHeader>
+          {value.status == 'D' && <span className={`status-icon bg-yellow`} />}
+          {value.subjectName}
+        </Table.ColHeader>,
+      );
     }
     return (
       <div className="app-registrar-view-student-record-section my-3 my-md-5">
@@ -104,23 +155,25 @@ export class RegistrarViewStudentRecordSection extends Component {
                     <Grid.Row>
                       <Grid.Col sm={12} xs={12} md={12}>
                         <Button.List align="right">
-                          <Button
-                            disabled={DisplayData3.length == 0}
-                            icon="file"
-                            color="primary"
-                            onClick={() =>
-                              this.props.actions.generatePdfSection(
-                                {
-                                  studentIDs: this.state.studentIDs,
-                                  quarter: this.props.quarter,
-                                  schoolYearID: this.props.schoolYearID,
-                                },
-                                'Registrar',
-                              )
-                            }
-                          >
-                            Generate Report Card
-                          </Button>
+                          {this.props.app.auth.user.position == 2 && (
+                            <Button
+                              disabled={DisplayData3.length == 0}
+                              icon="file"
+                              color="primary"
+                              onClick={() =>
+                                this.props.actions.generatePdfSection(
+                                  {
+                                    studentIDs: this.state.studentIDs,
+                                    quarter: this.props.quarter,
+                                    schoolYearID: this.props.schoolYearID,
+                                  },
+                                  'Registrar',
+                                )
+                              }
+                            >
+                              Generate Report Card
+                            </Button>
+                          )}
                         </Button.List>
                       </Grid.Col>
                     </Grid.Row>
@@ -134,12 +187,32 @@ export class RegistrarViewStudentRecordSection extends Component {
                 <Card.Body>
                   <Spin spinning={this.state.isLoading}>
                     <Grid.Row>
+                      <Grid.Col sm={12} xs={12} md={12}>
+                        <Alert type="info" icon="info">
+                          Note: Column names with status color{' '}
+                          <span className="status-icon bg-yellow" />
+                          <b>
+                            <i>yellow</i>
+                          </b>{' '}
+                          are subjects which are still under deliberation process.{' '}
+                          <b>
+                            <i>'View Condensed Grade'</i>
+                          </b>{' '}
+                          button shows the final grade (grades under deliberation process{' '}
+                          <b>
+                            <i>not included.</i>
+                          </b>
+                          ) of the student per quarter.
+                        </Alert>
+                      </Grid.Col>
                       <Table highlightRowOnHover={true} responsive={true}>
                         <Table.Header>{DisplayColumns}</Table.Header>
                         <Table.Body>
                           {DisplayData3.length == 0 ? (
                             <Table.Row>
-                              <Table.Col colSpan={2}>No data available.</Table.Col>
+                              <Table.Col colSpan={10} alignContent="center">
+                                No data available.
+                              </Table.Col>
                             </Table.Row>
                           ) : (
                             DisplayData3
@@ -172,4 +245,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegistrarViewStudentRecordSection);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RegistrarViewStudentRecordSection);

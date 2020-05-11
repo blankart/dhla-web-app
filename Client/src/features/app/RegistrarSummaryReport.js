@@ -32,7 +32,7 @@ import {
   Badge,
 } from 'tabler-react';
 import { Link } from 'react-router-dom';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 import ViewEditLog from './ViewEditLog';
 const { Option } = AutoComplete;
 
@@ -124,13 +124,14 @@ export class RegistrarSummaryReport extends Component {
 
   render() {
     const { locked } = this.props;
-    const color = this.state.trans == 50 ? 'yellow' : this.state.trans == 55 ? 'orange' : 'green';
     let displayData = [];
     for (const [index, value] of this.state.data.entries()) {
       displayData.push(
         <Table.Row>
           <Table.Col className="w-1">
-            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)} />
+            <Avatar
+              imageURL={value.imageUrl == 'NA' ? getPlaceholder() : getImageUrl(value.imageUrl)}
+            />
           </Table.Col>
           <Table.Col>{value.name}</Table.Col>
           {/* <Table.Col alignContent="center">
@@ -153,19 +154,16 @@ export class RegistrarSummaryReport extends Component {
             </b>
           </Table.Col>
           <Table.Col alignContent="center">
-            <span className="status-icon bg-yellow" />
             {value.transmutedGrade50 == -1
               ? 'Not yet available'
               : Number(Math.round(value.transmutedGrade50 + 'e2') + 'e-2')}
           </Table.Col>
           <Table.Col alignContent="center">
-            <span className="status-icon bg-orange" />
             {value.transmutedGrade55 == -1
               ? 'Not yet available'
               : Number(Math.round(value.transmutedGrade55 + 'e2') + 'e-2')}
           </Table.Col>
           <Table.Col alignContent="center">
-            <span className="status-icon bg-green" />
             {value.transmutedGrade60 == -1
               ? 'Not yet available'
               : Number(Math.round(value.transmutedGrade60 + 'e2') + 'e-2')}
@@ -173,7 +171,7 @@ export class RegistrarSummaryReport extends Component {
           <Table.Col style={{ color: 'red' }} alignContent="center">
             <b>
               <Text color={value.finalGrade < 75 ? 'red' : 'black'}>
-                <span className={`status-icon bg-${color} `} />
+                <span className={`status-icon bg-${value.finalGrade < 75 ? 'red' : 'green'} `} />
                 {value.finalGrade == -1
                   ? 'Not yet available'
                   : Number(Math.round(value.finalGrade + 'e2') + 'e-2')}
@@ -481,11 +479,14 @@ export class RegistrarSummaryReport extends Component {
           </Card.Body>
           <Card.Footer>
             <Button.List align="right">
-              <ViewEditLog
-                classRecordID={this.props.classRecordID}
-                quarter={this.state.quarter}
-                position="Registrar"
-              />
+              {(this.props.app.auth.user.position == 2 ||
+                this.props.app.auth.user.position == 3) && (
+                <ViewEditLog
+                  classRecordID={this.props.classRecordID}
+                  quarter={this.state.quarter}
+                  position="Registrar"
+                />
+              )}
             </Button.List>
           </Card.Footer>
         </Card>
@@ -508,4 +509,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegistrarSummaryReport);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RegistrarSummaryReport);

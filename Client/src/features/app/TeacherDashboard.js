@@ -8,7 +8,7 @@ import cn from 'classnames';
 import placeholder from '../../images/placeholder.jpg';
 import { Spin } from 'antd';
 import bg from '../../images/BG.png';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 function ProfileImage({ avatarURL }) {
   return <img className="card-profile-img" alt="Profile" src={avatarURL} />;
 }
@@ -208,7 +208,7 @@ export class TeacherDashboard extends Component {
               <Grid.Col sm={12} lg={4}>
                 <Profile
                   name={`${firstName} ${middleName.charAt(0).toUpperCase()}. ${lastName}`}
-                  avatarURL={imageUrl === 'NA' ? placeholder : getImageUrl(imageUrl)}
+                  avatarURL={imageUrl === 'NA' ? getPlaceholder() : getImageUrl(imageUrl)}
                   backgroundURL={bg}
                 >
                   <div>
@@ -544,4 +544,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeacherDashboard);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(TeacherDashboard);

@@ -5,10 +5,9 @@ import { connect } from 'react-redux';
 import * as actions from './redux/actions';
 import { Container, Grid, Card, Button, Form, Header } from 'tabler-react';
 import cn from 'classnames';
-import placeholder from '../../images/placeholder.jpg';
 import { Spin } from 'antd';
 import bg from '../../images/BG.png';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 import RestrictAccount from './RestrictAccount';
 function ProfileImage({ avatarURL }) {
   return <img className="card-profile-img" alt="Profile" src={avatarURL} />;
@@ -208,7 +207,7 @@ export class CashierDashboard extends Component {
             <Grid.Col xs={12} md={12} md={5}>
               <Profile
                 name={`${firstName} ${middleName.charAt(0).toUpperCase()}. ${lastName}`}
-                avatarURL={imageUrl === 'NA' ? placeholder : getImageUrl(imageUrl)}
+                avatarURL={imageUrl === 'NA' ? getPlaceholder() : getImageUrl(imageUrl)}
                 backgroundURL={bg}
               >
                 <div>
@@ -240,4 +239,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CashierDashboard);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(CashierDashboard);

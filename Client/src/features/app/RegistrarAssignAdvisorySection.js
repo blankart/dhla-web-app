@@ -7,7 +7,7 @@ import { Card, Button, Grid, Table, Form, Container, Avatar } from 'tabler-react
 import { Pagination, Spin, Breadcrumb, Modal } from 'antd';
 import axios from 'axios';
 import { Popconfirm, Input, message, AutoComplete } from 'antd';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 import placeholder from '../../images/placeholder.jpg';
 const { Option } = AutoComplete;
 
@@ -89,7 +89,7 @@ export class RegistrarAssignAdvisorySection extends Component {
             <Option key={data.key} text={data.name}>
               <div>
                 <Avatar
-                  imageURL={data.imageUrl == 'NA' ? placeholder : getImageUrl(data.imageUrl)}
+                  imageURL={data.imageUrl == 'NA' ? getPlaceholder() : getImageUrl(data.imageUrl)}
                 />
                 <span style={{ margin: '16px', verticalAlign: 'text-top' }}>{data.name}</span>
               </div>
@@ -407,4 +407,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegistrarAssignAdvisorySection);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RegistrarAssignAdvisorySection);

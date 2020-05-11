@@ -4,15 +4,20 @@ const UserAccount = require("../../models/UserAccount");
 const Nonacademic = require("../../models/Nonacademic");
 const Teacher = require("../../models/Teacher");
 const Student = require("../../models/Student");
+const TeacherSection = require("../../models/TeacherSection");
 const ParentGuardian = require("../../models/ParentGuardian");
 const Subject = require("../../models/Subject");
 const Component = require("../../models/Component");
+const SubjectSection = require("../../models/SubjectSection");
+const StudentSection = require("../../models/StudentSection");
+const SubjectSectionStudent = require("../../models/SubjectSectionStudent");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const key = require("../../config/key");
 const passport = require("passport");
 const multer = require("multer");
 const fs = require("fs");
+const gm = require("gm");
 
 // Input Validation
 const validateAdminCreateInput = require("../../validation/register");
@@ -28,14 +33,8 @@ const utils = require("../../utils");
 // @access Private
 
 router.post("/createAdmin", (req, res) => {
-  const {
-    email,
-    password
-  } = req.body;
-  const {
-    errors,
-    isValid
-  } = validateAdminCreateInput(req.body);
+  const { email, password } = req.body;
+  const { errors, isValid } = validateAdminCreateInput(req.body);
 
   // Validation Process
   if (!isValid) {
@@ -44,9 +43,9 @@ router.post("/createAdmin", (req, res) => {
 
   UserAccount.findOne({
     where: {
-      email
-    }
-  }).then(user => {
+      email,
+    },
+  }).then((user) => {
     if (user) {
       errors.email = "Email already exists";
       return res.status(400).json(errors);
@@ -59,16 +58,16 @@ router.post("/createAdmin", (req, res) => {
               email,
               password: hash,
               isActive: 1,
-              position: 0
+              position: 0,
             })
-            .then(user => {
+            .then((user) => {
               utils
                 .createNonAcademic({
-                  accountID: user.accountID
+                  accountID: user.accountID,
                 })
-                .then(user => {
+                .then((user) => {
                   res.json({
-                    msg: "Account created successfully!"
+                    msg: "Account created successfully!",
                   });
                 });
             });
@@ -83,14 +82,8 @@ router.post("/createAdmin", (req, res) => {
 // @access Public
 
 router.post("/login", (req, res) => {
-  const {
-    email,
-    password
-  } = req.body;
-  const {
-    errors,
-    isValid
-  } = validateLoginInput(req.body);
+  const { email, password } = req.body;
+  const { errors, isValid } = validateLoginInput(req.body);
 
   if (!isValid) {
     return res.status(400).json(errors);
@@ -98,14 +91,14 @@ router.post("/login", (req, res) => {
   if (email && password) {
     UserAccount.findOne({
       where: {
-        email
-      }
-    }).then(user => {
+        email,
+      },
+    }).then((user) => {
       if (!user) {
         errors.email = "User account not found!";
         res.status(400).json(errors);
       } else {
-        bcrypt.compare(password, user.password).then(isMatch => {
+        bcrypt.compare(password, user.password).then((isMatch) => {
           if (isMatch) {
             switch (user.position) {
               case false:
@@ -114,32 +107,35 @@ router.post("/login", (req, res) => {
               case 6:
                 Nonacademic.findOne({
                   where: {
-                    accountID: user.accountID
-                  }
-                }).then(async user2 => {
+                    accountID: user.accountID,
+                  },
+                }).then(async (user2) => {
                   const payload = {
                     accountID: user.accountID,
                     email: user.email,
                     position: user.position,
-                    facultyID: user2.facultyID
+                    facultyID: user2.facultyID,
                   };
 
                   if (!user.isActive) {
                     errors.isActive =
                       "Account is disabled. Please contact your school cashier for details.";
-                    errors.notice = await utils.getAccountNoticeByAccountID(user.accountID)
+                    errors.notice = await utils.getAccountNoticeByAccountID(
+                      user.accountID
+                    );
                     res.status(400).json(errors);
                   }
 
                   // Sign Nonacademic Token
                   jwt.sign(
                     payload,
-                    key.secretKey, {
-                      expiresIn: "2 days"
+                    key.secretKey,
+                    {
+                      expiresIn: "2 days",
                     },
                     (err, token) => {
                       res.json({
-                        token: "Bearer " + token
+                        token: "Bearer " + token,
                       });
                     }
                   );
@@ -148,101 +144,176 @@ router.post("/login", (req, res) => {
               case 3:
                 Teacher.findOne({
                   where: {
-                    accountID: user.accountID
-                  }
-                }).then(async user2 => {
+                    accountID: user.accountID,
+                  },
+                }).then(async (user2) => {
                   const payload = {
                     accountID: user.accountID,
                     email: user.email,
                     position: user.position,
                     teacherID: user2.teacherID,
-                    isAdviser: user2.isAdviser
+                    isAdviser: user2.isAdviser,
                   };
 
                   if (!user.isActive) {
                     errors.isActive =
                       "Account is disabled. Please contact your school cashier for details.";
-                    errors.notice = await utils.getAccountNoticeByAccountID(user.accountID)
+                    errors.notice = await utils.getAccountNoticeByAccountID(
+                      user.accountID
+                    );
                     res.status(400).json(errors);
                   }
-
-                  // Sign Teacher Token
-                  jwt.sign(
-                    payload,
-                    key.secretKey, {
-                      expiresIn: "2 days"
+                  const { schoolYearID } = await utils.getActiveSY();
+                  SubjectSection.findOne({
+                    where: {
+                      teacherID: payload.teacherID,
+                      schoolYearID,
                     },
-                    (err, token) => {
-                      res.json({
-                        token: "Bearer " + token
+                  }).then(async (ss) => {
+                    if (ss) {
+                      let section;
+                      let schoolYear;
+                      let sectionID;
+                      let schoolYearID;
+                      let isAdviser = await TeacherSection.findOne({
+                        where: { teacherID: payload.teacherID },
+                      }).then(async (ts) => {
+                        if (ts) {
+                          schoolYearID = ts.schoolYearID;
+                          sectionID = ts.sectionID;
+                          section = await utils.getSectionName(ts.sectionID);
+                          schoolYear = await utils.getSYname(ts.schoolYearID);
+                          return true;
+                        } else {
+                          return false;
+                        }
+                      });
+                      payload.isAdviser = isAdviser;
+                      if (isAdviser) {
+                        payload.sectionName = section;
+                        payload.schoolYear = schoolYear;
+                        payload.sectionID = sectionID;
+                        payload.schoolYearID = schoolYearID;
+                      }
+                      jwt.sign(
+                        payload,
+                        key.secretKey,
+                        {
+                          expiresIn: "2 days",
+                        },
+                        (err, token) => {
+                          res.json({
+                            token: "Bearer " + token,
+                          });
+                        }
+                      );
+                    } else {
+                      res.status(400).json({
+                        msg:
+                          "You are not currently assigned to any subject for teaching. Wait for your school registrar to assign subject load for you to access the system.",
                       });
                     }
-                  );
+                  });
+                  // Sign Teacher Token
                 });
                 break;
               case 4:
                 Student.findOne({
                   where: {
-                    accountID: user.accountID
-                  }
-                }).then(async user2 => {
+                    accountID: user.accountID,
+                  },
+                }).then(async (user2) => {
                   const payload = {
                     accountID: user.accountID,
                     email: user.email,
                     position: user.position,
-                    studentID: user2.studentID
+                    studentID: user2.studentID,
                   };
 
                   if (!user.isActive) {
                     errors.isActive =
                       "Account is disabled. Please contact your school cashier for details.";
-                    errors.notice = await utils.getAccountNoticeByAccountID(user.accountID)
+                    errors.notice = await utils.getAccountNoticeByAccountID(
+                      user.accountID
+                    );
                     res.status(400).json(errors);
                   }
 
-                  // Sign Student Token
-                  jwt.sign(
-                    payload,
-                    key.secretKey, {
-                      expiresIn: "2 days"
+                  const { schoolYearID } = await utils.getActiveSY();
+                  StudentSection.findOne({
+                    where: {
+                      schoolYearID,
+                      studentID: payload.studentID,
                     },
-                    (err, token) => {
-                      res.json({
-                        token: "Bearer " + token
+                  }).then(async (ss) => {
+                    if (ss) {
+                      SubjectSectionStudent.findOne({
+                        where: {
+                          studsectID: ss.studsectID,
+                        },
+                      }).then((ss2) => {
+                        if (ss2) {
+                          // Sign Student Token
+                          jwt.sign(
+                            payload,
+                            key.secretKey,
+                            {
+                              expiresIn: "2 days",
+                            },
+                            (err, token) => {
+                              res.json({
+                                token: "Bearer " + token,
+                              });
+                            }
+                          );
+                        } else {
+                          res.status(400).json({
+                            msg:
+                              "You are not currently enrolled to any subject this school year. Wait for your school registrar to enroll you in a subject.",
+                          });
+                        }
+                      });
+                    } else {
+                      res.status(400).json({
+                        msg:
+                          "You are not currently enrolled to any section this school year. Wait for your school registrar to enroll you in a section.",
                       });
                     }
-                  );
+                  });
                 });
                 break;
               case 5:
                 ParentGuardian.findOne({
                   where: {
-                    accountID: user.accountID
-                  }
-                }).then(async user2 => {
+                    accountID: user.accountID,
+                  },
+                }).then(async (user2) => {
                   const payload = {
                     accountID: user.accountID,
                     email: user.email,
                     position: user.position,
-                    parentID: user2.parentID
+                    parentID: user2.parentID,
                   };
 
                   if (!user.isActive) {
                     errors.isActive =
                       "Account is disabled. Please contact your school cashier for details.";
-                    errors.notice = await utils.getAccountNoticeByAccountID(user.accountID)
+                    errors.notice = await utils.getAccountNoticeByAccountID(
+                      user.accountID
+                    );
                     res.status(400).json(errors);
                   }
 
                   // Sign ParentGuardian Token
                   jwt.sign(
                     payload,
-                    key.secretKey, {
-                      expiresIn: "2 days"
+                    key.secretKey,
+                    {
+                      expiresIn: "2 days",
                     },
                     (err, token) => {
                       res.json({
-                        token: "Bearer " + token
+                        token: "Bearer " + token,
                       });
                     }
                   );
@@ -268,18 +339,15 @@ router.post("/login", (req, res) => {
 router.get(
   "/profile",
   passport.authenticate("jwt", {
-    session: false
+    session: false,
   }),
   (req, res) => {
-    const {
-      accountID,
-      position
-    } = req.user;
+    const { accountID, position } = req.user;
     UserAccount.findOne({
       where: {
-        accountID
-      }
-    }).then(user => {
+        accountID,
+      },
+    }).then((user) => {
       const payload = {
         firstName: user.firstName,
         lastName: user.lastName,
@@ -304,7 +372,7 @@ router.get(
         emergencyTelephone: user.emergencyTelephone,
         emergencyCellphone: user.emergencyCellphone,
         emergencyEmail: user.emergencyEmail,
-        emergencyRelationship: user.emergencyRelationship
+        emergencyRelationship: user.emergencyRelationship,
       };
       if (
         position == false ||
@@ -315,33 +383,31 @@ router.get(
         // Get Nonacademic's Profile
         Nonacademic.findOne({
           where: {
-            accountID
-          }
-        }).then(user2 => {
-          res.json({...payload,
-            facultyID: user2.faultyID
-          });
+            accountID,
+          },
+        }).then((user2) => {
+          res.json({ ...payload, facultyID: user2.faultyID });
         });
       } else if (position == 3) {
         // Get Teacher's Profile
         Teacher.findOne({
           where: {
-            accountID
-          }
-        }).then(user2 => {
+            accountID,
+          },
+        }).then((user2) => {
           res.json({
             ...payload,
             teacherID: user2.teacherID,
-            isActiver: user2.isAdviser
+            isActiver: user2.isAdviser,
           });
         });
       } else if (position == 4) {
         // Get Student's Profile
         Student.findOne({
           where: {
-            accountID
-          }
-        }).then(user2 => {
+            accountID,
+          },
+        }).then((user2) => {
           res.json({
             ...payload,
             studentID: user2.studentID,
@@ -358,20 +424,20 @@ router.get(
             motherOccupation: user2.motherOccupation,
             motherEmployer: user2.motherEmployer,
             motherBusinessAdd: user2.motherBusinessAdd,
-            motherOfficeNum: user2.motherOfficeNum
+            motherOfficeNum: user2.motherOfficeNum,
           });
         });
       } else {
         // Get Parent's Profile
         ParentGuardian.findOne({
           where: {
-            accountID
-          }
-        }).then(user2 => {
+            accountID,
+          },
+        }).then((user2) => {
           res.json({
             ...payload,
             parentID: user2.parentID,
-            studentID: user.studentID
+            studentID: user.studentID,
           });
         });
       }
@@ -399,43 +465,46 @@ const storage = multer.diskStorage({
       filetype = "jpg";
     }
     cb(null, "image-" + Date.now() + "." + filetype);
-  }
+  },
 });
 
 const upload = multer({
-  storage
+  storage,
 });
 router.post(
   "/upload",
   upload.single("file"),
   passport.authenticate("jwt", {
-    session: false
+    session: false,
   }),
   (req, res) => {
     if (!req.file) {
       res.status(500);
     } else {
-      const {
-        accountID
-      } = req.user;
+      const { accountID } = req.user;
       UserAccount.findOne({
         where: {
-          accountID
-        }
-      }).then(user => {
+          accountID,
+        },
+      }).then((user) => {
         try {
           fs.unlinkSync(`./public/${user.imageUrl}`);
         } catch (err) {
           console.log(err);
         }
-        user
-          .update({
-            imageUrl: "images/" + req.file.filename
-          })
-          .then(result => {
-            res.status(200).json({
-              msg: "Success"
-            });
+        gm(`\\${req.file.path}`)
+          .crop(0, 0, 200, 200)
+          .write("..\\..\\public\\images", (err) => {
+            if (err) console.log(err);
+            user
+              .update({
+                imageUrl: "images/" + req.file.filename,
+              })
+              .then((result) => {
+                res.status(200).json({
+                  msg: "Success",
+                });
+              });
           });
       });
     }
@@ -449,24 +518,18 @@ router.post(
 router.post(
   "/changepassword",
   passport.authenticate("jwt", {
-    session: false
+    session: false,
   }),
   (req, res) => {
-    const {
-      password,
-      currentPassword
-    } = req.body;
-    const {
-      errors,
-      isValid
-    } = validateChangePassword(req.body);
+    const { password, currentPassword } = req.body;
+    const { errors, isValid } = validateChangePassword(req.body);
 
     UserAccount.findOne({
       where: {
-        accountID: req.user.accountID
-      }
-    }).then(user => {
-      bcrypt.compare(currentPassword, user.password).then(isMatch => {
+        accountID: req.user.accountID,
+      },
+    }).then((user) => {
+      bcrypt.compare(currentPassword, user.password).then((isMatch) => {
         if (isMatch) {
           if (!isValid) {
             return res.status(400).json(errors);
@@ -474,19 +537,21 @@ router.post(
           bcrypt.genSalt(10, (err, salt) => {
             bcrypt.hash(password, salt, (err, hash) => {
               if (err) throw err;
-              user.update({
-                password: hash
-              }).then(() => {
-                res.status(200).json({
-                  msg: "Password updated successfully!"
+              user
+                .update({
+                  password: hash,
+                })
+                .then(() => {
+                  res.status(200).json({
+                    msg: "Password updated successfully!",
+                  });
                 });
-              });
             });
           });
         } else {
-          errors.currentPassword = isEmpty(currentPassword) ?
-            "Current password field is required" :
-            "Password incorrect";
+          errors.currentPassword = isEmpty(currentPassword)
+            ? "Current password field is required"
+            : "Password incorrect";
           return res.status(400).json(errors);
         }
       });
@@ -522,7 +587,7 @@ router.get("/populateweights", (req, res) => {
     20,
     21,
     22,
-    23
+    23,
   ];
   const nonSHSAPIDs = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51];
   const nonSHSEsPIDs = [52, 53, 54, 55, 56, 57, 58, 59, 60, 61];
@@ -568,7 +633,7 @@ router.get("/populateweights", (req, res) => {
     98,
     99,
     100,
-    101
+    101,
   ];
   const nonSHSEPPTLEIDs = [102, 103, 104, 105, 106, 107, 108];
   const SHSCoreIDs = [
@@ -588,7 +653,7 @@ router.get("/populateweights", (req, res) => {
     122,
     123,
     124,
-    125
+    125,
   ];
   const SHSAcadSpecializedIDs = [];
   const SHSAcadAppliedIDs = [];
@@ -604,352 +669,352 @@ router.get("/populateweights", (req, res) => {
     Component.create({
       subjectID: nonSHSLanguageIDs[i],
       component: "FA",
-      compWeight: 0
+      compWeight: 0,
     });
     Component.create({
       subjectID: nonSHSLanguageIDs[i],
       component: "WW",
-      compWeight: 30
+      compWeight: 30,
     });
     Component.create({
       subjectID: nonSHSLanguageIDs[i],
       component: "PT",
-      compWeight: 50
+      compWeight: 50,
     });
     Component.create({
       subjectID: nonSHSLanguageIDs[i],
       component: "QE",
-      compWeight: 20
+      compWeight: 20,
     });
   }
   for (i = 0; i < nonSHSAPIDs.length; i++) {
     Component.create({
       subjectID: nonSHSAPIDs[i],
       component: "FA",
-      compWeight: 0
+      compWeight: 0,
     });
     Component.create({
       subjectID: nonSHSAPIDs[i],
       component: "WW",
-      compWeight: 30
+      compWeight: 30,
     });
     Component.create({
       subjectID: nonSHSAPIDs[i],
       component: "PT",
-      compWeight: 50
+      compWeight: 50,
     });
     Component.create({
       subjectID: nonSHSAPIDs[i],
       component: "QE",
-      compWeight: 20
+      compWeight: 20,
     });
   }
   for (i = 0; i < nonSHSEsPIDs.length; i++) {
     Component.create({
       subjectID: nonSHSEsPIDs[i],
       component: "FA",
-      compWeight: 0
+      compWeight: 0,
     });
     Component.create({
       subjectID: nonSHSEsPIDs[i],
       component: "WW",
-      compWeight: 30
+      compWeight: 30,
     });
     Component.create({
       subjectID: nonSHSEsPIDs[i],
       component: "PT",
-      compWeight: 50
+      compWeight: 50,
     });
     Component.create({
       subjectID: nonSHSEsPIDs[i],
       component: "QE",
-      compWeight: 20
+      compWeight: 20,
     });
   }
   for (i = 0; i < nonSHSScienceIDs.length; i++) {
     Component.create({
       subjectID: nonSHSScienceIDs[i],
       component: "FA",
-      compWeight: 0
+      compWeight: 0,
     });
     Component.create({
       subjectID: nonSHSScienceIDs[i],
       component: "WW",
-      compWeight: 40
+      compWeight: 40,
     });
     Component.create({
       subjectID: nonSHSScienceIDs[i],
       component: "PT",
-      compWeight: 40
+      compWeight: 40,
     });
     Component.create({
       subjectID: nonSHSScienceIDs[i],
       component: "QE",
-      compWeight: 20
+      compWeight: 20,
     });
   }
   for (i = 0; i < nonSHSMathIDs.length; i++) {
     Component.create({
       subjectID: nonSHSMathIDs[i],
       component: "FA",
-      compWeight: 0
+      compWeight: 0,
     });
     Component.create({
       subjectID: nonSHSMathIDs[i],
       component: "WW",
-      compWeight: 40
+      compWeight: 40,
     });
     Component.create({
       subjectID: nonSHSMathIDs[i],
       component: "PT",
-      compWeight: 40
+      compWeight: 40,
     });
     Component.create({
       subjectID: nonSHSMathIDs[i],
       component: "QE",
-      compWeight: 20
+      compWeight: 20,
     });
   }
   for (i = 0; i < nonSHSMAPEHIDs.length; i++) {
     Component.create({
       subjectID: nonSHSMAPEHIDs[i],
       component: "FA",
-      compWeight: 0
+      compWeight: 0,
     });
     Component.create({
       subjectID: nonSHSMAPEHIDs[i],
       component: "WW",
-      compWeight: 20
+      compWeight: 20,
     });
     Component.create({
       subjectID: nonSHSMAPEHIDs[i],
       component: "PT",
-      compWeight: 60
+      compWeight: 60,
     });
     Component.create({
       subjectID: nonSHSMAPEHIDs[i],
       component: "QE",
-      compWeight: 20
+      compWeight: 20,
     });
   }
   for (i = 0; i < nonSHSEPPTLEIDs.length; i++) {
     Component.create({
       subjectID: nonSHSEPPTLEIDs[i],
       component: "FA",
-      compWeight: 0
+      compWeight: 0,
     });
     Component.create({
       subjectID: nonSHSEPPTLEIDs[i],
       component: "WW",
-      compWeight: 20
+      compWeight: 20,
     });
     Component.create({
       subjectID: nonSHSEPPTLEIDs[i],
       component: "PT",
-      compWeight: 60
+      compWeight: 60,
     });
     Component.create({
       subjectID: nonSHSEPPTLEIDs[i],
       component: "QE",
-      compWeight: 20
+      compWeight: 20,
     });
   }
   for (i = 0; i < SHSCoreIDs.length; i++) {
     Component.create({
       subjectID: SHSCoreIDs[i],
       component: "FA",
-      compWeight: 0
+      compWeight: 0,
     });
     Component.create({
       subjectID: SHSCoreIDs[i],
       component: "WW",
-      compWeight: 25
+      compWeight: 25,
     });
     Component.create({
       subjectID: SHSCoreIDs[i],
       component: "PT",
-      compWeight: 50
+      compWeight: 50,
     });
     Component.create({
       subjectID: SHSCoreIDs[i],
       component: "QE",
-      compWeight: 25
+      compWeight: 25,
     });
   }
   for (i = 0; i < SHSAcadSpecializedIDs.length; i++) {
     Component.create({
       subjectID: SHSAcadSpecializedIDs[i],
       component: "FA",
-      compWeight: 0
+      compWeight: 0,
     });
     Component.create({
       subjectID: SHSAcadSpecializedIDs[i],
       component: "WW",
-      compWeight: 25
+      compWeight: 25,
     });
     Component.create({
       subjectID: SHSAcadSpecializedIDs[i],
       component: "PT",
-      compWeight: 45
+      compWeight: 45,
     });
     Component.create({
       subjectID: SHSAcadSpecializedIDs[i],
       component: "QE",
-      compWeight: 30
+      compWeight: 30,
     });
   }
   for (i = 0; i < SHSAcadAppliedIDs.length; i++) {
     Component.create({
       subjectID: SHSAcadAppliedIDs[i],
       component: "FA",
-      compWeight: 0
+      compWeight: 0,
     });
     Component.create({
       subjectID: SHSAcadAppliedIDs[i],
       component: "WW",
-      compWeight: 35
+      compWeight: 35,
     });
     Component.create({
       subjectID: SHSAcadAppliedIDs[i],
       component: "PT",
-      compWeight: 40
+      compWeight: 40,
     });
     Component.create({
       subjectID: SHSAcadAppliedIDs[i],
       component: "QE",
-      compWeight: 25
+      compWeight: 25,
     });
   }
   for (i = 0; i < SHSTVLSpecializedIDs.length; i++) {
     Component.create({
       subjectID: SHSTVLSpecializedIDs[i],
       component: "FA",
-      compWeight: 0
+      compWeight: 0,
     });
     Component.create({
       subjectID: SHSTVLSpecializedIDs[i],
       component: "WW",
-      compWeight: 20
+      compWeight: 20,
     });
     Component.create({
       subjectID: SHSTVLSpecializedIDs[i],
       component: "PT",
-      compWeight: 60
+      compWeight: 60,
     });
     Component.create({
       subjectID: SHSTVLSpecializedIDs[i],
       component: "QE",
-      compWeight: 20
+      compWeight: 20,
     });
   }
   for (i = 0; i < SHSTVLAppliedIDs.length; i++) {
     Component.create({
       subjectID: SHSTVLAppliedIDs[i],
       component: "FA",
-      compWeight: 0
+      compWeight: 0,
     });
     Component.create({
       subjectID: SHSTVLAppliedIDs[i],
       component: "WW",
-      compWeight: 20
+      compWeight: 20,
     });
     Component.create({
       subjectID: SHSTVLAppliedIDs[i],
       component: "PT",
-      compWeight: 60
+      compWeight: 60,
     });
     Component.create({
       subjectID: SHSTVLAppliedIDs[i],
       component: "QE",
-      compWeight: 20
+      compWeight: 20,
     });
   }
   for (i = 0; i < SHSSportsAppliedIDs.length; i++) {
     Component.create({
       subjectID: SHSSportsAppliedIDs[i],
       component: "FA",
-      compWeight: 0
+      compWeight: 0,
     });
     Component.create({
       subjectID: SHSSportsAppliedIDs[i],
       component: "WW",
-      compWeight: 20
+      compWeight: 20,
     });
     Component.create({
       subjectID: SHSSportsAppliedIDs[i],
       component: "PT",
-      compWeight: 60
+      compWeight: 60,
     });
     Component.create({
       subjectID: SHSSportsAppliedIDs[i],
       component: "QE",
-      compWeight: 20
+      compWeight: 20,
     });
   }
   for (i = 0; i < SHSSportsSpecializedIDs.length; i++) {
     Component.create({
       subjectID: SHSSportsSpecializedIDs[i],
       component: "FA",
-      compWeight: 0
+      compWeight: 0,
     });
     Component.create({
       subjectID: SHSSportsSpecializedIDs[i],
       component: "WW",
-      compWeight: 20
+      compWeight: 20,
     });
     Component.create({
       subjectID: SHSSportsSpecializedIDs[i],
       component: "PT",
-      compWeight: 60
+      compWeight: 60,
     });
     Component.create({
       subjectID: SHSSportsSpecializedIDs[i],
       component: "QE",
-      compWeight: 20
+      compWeight: 20,
     });
   }
   for (i = 0; i < SHSAADAppliedIDs.length; i++) {
     Component.create({
       subjectID: SHSAADAppliedIDs[i],
       component: "FA",
-      compWeight: 0
+      compWeight: 0,
     });
     Component.create({
       subjectID: SHSAADAppliedIDs[i],
       component: "WW",
-      compWeight: 20
+      compWeight: 20,
     });
     Component.create({
       subjectID: SHSAADAppliedIDs[i],
       component: "PT",
-      compWeight: 60
+      compWeight: 60,
     });
     Component.create({
       subjectID: SHSAADAppliedIDs[i],
       component: "QE",
-      compWeight: 20
+      compWeight: 20,
     });
   }
   for (i = 0; i < SHSAADSpecializedIDs.length; i++) {
     Component.create({
       subjectID: SHSAADSpecializedIDs[i],
       component: "FA",
-      compWeight: 0
+      compWeight: 0,
     });
     Component.create({
       subjectID: SHSAADSpecializedIDs[i],
       component: "WW",
-      compWeight: 20
+      compWeight: 20,
     });
     Component.create({
       subjectID: SHSAADSpecializedIDs[i],
       component: "PT",
-      compWeight: 60
+      compWeight: 60,
     });
     Component.create({
       subjectID: SHSAADSpecializedIDs[i],
       component: "QE",
-      compWeight: 20
+      compWeight: 20,
     });
   }
 });

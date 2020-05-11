@@ -9,9 +9,8 @@ import axios from 'axios';
 import { Pagination, Spin, Tooltip, Descriptions, Typography } from 'antd';
 import { Modal, Popconfirm, Search, Breadcrumb, AutoComplete, Input, message, Empty } from 'antd';
 import cn from 'classnames';
-import placeholder from '../../images/placeholder.jpg';
 import bg from '../../images/BG.png';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 const { Option } = AutoComplete;
 
 export class ClassRecordInformation extends Component {
@@ -73,28 +72,29 @@ export class ClassRecordInformation extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.classRecordID != -1) {
+    if (nextProps.classRecordID != -1 && this.props.quarter == nextProps.quarter) {
       this.setState({ isLoading: true });
       axios
         .post('api/registrar/getclassrecinfo', {
           classRecordID: nextProps.classRecordID,
           quarter: nextProps.quarter,
-          page: this.state.page,
+          page: 1,
           pageSize: this.state.pageSize,
         })
         .then(res => {
           this.setState({
             isLoading: false,
             hasData: true,
+            page: 1,
             data: res.data.studentList,
             numOfPages: res.data.numOfPages,
           });
         })
         .catch(err => {
-          this.setState({ isLoading: false, hasData: true, data: [], numOfPages: 1 });
+          this.setState({ isLoading: false, hasData: true, data: [], numOfPages: 1, page: 1 });
         });
     } else {
-      this.setState({ hasData: false, data: [] });
+      this.setState({ hasData: false, data: [], page: 1 });
     }
   }
 
@@ -116,7 +116,7 @@ export class ClassRecordInformation extends Component {
           });
         })
         .catch(err => {
-          this.setState({ isLoading: false, hasData: true, data: [], numOfPages: 1 });
+          this.setState({ isLoading: false, hasData: true, data: [], numOfPages: 1, page: 1 });
         });
     });
   };
@@ -124,15 +124,87 @@ export class ClassRecordInformation extends Component {
   render() {
     const DisplayData = [];
     for (const [index, value] of this.state.data.entries()) {
+      let check = value.q1Grade
+        ? value.q2Grade
+          ? value.q3Grade
+            ? 'q3Grade'
+            : 'q2Grade'
+          : 'q1Grade'
+        : '';
       DisplayData.push(
         <Table.Row>
           <Table.Col className="w-1">
-            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)} />
+            <Avatar
+              imageURL={value.imageUrl == 'NA' ? getPlaceholder() : getImageUrl(value.imageUrl)}
+            />
           </Table.Col>
           <Table.Col>{value.name}</Table.Col>
           <Table.Col alignContent="center">
-            {value.grade == -1 ? 'Not yet available' : value.grade}
+            {(value.grade != -1 || value.grade != 'N/A') && (
+              <span
+                className={`status-icon bg-${parseFloat(value.grade) >= 75 ? 'green' : 'red'}`}
+              />
+            )}
+            {value.grade == -1 ? 'N/A' : value.grade}
           </Table.Col>
+          {check != '' && (
+            <Table.Col alignContent="center">
+              {value[check] == -1 ? (
+                'N/A'
+              ) : (
+                <React.Fragment>
+                  <span
+                    className={`status-icon bg-${
+                      parseFloat(value.grade) - parseFloat(value[check]) >= 0 ? 'green' : 'red'
+                    }`}
+                  />
+                  {parseFloat(value.grade) - parseFloat(value[check])}
+                </React.Fragment>
+              )}
+            </Table.Col>
+          )}
+          {value.q3Grade && (
+            <React.Fragment>
+              <Table.Col alignContent="center">
+                {value.q3Grade && (value.q3Grade != -1 || value.q3Grade != 'N/A') && (
+                  <span
+                    className={`status-icon bg-${
+                      parseFloat(value.q3Grade) >= 75 ? 'green' : 'red'
+                    }`}
+                  />
+                )}
+                {value.q3Grade == -1 ? 'N/A' : value.q3Grade}
+              </Table.Col>
+            </React.Fragment>
+          )}
+          {value.q2Grade && (
+            <React.Fragment>
+              <Table.Col alignContent="center">
+                {value.q2Grade && (value.q2Grade != -1 || value.q2Grade != 'N/A') && (
+                  <span
+                    className={`status-icon bg-${
+                      parseFloat(value.q2Grade) >= 75 ? 'green' : 'red'
+                    }`}
+                  />
+                )}
+                {value.q2Grade == -1 ? 'N/A' : value.q2Grade}
+              </Table.Col>
+            </React.Fragment>
+          )}
+          {value.q1Grade && (
+            <React.Fragment>
+              <Table.Col alignContent="center">
+                {value.q1Grade && (value.q1Grade != -1 || value.q1Grade != 'N/A') && (
+                  <span
+                    className={`status-icon bg-${
+                      parseFloat(value.q1Grade) >= 75 ? 'green' : 'red'
+                    }`}
+                  />
+                )}
+                {value.q1Grade == -1 ? 'N/A' : value.q1Grade}
+              </Table.Col>
+            </React.Fragment>
+          )}
         </Table.Row>,
       );
     }
@@ -173,11 +245,29 @@ export class ClassRecordInformation extends Component {
                       <Table.ColHeader></Table.ColHeader>
                       <Table.ColHeader>Student Name</Table.ColHeader>
                       <Table.ColHeader alignContent="center">Final Grade</Table.ColHeader>
+                      {this.state.data.length != 0 && this.state.data[0].q1Grade && (
+                        <Table.ColHeader alignContent="center">Deliberation Column</Table.ColHeader>
+                      )}
+                      {this.state.data.length != 0 && this.state.data[0].q3Grade && (
+                        <React.Fragment>
+                          <Table.ColHeader alignContent="center">Q3 Grade</Table.ColHeader>
+                        </React.Fragment>
+                      )}
+                      {this.state.data.length != 0 && this.state.data[0].q2Grade && (
+                        <React.Fragment>
+                          <Table.ColHeader alignContent="center">Q2 Grade</Table.ColHeader>
+                        </React.Fragment>
+                      )}
+                      {this.state.data.length != 0 && this.state.data[0].q1Grade && (
+                        <React.Fragment>
+                          <Table.ColHeader alignContent="center">Q1 Grade</Table.ColHeader>
+                        </React.Fragment>
+                      )}
                     </Table.Header>
                     <Table.Body>
                       {DisplayData.length == 0 ? (
                         <Table.Row>
-                          <Table.Col colSpan={3} alignContent="center">
+                          <Table.Col colSpan={5} alignContent="center">
                             No entries.
                           </Table.Col>
                         </Table.Row>
@@ -233,13 +323,15 @@ export class ClassRecordInformation extends Component {
                             View Class Record
                           </Link>
                         </Button>
-                        <Button
-                          icon="arrow-left-circle"
-                          color="danger"
-                          onClick={() => this.handleRevertToDeliberation()}
-                        >
-                          Revert to Deliberation Status
-                        </Button>
+                        {!this.props.showRevert && this.props.auth.user.position == 2 && (
+                          <Button
+                            icon="arrow-left-circle"
+                            color="danger"
+                            onClick={() => this.handleRevertToDeliberation()}
+                          >
+                            Revert to Deliberation Status
+                          </Button>
+                        )}
                       </Button.List>
                     )}
                   </Container>
@@ -259,7 +351,9 @@ export class ClassRecordInformation extends Component {
 
 /* istanbul ignore next */
 function mapStateToProps(state) {
-  return {};
+  return {
+    auth: state.app.auth,
+  };
 }
 
 /* istanbul ignore next */
@@ -269,4 +363,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ClassRecordInformation);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ClassRecordInformation);

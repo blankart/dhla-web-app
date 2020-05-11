@@ -4,12 +4,12 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from './redux/actions';
 import { Link } from 'react-router-dom';
-import { Card, Button, Grid, Table, Container, Form, Avatar } from 'tabler-react';
+import { Card, Button, Grid, Table, Container, Form, Avatar, Alert } from 'tabler-react';
 import axios from 'axios';
 import { Pagination, Spin, Tooltip, Modal } from 'antd';
 import AllStudentDeliberationGrades from './AllStudentDeliberationGrades';
 import placeholder from '../../images/placeholder.jpg';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 
 export class RegistrarGroupDeliberationInfo extends Component {
   static propTypes = {
@@ -140,7 +140,7 @@ export class RegistrarGroupDeliberationInfo extends Component {
   }
 
   handleChangeQuarter = () => {
-    this.setState({ isLoadingTable: true, isLoadingTable2: true });
+    this.setState({ isLoadingTable: true, isLoadingTable2: true, isLoadingTable3: true });
     axios
       .post('api/registrar/getsubmittedsubsectbysectionid', {
         sectionID: this.props.id,
@@ -157,6 +157,18 @@ export class RegistrarGroupDeliberationInfo extends Component {
       })
       .catch(err => {
         this.setState({ data: [], numOfPages: 1, isLoadingTable: false });
+      });
+    axios
+      .post('api/registrar/condenseddeliberationgrade', {
+        sectionID: this.props.id,
+        quarter: this.state.quarter,
+      })
+      .then(res3 => {
+        this.setState({
+          isLoadingTable3: false,
+          data3: res3.data.data,
+          columns: res3.data.columns,
+        });
       });
     axios
       .post('api/registrar/getnotsubmittedsubsectbysectionid', {
@@ -270,6 +282,11 @@ export class RegistrarGroupDeliberationInfo extends Component {
       for (const [index2, value2] of value.grades.entries()) {
         tempCol.push(
           <Table.Col>
+            {value2.grade != -1 && (
+              <span
+                className={`status-icon bg-${parseFloat(value2.grade) >= 75 ? 'green' : 'red'}`}
+              />
+            )}
             {value2.grade == -1 ? 'N/A' : value2.grade == 'N/A' ? 'Not enrolled' : value2.grade}
           </Table.Col>,
         );
@@ -277,7 +294,9 @@ export class RegistrarGroupDeliberationInfo extends Component {
       DisplayData3.push(
         <Table.Row>
           <Table.Col className="w-1">
-            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)} />
+            <Avatar
+              imageURL={value.imageUrl == 'NA' ? getPlaceholder() : getImageUrl(value.imageUrl)}
+            />
           </Table.Col>
           <Table.Col>{value.name}</Table.Col>
           {tempCol}
@@ -290,7 +309,12 @@ export class RegistrarGroupDeliberationInfo extends Component {
       );
     }
     for (const [index, value] of this.state.columns.entries()) {
-      DisplayColumns.push(<Table.ColHeader>{value}</Table.ColHeader>);
+      DisplayColumns.push(
+        <Table.ColHeader>
+          {value.status == 'F' && <span className="status-icon bg-green" />}
+          {value.subjectName}
+        </Table.ColHeader>,
+      );
     }
     DisplayColumns.push(<Table.ColHeader>Actions</Table.ColHeader>);
     for (const [index, value] of this.state.data.entries()) {
@@ -363,7 +387,7 @@ export class RegistrarGroupDeliberationInfo extends Component {
       <div className="app-registrar-individual-deliberation-info my-3 my-md-5">
         <Container>
           <Grid.Row>
-            <Grid.Col sm={12} lg={5}>
+            <Grid.Col sm={12} lg={6}>
               <Grid.Row>
                 <Container>
                   {this.state.isLoading ? (
@@ -376,22 +400,25 @@ export class RegistrarGroupDeliberationInfo extends Component {
                         </Card.Title>
                         <Grid.Row>
                           <Grid.Col sm={12} md={12} xs={12}>
-                            <Form.Group>
-                              <Form.Label>Select Quarter</Form.Label>
-                              <Form.Select
-                                onChange={e =>
-                                  this.setState({ quarter: e.target.value }, () =>
-                                    this.handleChangeQuarter(),
-                                  )
-                                }
-                                value={this.state.quarter}
-                              >
-                                <option value="Q1">Quarter 1</option>
-                                <option value="Q2">Quarter 2</option>
-                                <option value="Q3">Quarter 3</option>
-                                <option value="Q4">Quarter 4</option>
-                              </Form.Select>
-                            </Form.Group>
+                            <Spin spinning={this.state.isLoadingTable3}>
+                              {' '}
+                              <Form.Group>
+                                <Form.Label>Select Quarter</Form.Label>
+                                <Form.Select
+                                  onChange={e =>
+                                    this.setState({ quarter: e.target.value }, () =>
+                                      this.handleChangeQuarter(),
+                                    )
+                                  }
+                                  value={this.state.quarter}
+                                >
+                                  <option value="Q1">Quarter 1</option>
+                                  <option value="Q2">Quarter 2</option>
+                                  <option value="Q3">Quarter 3</option>
+                                  <option value="Q4">Quarter 4</option>
+                                </Form.Select>
+                              </Form.Group>
+                            </Spin>
                           </Grid.Col>
                           <Grid.Col sm={12} md={12} xs={12}>
                             <Spin spinning={this.state.isLoadingTable}>
@@ -427,6 +454,10 @@ export class RegistrarGroupDeliberationInfo extends Component {
                     </Card>
                   )}
                 </Container>
+              </Grid.Row>
+            </Grid.Col>
+            <Grid.Col sm={12} xs={12} md={6}>
+              <Grid.Row>
                 <Container>
                   {this.state.isLoading ? (
                     ''
@@ -477,16 +508,38 @@ export class RegistrarGroupDeliberationInfo extends Component {
                 </Container>
               </Grid.Row>
             </Grid.Col>
-            <Grid.Col sm={12} sm={7}>
+            <Grid.Col sm={12} xs={12}>
               <Grid.Row>
                 <Container>
                   <Card statusColor="info">
                     <Card.Body>
-                      <Card.Title>Condensed Grades of {this.state.sectionName}</Card.Title>
+                      <Card.Title>
+                        Condensed Grades of {this.state.sectionName} - Quarter{' '}
+                        {this.state.quarter.charAt(1)}
+                      </Card.Title>
                     </Card.Body>
                     <Card.Body>
                       <Spin spinning={this.state.isLoadingTable3}>
                         <Grid.Row>
+                          <Grid.Col sm={12} xs={12} md={12}>
+                            {' '}
+                            <Alert type="info" icon="info">
+                              Note: Column names with status color{' '}
+                              <span className="status-icon bg-green" />
+                              <b>
+                                <i>green</i>
+                              </b>{' '}
+                              are subjects which are now posted.{' '}
+                              <b>
+                                <i>'View All Student Grades'</i>
+                              </b>{' '}
+                              button shows the deliberation grade (grades under deliberation process{' '}
+                              <b>
+                                <i>included</i>
+                              </b>
+                              ) of the student in current quarter.
+                            </Alert>
+                          </Grid.Col>
                           <Table highlightRowOnHover={true} responsive={true}>
                             <Table.Header>{DisplayColumns}</Table.Header>
                             <Table.Body>{DisplayData3}</Table.Body>
@@ -519,4 +572,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegistrarGroupDeliberationInfo);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RegistrarGroupDeliberationInfo);

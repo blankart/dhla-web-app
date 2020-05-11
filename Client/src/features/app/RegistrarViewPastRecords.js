@@ -7,7 +7,7 @@ import axios from 'axios';
 import { Spin, Breadcrumb, Pagination } from 'antd';
 import { Card, Button, Grid, Avatar, Table, Form, Header, Container } from 'tabler-react';
 import placeholder from '../../images/placeholder.jpg';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 
 export class RegistrarViewPastRecords extends Component {
   static propTypes = {
@@ -157,7 +157,9 @@ export class RegistrarViewPastRecords extends Component {
       DisplayData.push(
         <Table.Row>
           <Table.Col className="w-1">
-            <Avatar imageURL={value.imageUrl == 'NA' ? placeholder : getImageUrl(value.imageUrl)} />
+            <Avatar
+              imageURL={value.imageUrl == 'NA' ? getPlaceholder() : getImageUrl(value.imageUrl)}
+            />
           </Table.Col>
           <Table.Col>{value.studentName}</Table.Col>
           <Table.Col>{value.email}</Table.Col>
@@ -266,4 +268,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegistrarViewPastRecords);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RegistrarViewPastRecords);

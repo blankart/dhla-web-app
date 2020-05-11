@@ -161,9 +161,7 @@ router.post(
             if (key == arr.length - 1) {
               UserAccount.findAndCountAll({
                   where: {
-                    accountID: {
-                      [Op.ne]: 1
-                    },
+                    position: 4,
                     [Op.or]: [{
                       firstName: {
                         [Op.like]: `%${keyword}%`

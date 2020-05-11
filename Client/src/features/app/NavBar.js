@@ -6,13 +6,13 @@ import * as actions from './redux/actions';
 import { Site, Form, Grid, Container, RouterContextProvider } from 'tabler-react';
 import { NavLink, withRouter } from 'react-router-dom';
 import DHLALogo from '../../images/logo.png';
-import { Modal } from 'antd';
+import { Modal, message } from 'antd';
 import { Spin } from 'antd';
-import placeholder from '../../images/placeholder.jpg';
 import { Header } from 'tabler-react';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
+import axios from 'axios';
 
-const showNavBarItems = position => {
+const showNavBarItems = (position, props) => {
   switch (position) {
     case false:
       // Navbar items for Administrator
@@ -32,6 +32,17 @@ const showNavBarItems = position => {
           to: '/dashboard',
           icon: 'home',
           LinkComponent: withRouter(NavLink),
+        },
+        {
+          value: 'Grades',
+          icon: 'book',
+          subItems: [
+            {
+              value: 'View Student Records',
+              to: '/viewstudentrecord',
+              LinkComponent: withRouter(NavLink),
+            },
+          ],
         },
       ];
     case 2:
@@ -109,7 +120,7 @@ const showNavBarItems = position => {
       ];
     case 3:
       // Navbar items for Teacher
-      return [
+      let nav = [
         {
           value: 'Home',
           to: '/dashboard',
@@ -127,7 +138,9 @@ const showNavBarItems = position => {
             },
           ],
         },
-        {
+      ];
+      if (props.app.auth.user.isAdviser) {
+        nav.push({
           value: 'Adviser',
           icon: 'user',
           subItems: [
@@ -136,14 +149,10 @@ const showNavBarItems = position => {
               to: '/viewadviseegrades',
               LinkComponent: withRouter(NavLink),
             },
-            {
-              value: 'View Report Cards',
-              to: '/viewreportcards',
-              LinkComponent: withRouter(NavLink),
-            },
           ],
-        },
-      ];
+        });
+      }
+      return nav;
     case 4:
       // Navbar items for Student
       return [
@@ -151,6 +160,12 @@ const showNavBarItems = position => {
           value: 'Home',
           to: '/dashboard',
           icon: 'home',
+          LinkComponent: withRouter(NavLink),
+        },
+        {
+          value: 'Grade',
+          icon: 'file',
+          to: '/viewstudentgrade',
           LinkComponent: withRouter(NavLink),
         },
       ];
@@ -161,6 +176,12 @@ const showNavBarItems = position => {
           value: 'Home',
           to: '/dashboard',
           icon: 'home',
+          LinkComponent: withRouter(NavLink),
+        },
+        {
+          value: 'Grade',
+          icon: 'file',
+          to: '/viewstudentgrade',
           LinkComponent: withRouter(NavLink),
         },
       ];
@@ -195,6 +216,7 @@ export class NavBar extends Component {
       errors: {},
       showChangePw: false,
       showLoading: true,
+      showLoading2: false,
     };
     this.logoutClick = this.logoutClick.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -204,11 +226,32 @@ export class NavBar extends Component {
   }
 
   changePassword() {
-    this.props.actions.changePassword({
-      currentPassword: this.state.currentPassword,
-      password: this.state.password,
-      password2: this.state.password2,
-    });
+    // this.props.actions.changePassword({
+    //   currentPassword: this.state.currentPassword,
+    //   password: this.state.password,
+    //   password2: this.state.password2,
+    // });
+    this.setState({ showLoading2: true });
+    axios
+      .post('api/users/changepassword', {
+        currentPassword: this.state.currentPassword,
+        password: this.state.password,
+        password2: this.state.password2,
+      })
+      .then(res => {
+        message.success('You have successfully changed your password!');
+        this.setState({
+          showLoading2: false,
+          showChangePw: false,
+          errors: {},
+        });
+      })
+      .catch(err => {
+        this.setState({
+          showLoading2: false,
+          errors: err.response.data,
+        });
+      });
   }
 
   onChange(event) {
@@ -265,7 +308,7 @@ export class NavBar extends Component {
     };
     const { firstName, lastName, imageUrl } = this.state;
     const { position } = this.state;
-    const { errors } = this.props.app;
+    const { errors } = this.state;
     const displayPosition = position => {
       switch (position) {
         case false:
@@ -287,7 +330,7 @@ export class NavBar extends Component {
       }
     };
     const accountDropdownProps = {
-      avatarURL: imageUrl === 'NA' ? placeholder : getImageUrl(imageUrl),
+      avatarURL: imageUrl === 'NA' ? getPlaceholder() : getImageUrl(imageUrl),
       name: firstName + ' ' + lastName,
       description: displayPosition(position),
       options: [
@@ -320,6 +363,7 @@ export class NavBar extends Component {
               title="Change Password"
               visible={this.state.showChangePw}
               onOk={this.changePassword}
+              confirmLoading={this.state.showLoading2}
               onCancel={this.hideChangePw}
               okText="Change Password"
               cancelText="Close"
@@ -377,7 +421,7 @@ export class NavBar extends Component {
                 imageURL: DHLALogo,
                 accountDropdown: accountDropdownProps,
               }}
-              navProps={{ itemsObjects: showNavBarItems(position) }}
+              navProps={{ itemsObjects: showNavBarItems(position, this.props) }}
               routerContextComponentType={withRouter(RouterContextProvider)}
               footerProps={{
                 copyright: (
@@ -411,4 +455,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NavBar);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(NavBar);

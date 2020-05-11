@@ -11,7 +11,7 @@ import { Modal, Popconfirm, Search, Breadcrumb, AutoComplete, Input, message } f
 import cn from 'classnames';
 import placeholder from '../../images/placeholder.jpg';
 import bg from '../../images/BG.png';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getPlaceholder } from '../../utils';
 import ClassRecordInformation from './ClassRecordInformation';
 const { Option } = AutoComplete;
 
@@ -67,6 +67,7 @@ export class RegistrarViewStudentRecordTeacher extends Component {
       selectedSection: '',
       selectedDeadline: '',
       quarter: '',
+      showRevert: false,
     };
   }
 
@@ -81,11 +82,9 @@ export class RegistrarViewStudentRecordTeacher extends Component {
   };
 
   componentDidMount() {
-    axios.get('api/registrar/getsy').then(res => {
+    axios.post('api/registrar/getsyname', { schoolYearID: this.props.schoolYearID }).then(res => {
       this.setState({
-        schoolYearID: res.data.schoolYearID,
         schoolYear: res.data.schoolYear,
-        quarter: res.data.quarter,
       });
       axios.post('api/registrar/teacherinfo', { teacherID: this.props.id }).then(res2 => {
         this.setState({
@@ -100,6 +99,7 @@ export class RegistrarViewStudentRecordTeacher extends Component {
             page: this.state.page,
             pageSize: this.state.pageSize,
             quarter: this.props.quarter,
+            schoolYearID: this.props.schoolYearID,
           })
           .then(res3 => {
             this.setState({
@@ -117,11 +117,9 @@ export class RegistrarViewStudentRecordTeacher extends Component {
   }
 
   componentWillReceiveProps() {
-    axios.get('api/registrar/getsy').then(res => {
+    axios.post('api/registrar/getsyname', { schoolYearID: this.props.schoolYearID }).then(res => {
       this.setState({
-        schoolYearID: res.data.schoolYearID,
         schoolYear: res.data.schoolYear,
-        quarter: res.data.quarter,
       });
       axios.post('api/registrar/teacherinfo', { teacherID: this.props.id }).then(res2 => {
         this.setState({
@@ -155,11 +153,12 @@ export class RegistrarViewStudentRecordTeacher extends Component {
   paginate = page => {
     this.setState({ page, isLoadingTable: true }, async () => {
       axios
-        .post('api/registrar/getsubmittedsubsect', {
+        .post('api/registrar/getfinalsubsect', {
           teacherID: this.props.id,
           page: page,
           pageSize: this.state.pageSize,
           quarter: this.state.quarter,
+          schoolYearID: this.props.schoolYearID,
         })
         .then(res3 => {
           this.setState({
@@ -204,6 +203,7 @@ export class RegistrarViewStudentRecordTeacher extends Component {
           <Table.Col>{value.subjectCode}</Table.Col>
           <Table.Col>{value.subjectName}</Table.Col>
           <Table.Col>{value.section}</Table.Col>
+          <Table.Col>{value.status == 'D' ? 'Deliberation' : 'Final'}</Table.Col>
           <Table.Col>
             <Button
               icon="eye"
@@ -218,11 +218,10 @@ export class RegistrarViewStudentRecordTeacher extends Component {
                   selectedSubjectName: value.subjectName,
                   selectedSection: value.section,
                   selectedDeadline: status,
+                  showRevert: value.status != 'F',
                 })
               }
-            >
-              View
-            </Button>
+            ></Button>
           </Table.Col>
         </Table.Row>,
       );
@@ -248,7 +247,7 @@ export class RegistrarViewStudentRecordTeacher extends Component {
       <div className="app-registrar-individual-deliberation-info my-3 my-md-5">
         <Container>
           <Grid.Row>
-            <Grid.Col sm={12} lg={6}>
+            <Grid.Col sm={12} lg={5}>
               <Spin spinning={this.state.isLoading}>
                 <Grid.Row>
                   <Container>
@@ -270,6 +269,9 @@ export class RegistrarViewStudentRecordTeacher extends Component {
                   </Container>
                 </Grid.Row>
               </Spin>
+            </Grid.Col>
+            <Grid.Col sm={12} xs={12} md={7}>
+              {' '}
               <Grid.Row>
                 <Container>
                   {this.state.isLoading ? (
@@ -288,6 +290,7 @@ export class RegistrarViewStudentRecordTeacher extends Component {
                                   <Table.ColHeader>Code</Table.ColHeader>
                                   <Table.ColHeader>Subject</Table.ColHeader>
                                   <Table.ColHeader>Section</Table.ColHeader>
+                                  <Table.ColHeader>Status</Table.ColHeader>
                                   <Table.ColHeader>Actions</Table.ColHeader>
                                 </Table.Header>
                                 <Table.Body>
@@ -318,7 +321,7 @@ export class RegistrarViewStudentRecordTeacher extends Component {
                 </Container>
               </Grid.Row>
             </Grid.Col>
-            <Grid.Col sm={12} sm={6}>
+            <Grid.Col sm={12} xs={12} md={12}>
               <Grid.Row>
                 <Container>
                   <ClassRecordInformation
@@ -331,6 +334,7 @@ export class RegistrarViewStudentRecordTeacher extends Component {
                     resetClassRecordInfo={this.resetClassRecordInfo}
                     id={this.props.id}
                     status="final"
+                    showRevert={this.state.showRevert}
                   />
                 </Container>
               </Grid.Row>
@@ -356,4 +360,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegistrarViewStudentRecordTeacher);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RegistrarViewStudentRecordTeacher);

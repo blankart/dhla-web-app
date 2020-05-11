@@ -7,12 +7,14 @@ const SubjectSectionStudent = require("../../models/SubjectSectionStudent");
 const StudentWeightedScore = require("../../models/StudentWeightedScore");
 const StudentSubjectGrades = require("../../models/StudentSubjectGrades");
 const Teacher = require("../../models/Teacher");
+const StudentSection = require("../../models/StudentSection");
 const Component = require("../../models/Component");
 const ClassRecord = require("../../models/ClassRecord");
 const ClassRecordStatus = require("../../models/ClassRecordStatus");
 const Subcomponent = require("../../models/Subcomponent");
 const ActivityLog = require("../../models/ActivityLog");
 const LogDetails = require("../../models/LogDetails");
+const SchoolYear = require("../../models/SchoolYear");
 const passport = require("passport");
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
@@ -31,7 +33,7 @@ const utils = require("../../utils");
 router.post(
   "/updateprofile",
   passport.authenticate("teacher", {
-    session: false
+    session: false,
   }),
   (req, res) => {
     const {
@@ -57,7 +59,7 @@ router.post(
       emergencyTelephone,
       emergencyCellphone,
       emergencyEmail,
-      emergencyRelationship
+      emergencyRelationship,
     } = req.body;
 
     console.log(req.body.firstName);
@@ -70,9 +72,9 @@ router.post(
 
     UserAccount.findOne({
       where: {
-        accountID: req.user.accountID
-      }
-    }).then(user => {
+        accountID: req.user.accountID,
+      },
+    }).then((user) => {
       if (user) {
         user
           .update({
@@ -98,11 +100,11 @@ router.post(
             emergencyTelephone,
             emergencyCellphone,
             emergencyEmail,
-            emergencyRelationship
+            emergencyRelationship,
           })
-          .then(user2 => {
+          .then((user2) => {
             res.status(200).json({
-              msg: "Profile updated successfully!"
+              msg: "Profile updated successfully!",
             });
           });
       }
@@ -117,14 +119,14 @@ router.post(
 router.post(
   "/listsubjectsection",
   passport.authenticate("teacher", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     let { teacherID, schoolYear, page, pageSize } = req.body;
     let sessionTeacherID = await utils.getTeacherID(req.user.accountID);
     if (sessionTeacherID != teacherID) {
       res.status(400).json({
-        msg: "Not authorized!"
+        msg: "Not authorized!",
       });
     }
     let offset = page * pageSize;
@@ -134,10 +136,10 @@ router.post(
       offset,
       where: {
         teacherID,
-        schoolYear
-      }
+        schoolYear,
+      },
     })
-      .then(subjectsections => {
+      .then((subjectsections) => {
         let subjectsectionData = [];
         if (subjectsections.length != 0) {
           subjectsections
@@ -155,36 +157,36 @@ router.post(
                 key: keyID,
                 subjectName,
                 sectionName,
-                classRecordID
+                classRecordID,
               });
               if (key == arr.length - 1) {
                 SubjectSection.findAndCountAll({
                   where: {
                     teacherID,
-                    schoolYear
-                  }
+                    schoolYear,
+                  },
                 })
-                  .then(count => {
+                  .then((count) => {
                     subjectsectionData.sort((a, b) => {
                       a.key > b.key ? 1 : -1;
                     });
                     res.status(200).json({
                       numOfPages: Math.ceil(count.count / pageSize),
-                      subjectsectionList: subjectsectionData
+                      subjectsectionList: subjectsectionData,
                     });
                   })
-                  .catch(err => {
+                  .catch((err) => {
                     res.status(404);
                   });
               }
             });
         } else {
           req.status(404).json({
-            msg: "Not found"
+            msg: "Not found",
           });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         res.status(404);
       });
   }
@@ -196,7 +198,7 @@ router.post(
 router.get(
   "/getsy",
   passport.authenticate("teacher", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     let { schoolYearID, quarter } = await utils.getActiveSY();
@@ -205,13 +207,41 @@ router.get(
       res.status(200).json({
         schoolYear,
         schoolYearID,
-        quarter
+        quarter,
       });
     } else {
       res.status(404).json({
-        msg: "There is no active school year"
+        msg: "There is no active school year",
       });
     }
+  }
+);
+
+// @route GET api/teacher/getallsy
+// @desc Get all school year
+// @access Private
+
+router.get(
+  "/getallsy",
+  passport.authenticate(["teacher"], {
+    session: false,
+  }),
+  async (req, res) => {
+    SchoolYear.findAll().then(async (sys) => {
+      if (sys) {
+        let data = [];
+        for (const [index, value] of sys.entries()) {
+          data.push({
+            schoolYearID: value.schoolYearID,
+            schoolYear: value.schoolYear,
+          });
+        }
+        data.sort((a, b) => (a.schoolYear < b.schoolYear ? 1 : -1));
+        res.status(200).json({
+          schoolYearList: data,
+        });
+      }
+    });
   }
 );
 
@@ -222,27 +252,26 @@ router.get(
 router.post(
   "/getsubjectload",
   passport.authenticate("teacher", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { accountID } = req.user;
-    let { page, pageSize } = req.body;
+    let { page, pageSize, schoolYearID, quarter } = req.body;
     page = page - 1;
     let offset = page * pageSize;
     let limit = offset + pageSize;
     const teacherID = await utils.getTeacherID(accountID);
-    const { schoolYearID, quarter } = await utils.getActiveSY();
     SubjectSection.findAll({
       limit,
       offset,
       where: {
         teacherID,
-        schoolYearID
-      }
-    }).then(async subjectsections => {
+        schoolYearID,
+      },
+    }).then(async (subjectsections) => {
       if (subjectsections.length == 0) {
         res.status(404).json({
-          msg: "No record"
+          msg: "No record",
         });
       } else {
         let subjectsectionData = [];
@@ -267,7 +296,7 @@ router.post(
               subjectCode,
               subjectName,
               gradeLevel,
-              sectionName
+              sectionName,
             });
           } else {
             if (subjectsections[i].subjectType == "1ST_SEM") {
@@ -277,7 +306,7 @@ router.post(
                   subjectCode,
                   subjectName,
                   gradeLevel,
-                  sectionName
+                  sectionName,
                 });
               }
             } else if (subjectsections[i].subjectType == "2ND_SEM") {
@@ -287,7 +316,7 @@ router.post(
                   subjectCode,
                   subjectName,
                   gradeLevel,
-                  sectionName
+                  sectionName,
                 });
               }
             }
@@ -296,12 +325,12 @@ router.post(
         SubjectSection.findAndCountAll({
           where: {
             teacherID,
-            schoolYearID
-          }
-        }).then(count => {
+            schoolYearID,
+          },
+        }).then((count) => {
           res.status(200).json({
             numOfPages: Math.ceil(count.count / pageSize),
-            subjectSectionData: subjectsectionData
+            subjectSectionData: subjectsectionData,
           });
         });
       }
@@ -316,7 +345,7 @@ router.post(
 router.post(
   "/getsubsectinfo",
   passport.authenticate("teacher", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { subsectID } = req.body;
@@ -328,20 +357,20 @@ router.post(
     let limit = offset + pageSize;
     SubjectSection.findOne({
       where: {
-        subsectID
-      }
-    }).then(subjectsection => {
+        subsectID,
+      },
+    }).then((subjectsection) => {
       if (subjectsection) {
         if (subjectsection.teacherID != teacherID) {
           res.status(400).json({
-            msg: "Not authorized!"
+            msg: "Not authorized!",
           });
         } else {
           SubjectSectionStudent.findAll({
             where: {
-              subsectID
-            }
-          }).then(async subjectsectionstudents => {
+              subsectID,
+            },
+          }).then(async (subjectsectionstudents) => {
             if (subjectsectionstudents.length == 0) {
               const sectionName = await utils.getSectionName(
                 subjectsection.sectionID
@@ -357,7 +386,7 @@ router.post(
                 sectionName,
                 gradeLevel,
                 subjectName,
-                studentList: []
+                studentList: [],
               });
             } else {
               let i = 0;
@@ -371,16 +400,14 @@ router.post(
               const subjectName = await utils.getSubjectName(
                 subjectsection.subjectID
               );
-              for (
-                i;
-                i < subjectsectionstudents.length;
-                i++
-              ) {
+              for (i; i < subjectsectionstudents.length; i++) {
                 let key = subjectsectionstudents[i].subsectstudID;
                 let name = await utils.getStudentNameByStudsectID(
                   subjectsectionstudents[i].studsectID
                 );
-                let sex = await utils.getStudentSexByStudsectID(subjectsectionstudents[i].studsectID)
+                let sex = await utils.getStudentSexByStudsectID(
+                  subjectsectionstudents[i].studsectID
+                );
                 let email = await utils.getStudentEmailByStudsectID(
                   subjectsectionstudents[i].studsectID
                 );
@@ -400,24 +427,30 @@ router.post(
                   email,
                   sectionName,
                   imageUrl,
-                  gradeLevel
+                  gradeLevel,
                 });
               }
               SubjectSectionStudent.findAndCountAll({
                 limit,
                 offset,
                 where: {
-                  subsectID
-                }
-              }).then(count => {
-                studarr.sort((a, b) => (a.name > b.name ?  1 : -1));
-                let sortedArr = [...studarr.filter(a => a.sex == "M"), ...studarr.filter(a => a.sex == "F")]
+                  subsectID,
+                },
+              }).then((count) => {
+                studarr.sort((a, b) => (a.name > b.name ? 1 : -1));
+                let sortedArr = [
+                  ...studarr.filter((a) => a.sex == "M"),
+                  ...studarr.filter((a) => a.sex == "F"),
+                ];
                 res.status(200).json({
                   numOfPages: Math.ceil(count.count / pageSize),
                   sectionName,
                   gradeLevel,
                   subjectName,
-                  studentList: sortedArr.slice(pageSize*page, pageSize*(page+1))
+                  studentList: sortedArr.slice(
+                    pageSize * page,
+                    pageSize * (page + 1)
+                  ),
                 });
               });
             }
@@ -425,7 +458,7 @@ router.post(
         }
       } else {
         res.status(404).json({
-          msg: "Subject section not found!"
+          msg: "Subject section not found!",
         });
       }
     });
@@ -439,7 +472,7 @@ router.post(
 router.post(
   "/getcomponents",
   passport.authenticate("teacher", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { subsectID, quarter } = req.body;
@@ -447,39 +480,39 @@ router.post(
     const teacherID = await utils.getTeacherID(accountID);
     SubjectSection.findOne({
       where: {
-        subsectID
-      }
-    }).then(subjectsection => {
+        subsectID,
+      },
+    }).then((subjectsection) => {
       if (subjectsection) {
         if (subjectsection.teacherID != teacherID) {
           res.status(400).json({
-            msg: "Not authorized!"
+            msg: "Not authorized!",
           });
         } else {
           Component.findOne({
             where: {
               subjectID: subjectsection.subjectID,
-              component: "FA"
-            }
-          }).then(comp1 => {
+              component: "FA",
+            },
+          }).then((comp1) => {
             Component.findOne({
               where: {
                 subjectID: subjectsection.subjectID,
-                component: "WW"
-              }
-            }).then(comp2 => {
+                component: "WW",
+              },
+            }).then((comp2) => {
               Component.findOne({
                 where: {
                   subjectID: subjectsection.subjectID,
-                  component: "PT"
-                }
-              }).then(comp3 => {
+                  component: "PT",
+                },
+              }).then((comp3) => {
                 Component.findOne({
                   where: {
                     subjectID: subjectsection.subjectID,
-                    component: "QE"
-                  }
-                }).then(async comp4 => {
+                    component: "QE",
+                  },
+                }).then(async (comp4) => {
                   let faSubcompData = [];
                   let wwSubcompData = [];
                   let ptSubcompData = [];
@@ -488,9 +521,9 @@ router.post(
                     where: {
                       classRecordID: subjectsection.classRecordID,
                       componentID: comp1.componentID,
-                      quarter
-                    }
-                  }).then(async subcomp1 => {
+                      quarter,
+                    },
+                  }).then(async (subcomp1) => {
                     if (subcomp1.length != 0) {
                       let i = 0;
                       for (i = 0; i < subcomp1.length; i++) {
@@ -498,7 +531,7 @@ router.post(
                         faSubcompData.push({
                           name,
                           compWeight,
-                          subcompID
+                          subcompID,
                         });
                       }
                     }
@@ -507,9 +540,9 @@ router.post(
                     where: {
                       classRecordID: subjectsection.classRecordID,
                       componentID: comp2.componentID,
-                      quarter
-                    }
-                  }).then(async subcomp2 => {
+                      quarter,
+                    },
+                  }).then(async (subcomp2) => {
                     if (subcomp2.length != 0) {
                       let i = 0;
                       for (i = 0; i < subcomp2.length; i++) {
@@ -517,7 +550,7 @@ router.post(
                         wwSubcompData.push({
                           name,
                           compWeight,
-                          subcompID
+                          subcompID,
                         });
                       }
                     }
@@ -526,9 +559,9 @@ router.post(
                     where: {
                       classRecordID: subjectsection.classRecordID,
                       componentID: comp3.componentID,
-                      quarter
-                    }
-                  }).then(async subcomp3 => {
+                      quarter,
+                    },
+                  }).then(async (subcomp3) => {
                     if (subcomp3.length != 0) {
                       let i = 0;
                       for (i = 0; i < subcomp3.length; i++) {
@@ -536,7 +569,7 @@ router.post(
                         ptSubcompData.push({
                           name,
                           compWeight,
-                          subcompID
+                          subcompID,
                         });
                       }
                     }
@@ -545,9 +578,9 @@ router.post(
                     where: {
                       classRecordID: subjectsection.classRecordID,
                       componentID: comp4.componentID,
-                      quarter
-                    }
-                  }).then(async subcomp4 => {
+                      quarter,
+                    },
+                  }).then(async (subcomp4) => {
                     if (subcomp4.length != 0) {
                       let i = 0;
                       for (i = 0; i < subcomp4.length; i++) {
@@ -555,7 +588,7 @@ router.post(
                         qeSubcompData.push({
                           name,
                           compWeight,
-                          subcompID
+                          subcompID,
                         });
                       }
                     }
@@ -581,23 +614,23 @@ router.post(
                     FA: {
                       componentID: comp1.componentID,
                       weight: comp1.compWeight,
-                      subcomponents: faSubcompData
+                      subcomponents: faSubcompData,
                     },
                     WW: {
                       componentID: comp2.componentID,
                       weight: comp2.compWeight,
-                      subcomponents: wwSubcompData
+                      subcomponents: wwSubcompData,
                     },
                     PT: {
                       componentID: comp3.componentID,
                       weight: comp3.compWeight,
-                      subcomponents: ptSubcompData
+                      subcomponents: ptSubcompData,
                     },
                     QE: {
                       componentID: comp4.componentID,
                       weight: comp4.compWeight,
-                      subcomponents: qeSubcompData
-                    }
+                      subcomponents: qeSubcompData,
+                    },
                   });
                 });
               });
@@ -606,7 +639,7 @@ router.post(
         }
       } else {
         res.status(404).json({
-          msg: "Subject section not found!"
+          msg: "Subject section not found!",
         });
       }
     });
@@ -620,38 +653,38 @@ router.post(
 router.post(
   "/addnewsubcomp",
   passport.authenticate("teacher", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { classRecordID, componentID, name, quarter } = req.body;
     const { accountID } = req.user;
     const teacherID = await utils.getTeacherID(accountID);
     const { errors, isValid } = validateSubcomponent({
-      name
+      name,
     });
 
     if (!isValid) {
       return res.status(400).json({
-        msg: errors.msg
+        msg: errors.msg,
       });
     }
     SubjectSection.findOne({
       where: {
-        classRecordID
-      }
-    }).then(subjectsection => {
+        classRecordID,
+      },
+    }).then((subjectsection) => {
       if (subjectsection) {
         if (subjectsection.teacherID == teacherID) {
           ClassRecordStatus.findOne({
             where: {
-              classRecordID
-            }
-          }).then(async crs => {
+              classRecordID,
+            },
+          }).then(async (crs) => {
             if (crs) {
               if (quarter == "Q1") {
                 if (crs.q1 == "L" || crs.q1 == "D" || crs.q1 == "F") {
                   res.status(400).json({
-                    msg: "You are not authorized to edit this class record."
+                    msg: "You are not authorized to edit this class record.",
                   });
                 } else {
                   Subcomponent.create(
@@ -660,21 +693,21 @@ router.post(
                       componentID,
                       classRecordID,
                       compWeight: 0,
-                      quarter
+                      quarter,
                     },
                     {
-                      showLog: false
+                      showLog: false,
                     }
-                  ).then(subcomponent => {
+                  ).then((subcomponent) => {
                     res.status(200).json({
-                      msg: "Successfully added a new subcomponent!"
+                      msg: "Successfully added a new subcomponent!",
                     });
                   });
                 }
               } else if (quarter == "Q2") {
                 if (crs.q2 == "L" || crs.q2 == "D" || crs.q2 == "F") {
                   res.status(400).json({
-                    msg: "You are not authorized to edit this class record."
+                    msg: "You are not authorized to edit this class record.",
                   });
                 } else {
                   Subcomponent.create(
@@ -683,21 +716,21 @@ router.post(
                       componentID,
                       classRecordID,
                       compWeight: 0,
-                      quarter
+                      quarter,
                     },
                     {
-                      showLog: false
+                      showLog: false,
                     }
-                  ).then(subcomponent => {
+                  ).then((subcomponent) => {
                     res.status(200).json({
-                      msg: "Successfully added a new subcomponent!"
+                      msg: "Successfully added a new subcomponent!",
                     });
                   });
                 }
               } else if (quarter == "Q3") {
                 if (crs.q3 == "L" || crs.q3 == "D" || crs.q3 == "F") {
                   res.status(400).json({
-                    msg: "You are not authorized to edit this class record."
+                    msg: "You are not authorized to edit this class record.",
                   });
                 } else {
                   Subcomponent.create(
@@ -706,21 +739,21 @@ router.post(
                       componentID,
                       classRecordID,
                       compWeight: 0,
-                      quarter
+                      quarter,
                     },
                     {
-                      showLog: false
+                      showLog: false,
                     }
-                  ).then(subcomponent => {
+                  ).then((subcomponent) => {
                     res.status(200).json({
-                      msg: "Successfully added a new subcomponent!"
+                      msg: "Successfully added a new subcomponent!",
                     });
                   });
                 }
               } else {
                 if (crs.q4 == "L" || crs.q4 == "D" || crs.q4 == "F") {
                   res.status(400).json({
-                    msg: "You are not authorized to edit this class record."
+                    msg: "You are not authorized to edit this class record.",
                   });
                 } else {
                   Subcomponent.create(
@@ -729,32 +762,32 @@ router.post(
                       componentID,
                       classRecordID,
                       compWeight: 0,
-                      quarter
+                      quarter,
                     },
                     {
-                      showLog: false
+                      showLog: false,
                     }
-                  ).then(subcomponent => {
+                  ).then((subcomponent) => {
                     res.status(200).json({
-                      msg: "Successfully added a new subcomponent!"
+                      msg: "Successfully added a new subcomponent!",
                     });
                   });
                 }
               }
             } else {
               res.status(404).json({
-                msg: "Class record status does not exist."
+                msg: "Class record status does not exist.",
               });
             }
           });
         } else {
           res.status(400).json({
-            msg: "Not authorized!"
+            msg: "Not authorized!",
           });
         }
       } else {
         res.status(404).json({
-          msg: "Subject section not found!"
+          msg: "Subject section not found!",
         });
       }
     });
@@ -768,7 +801,7 @@ router.post(
 router.post(
   "/editsubcomp",
   passport.authenticate("teacher", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const reg = /^-?[0-9]*(\.[0-9]*)?$/;
@@ -777,9 +810,9 @@ router.post(
     const teacherID = await utils.getTeacherID(accountID);
     ClassRecordStatus.findOne({
       where: {
-        classRecordID
-      }
-    }).then(async crs => {
+        classRecordID,
+      },
+    }).then(async (crs) => {
       if (crs) {
         let invalid = false;
         if (quarter == "Q1") {
@@ -793,18 +826,18 @@ router.post(
         }
         if (invalid) {
           res.status(400).json({
-            msg: "You are not authorized to edit this class record."
+            msg: "You are not authorized to edit this class record.",
           });
         } else {
           let i = 0;
           let sum = 0;
           for (i = 0; i < payload.length; i++) {
             let { errors, isValid } = validateSubcomponent({
-              name: payload[i].name
+              name: payload[i].name,
             });
             if (!isValid) {
               return res.status(400).json({
-                msg: errors.msg
+                msg: errors.msg,
               });
             } else {
               let valid =
@@ -818,7 +851,7 @@ router.post(
                 !valid
               ) {
                 return res.status(400).json({
-                  msg: "Invalid component weight input"
+                  msg: "Invalid component weight input",
                 });
               } else {
                 sum = sum + parseFloat(payload[i].compWeight);
@@ -828,22 +861,22 @@ router.post(
 
           if (sum != 100) {
             return res.status(400).json({
-              msg: "Sum of component weights must be 100!"
+              msg: "Sum of component weights must be 100!",
             });
           }
 
           payload.forEach(async (val, arr, index) => {
             await Subcomponent.findOne({
               where: {
-                subcompID: val.subcompID
-              }
-            }).then(subcomp => {
+                subcompID: val.subcompID,
+              },
+            }).then((subcomp) => {
               if (subcomp) {
                 SubjectSection.findOne({
                   where: {
-                    classRecordID: subcomp.classRecordID
-                  }
-                }).then(subjectsection => {
+                    classRecordID: subcomp.classRecordID,
+                  },
+                }).then((subjectsection) => {
                   if (subjectsection) {
                     if (subjectsection.teacherID == teacherID) {
                       let { name, compWeight } = val;
@@ -851,10 +884,10 @@ router.post(
                         .update(
                           {
                             name,
-                            compWeight
+                            compWeight,
                           },
                           {
-                            showLog: false
+                            showLog: false,
                           }
                         )
                         .then(async () => {
@@ -864,29 +897,29 @@ router.post(
                         });
                     } else {
                       res.status(401).json({
-                        msg: "Not authorized!"
+                        msg: "Not authorized!",
                       });
                     }
                   } else {
                     res.status(400).json({
-                      msg: "Subject Section not found!"
+                      msg: "Subject Section not found!",
                     });
                   }
                 });
               } else {
                 res.status(400).json({
-                  msg: "Subcomponent not found!"
+                  msg: "Subcomponent not found!",
                 });
               }
             });
           });
           res.status(200).json({
-            msg: "Subcomponent updated successfully!"
+            msg: "Subcomponent updated successfully!",
           });
         }
       } else {
         res.status(404).json({
-          msg: "Class record status not found!"
+          msg: "Class record status not found!",
         });
       }
     });
@@ -900,7 +933,7 @@ router.post(
 router.post(
   "/deletesubcomp",
   passport.authenticate("teacher", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { subcompID, quarter, classRecordID } = req.body;
@@ -908,9 +941,9 @@ router.post(
     const teacherID = await utils.getTeacherID(accountID);
     ClassRecordStatus.findOne({
       where: {
-        classRecordID
-      }
-    }).then(async crs => {
+        classRecordID,
+      },
+    }).then(async (crs) => {
       if (crs) {
         let invalid = false;
         if (quarter == "Q1") {
@@ -924,63 +957,63 @@ router.post(
         }
         if (invalid) {
           res.status(400).json({
-            msg: "You are not authorized to edit this class record."
+            msg: "You are not authorized to edit this class record.",
           });
         } else {
           Subcomponent.findOne({
             where: {
-              subcompID
-            }
-          }).then(subcomponent => {
+              subcompID,
+            },
+          }).then((subcomponent) => {
             if (subcomponent) {
               Subcomponent.findAll({
                 where: {
                   classRecordID: subcomponent.classRecordID,
-                  componentID: subcomponent.componentID
-                }
-              }).then(c => {
+                  componentID: subcomponent.componentID,
+                },
+              }).then((c) => {
                 if (c.length == 1) {
                   res.status(400).json({
                     msg:
-                      "Subcomponent can't be deleted. There must be at least one subcomponent."
+                      "Subcomponent can't be deleted. There must be at least one subcomponent.",
                   });
                 } else {
                   SubjectSection.findOne({
                     where: {
-                      classRecordID: subcomponent.classRecordID
-                    }
-                  }).then(subjectsection => {
+                      classRecordID: subcomponent.classRecordID,
+                    },
+                  }).then((subjectsection) => {
                     if (subjectsection) {
                       if (subjectsection.teacherID != teacherID) {
                         res.status(400).json({
-                          msg: "Not authorized!"
+                          msg: "Not authorized!",
                         });
                       } else {
                         let compweight = subcomponent.compWeight;
                         if (compweight != 0) {
                           res.status(400).json({
                             msg:
-                              "Subcomponent can't be deleted. Set component weight to 0 first."
+                              "Subcomponent can't be deleted. Set component weight to 0 first.",
                           });
                         } else {
                           Grade.findOne({
                             where: {
-                              subcomponentID: subcomponent.subcompID
-                            }
-                          }).then(g => {
+                              subcomponentID: subcomponent.subcompID,
+                            },
+                          }).then((g) => {
                             if (g) {
                               res.status(400).json({
                                 msg:
-                                  "Operation could not be completed. Delete all grades under this subcomponent first."
+                                  "Operation could not be completed. Delete all grades under this subcomponent first.",
                               });
                             } else
                               subcomponent
                                 .destroy({
-                                  showLog: false
+                                  showLog: false,
                                 })
                                 .then(() => {
                                   res.status(200).json({
-                                    msg: "Subcomponent deleted successfully!"
+                                    msg: "Subcomponent deleted successfully!",
                                   });
                                 });
                           });
@@ -988,7 +1021,7 @@ router.post(
                       }
                     } else {
                       res.status(404).json({
-                        msg: "Subject section not found!"
+                        msg: "Subject section not found!",
                       });
                     }
                   });
@@ -996,14 +1029,14 @@ router.post(
               });
             } else {
               res.status(404).json({
-                msg: "Subcomponent not found!"
+                msg: "Subcomponent not found!",
               });
             }
           });
         }
       } else {
         res.status(404).json({
-          msg: "Class record status does not exist."
+          msg: "Class record status does not exist.",
         });
       }
     });
@@ -1017,7 +1050,7 @@ router.post(
 router.post(
   "/compinfo",
   passport.authenticate("teacher", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { subsectID, componentID, quarter } = req.body;
@@ -1025,32 +1058,32 @@ router.post(
     const teacherID = await utils.getTeacherID(accountID);
     SubjectSection.findOne({
       where: {
-        subsectID
-      }
-    }).then(async subjectsection => {
+        subsectID,
+      },
+    }).then(async (subjectsection) => {
       if (subjectsection) {
         if (subjectsection.teacherID != teacherID) {
           res.status(400).json({
-            msg: "Not authorized!"
+            msg: "Not authorized!",
           });
         } else {
           Component.findOne({
             where: {
-              componentID
-            }
-          }).then(async component => {
+              componentID,
+            },
+          }).then(async (component) => {
             if (component) {
               let component = await utils.getComponentName(componentID);
               let grades = await Subcomponent.findAll({
                 where: {
                   componentID,
                   classRecordID: subjectsection.classRecordID,
-                  quarter
-                }
-              }).then(async subcomp => {
+                  quarter,
+                },
+              }).then(async (subcomp) => {
                 if (subcomp.length == 0) {
                   res.status(404).json({
-                    msg: "Subcomponents not found!"
+                    msg: "Subcomponents not found!",
                   });
                 } else {
                   let i = 0;
@@ -1061,12 +1094,12 @@ router.post(
                     name = name + ` (${subcomp[i].compWeight}%)`;
                     const data2 = await SubjectSectionStudent.findAll({
                       where: {
-                        subsectID
-                      }
-                    }).then(async subsectstud => {
+                        subsectID,
+                      },
+                    }).then(async (subsectstud) => {
                       if (subsectstud.length == 0) {
                         res.status(404).json({
-                          msg: "Subject section student not found!"
+                          msg: "Subject section student not found!",
                         });
                       } else {
                         let j = 0;
@@ -1076,7 +1109,9 @@ router.post(
                           const name = await utils.getStudentNameBySubsectstudID(
                             subsectstudID
                           );
-                          const sex = await utils.getStudentSexBySubsectstudID(subsectstudID)
+                          const sex = await utils.getStudentSexBySubsectstudID(
+                            subsectstudID
+                          );
                           const imageUrl = await utils.getStudentImageUrlBySubsectstudID(
                             subsectstudID
                           );
@@ -1086,10 +1121,10 @@ router.post(
                               subcomponentID: subcomp[i].subcompID,
                               classRecordID: subjectsection.classRecordID,
                               subsectstudID: subsectstud[j].subsectstudID,
-                              quarter
+                              quarter,
                             },
-                            order: [["dateGiven", "DESC"]]
-                          }).then(async grades => {
+                            order: [["dateGiven", "DESC"]],
+                          }).then(async (grades) => {
                             if (grades.length == 0) {
                               return [];
                             } else {
@@ -1101,14 +1136,14 @@ router.post(
                                   dateGiven,
                                   score,
                                   total,
-                                  attendance
+                                  attendance,
                                 } = grades[k];
                                 gradesData.push({
                                   gradeID,
                                   dateGiven,
                                   score,
                                   total,
-                                  attendance
+                                  attendance,
                                 });
                               }
                               return gradesData;
@@ -1145,18 +1180,21 @@ router.post(
                             subsectstudID,
                             name,
                             grades,
-                            ps
+                            ps,
                           });
                         }
                         return studentData;
                       }
                     });
                     data2.sort((a, b) => (a.name > b.name ? 1 : -1));
-                    let tempData2 = [...data2.filter(a => a.sex == "M"), ...data2.filter(a => a.sex == "F")]
+                    let tempData2 = [
+                      ...data2.filter((a) => a.sex == "M"),
+                      ...data2.filter((a) => a.sex == "F"),
+                    ];
                     data1.push({
                       subcompID,
                       name,
-                      data: tempData2
+                      data: tempData2,
                     });
                   }
                   return data1;
@@ -1165,9 +1203,9 @@ router.post(
               let ave = await StudentWeightedScore.findAll({
                 where: {
                   classRecordID: subjectsection.classRecordID,
-                  quarter
-                }
-              }).then(async studweightedscore => {
+                  quarter,
+                },
+              }).then(async (studweightedscore) => {
                 if (studweightedscore.length == 0) {
                   return [];
                 } else {
@@ -1180,12 +1218,14 @@ router.post(
                       wwWS,
                       ptWS,
                       qeWS,
-                      actualGrade
+                      actualGrade,
                     } = studweightedscore[l];
                     const name = await utils.getStudentNameBySubsectstudID(
                       subsectstudID
                     );
-                    let sex = await utils.getStudentSexBySubsectstudID(subsectstudID)
+                    let sex = await utils.getStudentSexBySubsectstudID(
+                      subsectstudID
+                    );
                     let ws = 0;
                     switch (component) {
                       case "Formative Assessment": {
@@ -1211,30 +1251,33 @@ router.post(
                       sex,
                       subsectstudID,
                       ws,
-                      name
+                      name,
                     });
                   }
                   return aveData;
                 }
               });
               ave.sort((a, b) => (a.name > b.name ? 1 : -1));
-              let tempData = [...ave.filter(a => a.sex == "M"), ...ave.filter(a => a.sex == "F")]
+              let tempData = [
+                ...ave.filter((a) => a.sex == "M"),
+                ...ave.filter((a) => a.sex == "F"),
+              ];
               res.status(200).json({
                 componentID,
                 component,
                 grades,
-                ave: tempData
+                ave: tempData,
               });
             } else {
               res.status(404).json({
-                msg: "Component not found!"
+                msg: "Component not found!",
               });
             }
           });
         }
       } else {
         res.status(404).json({
-          msg: "Subject section not found!"
+          msg: "Subject section not found!",
         });
       }
     });
@@ -1248,7 +1291,7 @@ router.post(
 router.post(
   "/subcompinfo",
   passport.authenticate("teacher", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { subsectID, componentID, subcompID, quarter } = req.body;
@@ -1256,20 +1299,20 @@ router.post(
     const teacherID = await utils.getTeacherID(accountID);
     SubjectSection.findOne({
       where: {
-        subsectID
-      }
-    }).then(async subjectsection => {
+        subsectID,
+      },
+    }).then(async (subjectsection) => {
       if (subjectsection) {
         if (subjectsection.teacherID != teacherID) {
           res.status(400).json({
-            msg: "Not authorized!"
+            msg: "Not authorized!",
           });
         } else {
           Component.findOne({
             where: {
-              componentID
-            }
-          }).then(async component => {
+              componentID,
+            },
+          }).then(async (component) => {
             if (component) {
               let component = await utils.getComponentName(componentID);
               let { subcomponentID, name, data } = await Subcomponent.findOne({
@@ -1277,12 +1320,12 @@ router.post(
                   componentID,
                   classRecordID: subjectsection.classRecordID,
                   subcompID,
-                  quarter
-                }
-              }).then(async subcomp => {
+                  quarter,
+                },
+              }).then(async (subcomp) => {
                 if (!subcomp) {
                   res.status(404).json({
-                    msg: "Subcomponents not found!"
+                    msg: "Subcomponents not found!",
                   });
                 } else {
                   const subcomponentID = subcomp.subcompID;
@@ -1290,12 +1333,12 @@ router.post(
                   name = name + ` (${subcomp.compWeight}%)`;
                   const data2 = await SubjectSectionStudent.findAll({
                     where: {
-                      subsectID
-                    }
-                  }).then(async subsectstud => {
+                      subsectID,
+                    },
+                  }).then(async (subsectstud) => {
                     if (subsectstud.length == 0) {
                       res.status(404).json({
-                        msg: "Subject section student not found!"
+                        msg: "Subject section student not found!",
                       });
                     } else {
                       let j = 0;
@@ -1305,7 +1348,9 @@ router.post(
                         const name = await utils.getStudentNameBySubsectstudID(
                           subsectstudID
                         );
-                        let sex = await utils.getStudentSexBySubsectstudID(subsectstudID)
+                        let sex = await utils.getStudentSexBySubsectstudID(
+                          subsectstudID
+                        );
                         const imageUrl = await utils.getStudentImageUrlBySubsectstudID(
                           subsectstudID
                         );
@@ -1315,10 +1360,10 @@ router.post(
                             subcomponentID: subcomp.subcompID,
                             classRecordID: subjectsection.classRecordID,
                             subsectstudID: subsectstud[j].subsectstudID,
-                            quarter
+                            quarter,
                           },
-                          order: [["date", "DESC"]]
-                        }).then(async grades => {
+                          order: [["date", "DESC"]],
+                        }).then(async (grades) => {
                           if (grades.length == 0) {
                             return [];
                           } else {
@@ -1331,7 +1376,7 @@ router.post(
                                 score,
                                 total,
                                 description,
-                                attendance
+                                attendance,
                               } = grades[k];
                               gradesData.push({
                                 gradeID,
@@ -1339,7 +1384,7 @@ router.post(
                                 score,
                                 total,
                                 description,
-                                attendance
+                                attendance,
                               });
                             }
                             return gradesData;
@@ -1375,27 +1420,30 @@ router.post(
                           subsectstudID,
                           name,
                           grades,
-                          ps
+                          ps,
                         });
                       }
                       studentData.sort((a, b) => (a.name > b.name ? 1 : -1));
-                      return [...studentData.filter(a => a.sex == "M"), ...studentData.filter(a => a.sex == "F")];
+                      return [
+                        ...studentData.filter((a) => a.sex == "M"),
+                        ...studentData.filter((a) => a.sex == "F"),
+                      ];
                     }
                   });
 
                   return {
                     subcomponentID,
                     name,
-                    data: data2
+                    data: data2,
                   };
                 }
               });
               let ave = await StudentWeightedScore.findAll({
                 where: {
                   classRecordID: subjectsection.classRecordID,
-                  quarter
-                }
-              }).then(async studweightedscore => {
+                  quarter,
+                },
+              }).then(async (studweightedscore) => {
                 if (studweightedscore.length == 0) {
                   return [];
                 } else {
@@ -1408,12 +1456,14 @@ router.post(
                       wwWS,
                       ptWS,
                       qeWS,
-                      actualGrade
+                      actualGrade,
                     } = studweightedscore[l];
                     const name = await utils.getStudentNameBySubsectstudID(
                       subsectstudID
                     );
-                    let sex = await utils.getStudentSexBySubsectstudID(subsectstudID)
+                    let sex = await utils.getStudentSexBySubsectstudID(
+                      subsectstudID
+                    );
                     let ws = 0;
                     switch (component) {
                       case "Formative Assessment": {
@@ -1435,31 +1485,34 @@ router.post(
                       sex,
                       subsectstudID,
                       ws,
-                      name
+                      name,
                     });
                   }
                   return aveData;
                 }
               });
-              ave.sort((a,b) => a.name > b.name ? 1 : -1)
+              ave.sort((a, b) => (a.name > b.name ? 1 : -1));
               res.status(200).json({
                 componentID,
                 component,
                 subcompID: subcomponentID,
                 subcompName: name,
                 data,
-                ave: [...ave.filter(a => a.sex == "M"), ...ave.filter(a => a.sex == "F")]
+                ave: [
+                  ...ave.filter((a) => a.sex == "M"),
+                  ...ave.filter((a) => a.sex == "F"),
+                ],
               });
             } else {
               res.status(404).json({
-                msg: "Component not found!"
+                msg: "Component not found!",
               });
             }
           });
         }
       } else {
         res.status(404).json({
-          msg: "Subject section not found!"
+          msg: "Subject section not found!",
         });
       }
     });
@@ -1473,7 +1526,7 @@ router.post(
 router.post(
   "/submitclassrecord",
   passport.authenticate("teacher", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { classRecordID, quarter } = req.body;
@@ -1482,18 +1535,18 @@ router.post(
     const teacherID = await utils.getTeacherID(accountID);
     SubjectSection.findOne({
       where: {
-        classRecordID
-      }
-    }).then(async ss => {
+        classRecordID,
+      },
+    }).then(async (ss) => {
       if (ss) {
         if (teacherID != ss.teacherID) {
           res.status(400).json({
-            msg: "You are unauthorized to make the changes."
+            msg: "You are unauthorized to make the changes.",
           });
         } else {
           if (schoolYearID != ss.schoolYearID) {
             res.status(400).json({
-              msg: "You are unauthorized to make the changes."
+              msg: "You are unauthorized to make the changes.",
             });
           } else {
             let comp = [];
@@ -1504,18 +1557,18 @@ router.post(
                 comp.push("Q2");
               }
             } else {
-              comp.push(compareQUarter)
+              comp.push(compareQuarter);
             }
             if (!comp.includes(quarter)) {
               res.status(400).json({
-                msg: "You are unauthorized to make the changes."
+                msg: "You are unauthorized to make the changes.",
               });
             } else {
               ClassRecordStatus.findOne({
                 where: {
-                  classRecordID
-                }
-              }).then(async crs => {
+                  classRecordID,
+                },
+              }).then(async (crs) => {
                 if (crs) {
                   let invalid = false;
                   let quarterObj = {};
@@ -1538,7 +1591,7 @@ router.post(
                   }
                   if (invalid) {
                     res.status(400).json({
-                      msg: "You are not authorized to edit this class record."
+                      msg: "You are not authorized to edit this class record.",
                     });
                   } else {
                     crs
@@ -1551,17 +1604,18 @@ router.post(
                         subjectID: ss.subjectID,
                         oldVal: "E",
                         newVal: "D",
-                        quarter
+                        quarter,
                       })
                       .then(() => {
                         res.status(200).json({
-                          msg: "Class record is now submitted for deliberation!"
+                          msg:
+                            "Class record is now submitted for deliberation!",
                         });
                       });
                   }
                 } else {
                   res.status(404).json({
-                    msg: "Class record status does not exist"
+                    msg: "Class record status does not exist",
                   });
                 }
               });
@@ -1570,7 +1624,7 @@ router.post(
         }
       } else {
         res.status(404).json({
-          msg: "Subject section not found!"
+          msg: "Subject section not found!",
         });
       }
     });
@@ -1584,7 +1638,7 @@ router.post(
 router.post(
   "/addnewrecord",
   passport.authenticate("teacher", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const reg = /^-?[0-9]*(\.[0-9]*)?$/;
@@ -1596,21 +1650,21 @@ router.post(
       description,
       total,
       subsectID,
-      quarter
+      quarter,
     } = req.body;
     let totalValid =
       !isNaN(total) && reg.test(total) && total !== "" && total !== "-";
     SubjectSection.findOne({
       where: {
-        subsectID
-      }
-    }).then(async ss => {
+        subsectID,
+      },
+    }).then(async (ss) => {
       if (ss) {
         ClassRecordStatus.findOne({
           where: {
-            classRecordID: ss.classRecordID
-          }
-        }).then(async crs => {
+            classRecordID: ss.classRecordID,
+          },
+        }).then(async (crs) => {
           if (crs) {
             let invalid = false;
             if (quarter == "Q1") {
@@ -1624,38 +1678,38 @@ router.post(
             }
             if (invalid) {
               res.status(400).json({
-                msg: "You are not authorized to edit this class record."
+                msg: "You are not authorized to edit this class record.",
               });
             } else {
               if (!totalValid) {
                 res.status(400).json({
-                  msg: "Total score is invalid. Enter numbers only."
+                  msg: "Total score is invalid. Enter numbers only.",
                 });
               } else {
                 const { accountID } = req.user;
                 const teacherID = await utils.getTeacherID(accountID);
                 if (total <= 0) {
                   res.status(400).json({
-                    msg: "Total must be more than 0"
+                    msg: "Total must be more than 0",
                   });
                 }
                 SubjectSection.findOne({
                   where: {
-                    subsectID
-                  }
-                }).then(async subjectsection => {
+                    subsectID,
+                  },
+                }).then(async (subjectsection) => {
                   if (subjectsection) {
                     if (subjectsection.teacherID != teacherID) {
                       return res.status(400).json({
-                        msg: "Not authorized!"
+                        msg: "Not authorized!",
                       });
                     } else {
                       let { errors, isValid } = validateSubcomponent({
-                        name: description
+                        name: description,
                       });
                       if (!isValid) {
                         return res.status(400).json({
-                          msg: "Error input: Description"
+                          msg: "Error input: Description",
                         });
                       } else {
                         let i = 0;
@@ -1673,7 +1727,7 @@ router.post(
                             invalid = true;
                             return res.status(400).json({
                               msg:
-                                "Invalid score input. Enter numbers, E, or B only"
+                                "Invalid score input. Enter numbers, E, or B only",
                             });
                           }
                         }
@@ -1684,9 +1738,9 @@ router.post(
                               componentID,
                               subcomponentID: subcompID,
                               quarter,
-                              subsectstudID: value.subsectstudID
-                            }
-                          }).then(async grades2 => {
+                              subsectstudID: value.subsectstudID,
+                            },
+                          }).then(async (grades2) => {
                             let sum = 0;
                             let totalTemp = 0;
                             for (const [index2, value2] of grades2.entries()) {
@@ -1725,12 +1779,12 @@ router.post(
                             componentID,
                             subcomponentID: subcompID,
                             classRecordID: subjectsection.classRecordID,
-                            quarter
-                          }
-                        }).then(async gr => {
+                            quarter,
+                          },
+                        }).then(async (gr) => {
                           if (gr) {
                             res.status(400).json({
-                              msg: "Description already exists"
+                              msg: "Description already exists",
                             });
                           } else {
                             for (i = 0; i < payload.length; i++) {
@@ -1758,9 +1812,11 @@ router.post(
                                     subsectstudID,
                                     showLog: 0,
                                     isUpdated: 0,
-                                    quarter: quarter
+                                    quarter: quarter,
                                   },
-                                  { showLog: false }
+                                  {
+                                    showLog: false,
+                                  }
                                 );
                               }
                             }
@@ -1768,7 +1824,7 @@ router.post(
                               subsectID
                             );
                             return res.status(200).json({
-                              msg: "Record has been added successfully!"
+                              msg: "Record has been added successfully!",
                             });
                           }
                         });
@@ -1776,7 +1832,7 @@ router.post(
                     }
                   } else {
                     res.status(404).json({
-                      msg: "Subject section not found!"
+                      msg: "Subject section not found!",
                     });
                   }
                 });
@@ -1784,13 +1840,13 @@ router.post(
             }
           } else {
             res.status(404).json({
-              msg: "Class record status does not exist"
+              msg: "Class record status does not exist",
             });
           }
         });
       } else {
         res.status(404).json({
-          msg: "Subject section does not exist"
+          msg: "Subject section does not exist",
         });
       }
     });
@@ -1804,17 +1860,17 @@ router.post(
 router.post(
   "/getactivitylog",
   passport.authenticate("teacher", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { classRecordID, quarter } = req.body;
     const responseData = await ActivityLog.findAll({
       where: {
         classRecordID,
-        quarter
+        quarter,
       },
-      order: [["timestamp", "DESC"]]
-    }).then(async activitylogs => {
+      order: [["timestamp", "DESC"]],
+    }).then(async (activitylogs) => {
       if (activitylogs) {
         let activitylogData = [];
         for (const [index, al] of activitylogs.entries()) {
@@ -1825,13 +1881,13 @@ router.post(
             subject,
             type,
             logID,
-            timestamp
+            timestamp,
           } = al;
           const logDetails = await LogDetails.findAll({
             where: {
-              logID
-            }
-          }).then(async lds => {
+              logID,
+            },
+          }).then(async (lds) => {
             if (lds) {
               let logDetailsData = [];
               for (const [index2, ld] of lds.entries()) {
@@ -1841,7 +1897,7 @@ router.post(
                   subcomponent,
                   description,
                   oldValue,
-                  newValue
+                  newValue,
                 } = ld;
                 logDetailsData.push({
                   student,
@@ -1849,7 +1905,7 @@ router.post(
                   subcomponent,
                   description,
                   oldValue,
-                  newValue
+                  newValue,
                 });
               }
 
@@ -1864,7 +1920,7 @@ router.post(
             subject,
             type,
             timestamp,
-            logDetails
+            logDetails,
           });
         }
 
@@ -1873,7 +1929,7 @@ router.post(
     });
 
     res.status(200).json({
-      activityLog: responseData
+      activityLog: responseData,
     });
   }
 );
@@ -1885,7 +1941,7 @@ router.post(
 router.post(
   "/deleterecord",
   passport.authenticate("teacher", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { accountID } = req.user;
@@ -1895,25 +1951,25 @@ router.post(
       dateGiven,
       subcompID,
       componentID,
-      quarter
+      quarter,
     } = req.body;
     const teacherID = await utils.getTeacherID(accountID);
     SubjectSection.findOne({
       where: {
-        subsectID
-      }
-    }).then(subsect => {
+        subsectID,
+      },
+    }).then((subsect) => {
       if (subsect) {
         if (subsect.teacherID != teacherID) {
           res.status(401).json({
-            msg: "Not authorized!"
+            msg: "Not authorized!",
           });
         } else {
           ClassRecordStatus.findOne({
             where: {
-              classRecordID: subsect.classRecordID
-            }
-          }).then(async crs => {
+              classRecordID: subsect.classRecordID,
+            },
+          }).then(async (crs) => {
             if (crs) {
               let invalid = false;
               if (quarter == "Q1") {
@@ -1927,7 +1983,7 @@ router.post(
               }
               if (invalid) {
                 res.status(400).json({
-                  msg: "You are not authorized to edit this class record."
+                  msg: "You are not authorized to edit this class record.",
                 });
               } else {
                 Grade.findAll({
@@ -1936,36 +1992,38 @@ router.post(
                     dateGiven,
                     subcomponentID: subcompID,
                     componentID,
-                    quarter
-                  }
-                }).then(async grades => {
+                    quarter,
+                  },
+                }).then(async (grades) => {
                   if (grades.length != 0) {
                     for (const [index, value] of grades.entries()) {
-                      await value.destroy({ showLog: false });
+                      await value.destroy({
+                        showLog: false,
+                      });
                     }
                     await utils.refreshStudentWeightedScoreBySubsectID(
                       subsectID
                     );
                     res.status(200).json({
-                      msg: "Deleted successfully!"
+                      msg: "Deleted successfully!",
                     });
                   } else {
                     res.status(404).json({
-                      msg: "Grades not found!"
+                      msg: "Grades not found!",
                     });
                   }
                 });
               }
             } else {
               res.status(404).json({
-                msg: "Class record status does not exist"
+                msg: "Class record status does not exist",
               });
             }
           });
         }
       } else {
         res.status(404).json({
-          msg: "Subject section not found!"
+          msg: "Subject section not found!",
         });
       }
     });
@@ -1979,7 +2037,7 @@ router.post(
 router.post(
   "/getquartersummary",
   passport.authenticate("teacher", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { accountID } = req.user;
@@ -1987,20 +2045,20 @@ router.post(
     const teacherID = await utils.getTeacherID(accountID);
     SubjectSection.findOne({
       where: {
-        subsectID
-      }
-    }).then(async subsect => {
+        subsectID,
+      },
+    }).then(async (subsect) => {
       if (subsect) {
         if (subsect.teacherID != teacherID) {
           res.status(401).json({
-            msg: "Not authorized!"
+            msg: "Not authorized!",
           });
         } else {
           const transmutation = await ClassRecord.findOne({
             where: {
-              classRecordID: subsect.classRecordID
-            }
-          }).then(async cr => {
+              classRecordID: subsect.classRecordID,
+            },
+          }).then(async (cr) => {
             if (cr) {
               switch (quarter) {
                 case "Q1": {
@@ -2031,9 +2089,9 @@ router.post(
           const schoolYear = await utils.getSYname(schoolYearID);
           const subsectstudIDs = await SubjectSectionStudent.findAll({
             where: {
-              subsectID
-            }
-          }).then(async sss => {
+              subsectID,
+            },
+          }).then(async (sss) => {
             if (sss.length == 0) {
               return [];
             } else {
@@ -2049,9 +2107,9 @@ router.post(
             const temp = await StudentWeightedScore.findOne({
               where: {
                 subsectstudID: value,
-                quarter
-              }
-            }).then(async sws => {
+                quarter,
+              },
+            }).then(async (sws) => {
               if (sws) {
                 const {
                   subsectstudID,
@@ -2062,7 +2120,7 @@ router.post(
                   actualGrade,
                   transmutedGrade50,
                   transmutedGrade55,
-                  transmutedGrade60
+                  transmutedGrade60,
                 } = sws;
                 let finalGrade = 0;
                 switch (transmutation) {
@@ -2088,7 +2146,9 @@ router.post(
                   subsectstudID
                 );
 
-                const sex = await utils.getStudentSexBySubsectstudID(subsectstudID)
+                const sex = await utils.getStudentSexBySubsectstudID(
+                  subsectstudID
+                );
                 return {
                   sex,
                   name,
@@ -2102,7 +2162,7 @@ router.post(
                   transmutedGrade50,
                   transmutedGrade55,
                   transmutedGrade60,
-                  finalGrade
+                  finalGrade,
                 };
               }
             });
@@ -2117,12 +2177,15 @@ router.post(
             schoolYearID,
             schoolYear,
             classRecordID: subsect.classRecordID,
-            data: [...data.filter(a => a.sex == "M"), ...data.filter(a => a.sex == "F")]
+            data: [
+              ...data.filter((a) => a.sex == "M"),
+              ...data.filter((a) => a.sex == "F"),
+            ],
           });
         }
       } else {
         res.status(404).json({
-          msg: "Subject section not found!"
+          msg: "Subject section not found!",
         });
       }
     });
@@ -2136,7 +2199,7 @@ router.post(
 router.post(
   "/changetransmutation",
   passport.authenticate("teacher", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { subsectID, quarter, transmutation } = req.body;
@@ -2144,20 +2207,20 @@ router.post(
     const teacherID = await utils.getTeacherID(accountID);
     SubjectSection.findOne({
       where: {
-        subsectID
-      }
-    }).then(async ss => {
+        subsectID,
+      },
+    }).then(async (ss) => {
       if (ss) {
         if (ss.teacherID != teacherID) {
           res.status(401).json({
-            msg: "Not authorized!"
+            msg: "Not authorized!",
           });
         } else {
           ClassRecordStatus.findOne({
             where: {
-              classRecordID: ss.classRecordID
-            }
-          }).then(async crs => {
+              classRecordID: ss.classRecordID,
+            },
+          }).then(async (crs) => {
             if (crs) {
               let invalid = false;
               if (quarter == "Q1") {
@@ -2171,23 +2234,23 @@ router.post(
               }
               if (invalid) {
                 res.status(400).json({
-                  msg: "You are not authorized to edit this class record."
+                  msg: "You are not authorized to edit this class record.",
                 });
               } else {
                 ClassRecord.findOne({
                   where: {
-                    classRecordID: ss.classRecordID
-                  }
-                }).then(async cr => {
+                    classRecordID: ss.classRecordID,
+                  },
+                }).then(async (cr) => {
                   if (cr) {
                     switch (quarter) {
                       case "Q1": {
                         await cr.update(
                           {
-                            q1Transmu: transmutation
+                            q1Transmu: transmutation,
                           },
                           {
-                            showLog: false
+                            showLog: false,
                           }
                         );
                         break;
@@ -2195,10 +2258,10 @@ router.post(
                       case "Q2": {
                         await cr.update(
                           {
-                            q2Transmu: transmutation
+                            q2Transmu: transmutation,
                           },
                           {
-                            showLog: false
+                            showLog: false,
                           }
                         );
                         break;
@@ -2206,10 +2269,10 @@ router.post(
                       case "Q3": {
                         await cr.update(
                           {
-                            q3Transmu: transmutation
+                            q3Transmu: transmutation,
                           },
                           {
-                            showLog: false
+                            showLog: false,
                           }
                         );
                         break;
@@ -2217,10 +2280,10 @@ router.post(
                       case "Q4": {
                         await cr.update(
                           {
-                            q4Transmu: transmutation
+                            q4Transmu: transmutation,
                           },
                           {
-                            showLog: false
+                            showLog: false,
                           }
                         );
                         break;
@@ -2232,25 +2295,25 @@ router.post(
                       subsectID
                     );
                     res.status(200).json({
-                      msg: "Transmutation changed successfully!"
+                      msg: "Transmutation changed successfully!",
                     });
                   } else {
                     res.status(404).json({
-                      msg: "Class Record not found!"
+                      msg: "Class Record not found!",
                     });
                   }
                 });
               }
             } else {
               res.status(404).json({
-                msg: "Subject Section not found!"
+                msg: "Subject Section not found!",
               });
             }
           });
         }
       } else {
         res.status(404).json({
-          msg: "Class record status does not exist"
+          msg: "Class record status does not exist",
         });
       }
     });
@@ -2264,7 +2327,7 @@ router.post(
 router.post(
   "/getrecinfo",
   passport.authenticate("teacher", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { accountID } = req.user;
@@ -2272,28 +2335,28 @@ router.post(
     const teacherID = await utils.getTeacherID(accountID);
     SubjectSection.findOne({
       where: {
-        subsectID
-      }
-    }).then(async ss => {
+        subsectID,
+      },
+    }).then(async (ss) => {
       if (ss) {
         if (ss.teacherID != teacherID) {
           res.status(401).json({
-            msg: "Not authorized!"
+            msg: "Not authorized!",
           });
         } else {
           Grade.findOne({
             where: {
-              gradeID
-            }
-          }).then(async grade => {
+              gradeID,
+            },
+          }).then(async (grade) => {
             if (grade) {
               const { description, dateGiven, total } = grade;
               const component = await utils.getComponentName(componentID);
               const weight = await Subcomponent.findOne({
                 where: {
-                  subcompID
-                }
-              }).then(sc => {
+                  subcompID,
+                },
+              }).then((sc) => {
                 if (sc) {
                   return sc.compWeight;
                 }
@@ -2306,12 +2369,12 @@ router.post(
                   subcomponentID: subcompID,
                   componentID,
                   description: grade.description,
-                  dateGiven: grade.dateGiven
-                }
-              }).then(async grades => {
+                  dateGiven: grade.dateGiven,
+                },
+              }).then(async (grades) => {
                 if (grades.length == 0) {
                   res.status(404).json({
-                    msg: "Grades not found!"
+                    msg: "Grades not found!",
                   });
                 } else {
                   let data = [];
@@ -2333,7 +2396,7 @@ router.post(
                           ? "E"
                           : score,
                       name,
-                      imageUrl
+                      imageUrl,
                     });
                   }
                   res.status(200).json({
@@ -2344,20 +2407,20 @@ router.post(
                     dateGiven,
                     total,
                     description,
-                    data
+                    data,
                   });
                 }
               });
             } else {
               res.status(404).json({
-                msg: "Grade not found!"
+                msg: "Grade not found!",
               });
             }
           });
         }
       } else {
         res.status(404).json({
-          msg: "Subject section not found!"
+          msg: "Subject section not found!",
         });
       }
     });
@@ -2371,7 +2434,7 @@ router.post(
 router.post(
   "/editrecord",
   passport.authenticate("teacher", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const reg = /^-?[0-9]*(\.[0-9]*)?$/;
@@ -2383,21 +2446,21 @@ router.post(
       subcompID,
       componentID,
       quarter,
-      payload
+      payload,
     } = req.body;
     let totalValid =
       !isNaN(total) && reg.test(total) && total !== "" && total !== "-";
     SubjectSection.findOne({
       where: {
-        subsectID
-      }
-    }).then(async ss => {
+        subsectID,
+      },
+    }).then(async (ss) => {
       if (ss) {
         ClassRecordStatus.findOne({
           where: {
-            classRecordID: ss.classRecordID
-          }
-        }).then(async crs => {
+            classRecordID: ss.classRecordID,
+          },
+        }).then(async (crs) => {
           if (crs) {
             let invalid = false;
             if (quarter == "Q1") {
@@ -2411,47 +2474,47 @@ router.post(
             }
             if (invalid) {
               res.status(400).json({
-                msg: "You are not authorized to edit this class record."
+                msg: "You are not authorized to edit this class record.",
               });
             } else {
               if (!totalValid) {
                 res.status(400).json({
-                  msg: "Total score is invalid. Enter numbers only."
+                  msg: "Total score is invalid. Enter numbers only.",
                 });
               } else {
                 const { accountID } = req.user;
                 const teacherID = await utils.getTeacherID(accountID);
                 if (total <= 0) {
                   return res.status(400).json({
-                    msg: "Total must be more than 0"
+                    msg: "Total must be more than 0",
                   });
                 } else {
                   SubjectSection.findOne({
                     where: {
-                      subsectID
-                    }
-                  }).then(async subjectsection => {
+                      subsectID,
+                    },
+                  }).then(async (subjectsection) => {
                     if (subjectsection) {
                       if (subjectsection.teacherID != teacherID) {
                         return res.status(401).json({
-                          msg: "Not authorized!"
+                          msg: "Not authorized!",
                         });
                       } else {
                         const isSubmitted = await ClassRecord.findOne({
                           where: {
-                            classRecordID: subjectsection.classRecordID
-                          }
-                        }).then(cr => {
+                            classRecordID: subjectsection.classRecordID,
+                          },
+                        }).then((cr) => {
                           if (cr) {
                             return cr.isSubmitted;
                           }
                         });
                         let { errors, isValid } = validateSubcomponent({
-                          name: description
+                          name: description,
                         });
                         if (!isValid) {
                           return res.status(400).json({
-                            msg: "Error input: Description"
+                            msg: "Error input: Description",
                           });
                         } else {
                           let i = 0;
@@ -2466,15 +2529,15 @@ router.post(
                                 quarter,
                                 subsectstudID: value.subsectstudID,
                                 gradeID: {
-                                  [Op.ne]: value.gradeID
-                                }
-                              }
-                            }).then(async grades2 => {
+                                  [Op.ne]: value.gradeID,
+                                },
+                              },
+                            }).then(async (grades2) => {
                               let sum = 0;
                               let totalTemp = 0;
                               for (const [
                                 index2,
-                                value2
+                                value2,
                               ] of grades2.entries()) {
                                 if (value2.score == "A") {
                                   sum = sum + 0;
@@ -2514,7 +2577,7 @@ router.post(
                               invalid = true;
                               return res.status(400).json({
                                 msg:
-                                  "Invalid score input. Enter numbers, E, or B only"
+                                  "Invalid score input. Enter numbers, E, or B only",
                               });
                             }
                           }
@@ -2528,25 +2591,25 @@ router.post(
                               classRecordID: subjectsection.classRecordID,
                               quarter,
                               gradeID: {
-                                [Op.notIn]: gradeIDchecker
-                              }
-                            }
-                          }).then(async gr => {
+                                [Op.notIn]: gradeIDchecker,
+                              },
+                            },
+                          }).then(async (gr) => {
                             if (gr) {
                               res.status(400).json({
-                                msg: "Descrption already exists!"
+                                msg: "Descrption already exists!",
                               });
                             } else {
                               if (!invalid) {
                                 for (const [
                                   index,
-                                  value3
+                                  value3,
                                 ] of payload.entries()) {
                                   Grade.findOne({
                                     where: {
-                                      gradeID: value3.gradeID
-                                    }
-                                  }).then(async gr2 => {
+                                      gradeID: value3.gradeID,
+                                    },
+                                  }).then(async (gr2) => {
                                     if (gr2) {
                                       const score = gr2.score;
                                       let attendance = "";
@@ -2565,9 +2628,11 @@ router.post(
                                           attendance,
                                           score: value3.score,
                                           isUpdated: 1,
-                                          showLog: isSubmitted
+                                          showLog: isSubmitted,
                                         },
-                                        { showLog: false }
+                                        {
+                                          showLog: false,
+                                        }
                                       );
                                     }
                                   });
@@ -2578,7 +2643,7 @@ router.post(
                                 );
 
                                 res.status(200).json({
-                                  msg: "Record updated successfully!"
+                                  msg: "Record updated successfully!",
                                 });
                               }
                             }
@@ -2587,7 +2652,7 @@ router.post(
                       }
                     } else {
                       res.status(404).json({
-                        msg: "Subject section not found!"
+                        msg: "Subject section not found!",
                       });
                     }
                   });
@@ -2596,13 +2661,13 @@ router.post(
             }
           } else {
             res.status(404).json({
-              msg: "Class record status does not exist"
+              msg: "Class record status does not exist",
             });
           }
         });
       } else {
         res.status(404).json({
-          msg: "Subject section does not exist"
+          msg: "Subject section does not exist",
         });
       }
     });
@@ -2616,22 +2681,22 @@ router.post(
 router.post(
   "/getsubjecttype",
   passport.authenticate("teacher", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { subsectID } = req.body;
     SubjectSection.findOne({
       where: {
-        subsectID
-      }
-    }).then(ss => {
+        subsectID,
+      },
+    }).then((ss) => {
       if (ss) {
         res.status(200).json({
-          subjectType: ss.subjectType
+          subjectType: ss.subjectType,
         });
       } else {
         res.status(404).json({
-          msg: "Subject section not found!"
+          msg: "Subject section not found!",
         });
       }
     });
@@ -2645,15 +2710,15 @@ router.post(
 router.post(
   "/ifclassrecordlocked",
   passport.authenticate("teacher", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { classRecordID, quarter } = req.body;
     ClassRecordStatus.findOne({
       where: {
-        classRecordID
-      }
-    }).then(async crs => {
+        classRecordID,
+      },
+    }).then(async (crs) => {
       if (crs) {
         let invalid = false;
         let status = "E";
@@ -2672,11 +2737,11 @@ router.post(
         }
         res.status(200).json({
           locked: invalid,
-          status
+          status,
         });
       } else {
         res.status(404).json({
-          msg: "Class record status does not exist"
+          msg: "Class record status does not exist",
         });
       }
     });
@@ -2690,7 +2755,7 @@ router.post(
 router.post(
   "/getsummary",
   passport.authenticate("teacher", {
-    session: false
+    session: false,
   }),
   async (req, res) => {
     const { accountID } = req.user;
@@ -2698,32 +2763,32 @@ router.post(
     const teacherID = await utils.getTeacherID(accountID);
     SubjectSection.findOne({
       where: {
-        subsectID
-      }
-    }).then(async subsect => {
+        subsectID,
+      },
+    }).then(async (subsect) => {
       if (subsect) {
         if (subsect.teacherID != teacherID) {
           res.status(401).json({
-            msg: "Not authorized!"
+            msg: "Not authorized!",
           });
         } else {
           const {
             q1Transmu,
             q2Transmu,
             q3Transmu,
-            q4Transmu
+            q4Transmu,
           } = await ClassRecord.findOne({
             where: {
-              classRecordID: subsect.classRecordID
-            }
-          }).then(async cr => {
+              classRecordID: subsect.classRecordID,
+            },
+          }).then(async (cr) => {
             if (cr) {
               const { q1Transmu, q2Transmu, q3Transmu, q4Transmu } = cr;
               return {
                 q1Transmu,
                 q2Transmu,
                 q3Transmu,
-                q4Transmu
+                q4Transmu,
               };
             }
           });
@@ -2734,9 +2799,9 @@ router.post(
           const schoolYear = await utils.getSYname(schoolYearID);
           StudentSubjectGrades.findAll({
             where: {
-              classRecordID: subsect.classRecordID
-            }
-          }).then(async sg => {
+              classRecordID: subsect.classRecordID,
+            },
+          }).then(async (sg) => {
             if (sg.length != 0) {
               let data = [];
               for (const [index, value] of sg.entries()) {
@@ -2747,12 +2812,14 @@ router.post(
                   q2FinalGrade,
                   q3FinalGrade,
                   q4FinalGrade,
-                  ave
+                  ave,
                 } = value;
                 const name = await utils.getStudentNameBySubsectstudID(
                   subsectstudID
                 );
-                const sex = await utils.getStudentSexBySubsectstudID(subsectstudID)
+                const sex = await utils.getStudentSexBySubsectstudID(
+                  subsectstudID
+                );
                 const imageUrl = await utils.getStudentImageUrlBySubsectstudID(
                   subsectstudID
                 );
@@ -2766,7 +2833,7 @@ router.post(
                   q4FinalGrade,
                   ave,
                   name,
-                  imageUrl
+                  imageUrl,
                 });
               }
               data.sort((a, b) => (a.name > b.name ? 1 : -1));
@@ -2776,22 +2843,223 @@ router.post(
                 sectionName,
                 schoolYear,
                 schoolYearID,
-                data: [...data.filter(a => a.sex == "M"), ...data.filter(a => a.sex == "F")],
+                data: [
+                  ...data.filter((a) => a.sex == "M"),
+                  ...data.filter((a) => a.sex == "F"),
+                ],
                 q1Transmu,
                 q2Transmu,
                 q3Transmu,
-                q4Transmu
+                q4Transmu,
               });
             } else {
               res.status(404).json({
-                msg: "Student Grades not found!"
+                msg: "Student Grades not found!",
               });
             }
           });
         }
       } else {
         res.status(404).json({
-          msg: "Subject section not found!"
+          msg: "Subject section not found!",
+        });
+      }
+    });
+  }
+);
+
+// @route POST api/teacher/condensedfinalgrade
+// @desc Get advisee condensed final grade
+// @access Private
+
+router.post(
+  "/condensedfinalgrade",
+  passport.authenticate("teacher", {
+    session: false,
+  }),
+  async (req, res) => {
+    const { sectionID, quarter, schoolYearID } = req.body;
+    const studsectIDs = await StudentSection.findAll({
+      where: {
+        sectionID,
+        schoolYearID,
+      },
+    }).then((ss) => {
+      if (ss) {
+        let data = [];
+        for (const [i, v] of ss.entries()) {
+          data.push(v.studsectID);
+        }
+        return data;
+      }
+    });
+    SubjectSectionStudent.findAll({
+      where: {
+        studsectID: {
+          [Op.in]: studsectIDs,
+        },
+      },
+    }).then(async (sss) => {
+      if (sss) {
+        let data3 = [];
+        for (const [i, x] of sss.entries()) {
+          const grades = await SubjectSectionStudent.findAll({
+            where: {
+              studsectID: x.studsectID,
+            },
+          }).then(async (sss2) => {
+            if (sss2) {
+              let data2 = [];
+              for (const [i, v] of sss2.entries()) {
+                let name = await utils.getStudentNameBySubsectstudID(
+                  v.subsectstudID
+                );
+                let studentID = await StudentSection.findOne({
+                  where: {
+                    studsectID: v.studsectID,
+                  },
+                }).then((ss) => ss.studentID);
+                let sex = await utils.getStudentSexBySubsectstudID(
+                  v.subsectstudID
+                );
+                let imageUrl = await utils.getStudentImageUrlBySubsectstudID(
+                  v.subsectstudID
+                );
+                let studsectID = v.studsectID;
+                let {
+                  subjectType,
+                  classRecordID,
+                } = await SubjectSection.findOne({
+                  where: {
+                    subsectID: v.subsectID,
+                  },
+                }).then(async (ss) => {
+                  if (ss) {
+                    return {
+                      subjectType: ss.subjectType,
+                      classRecordID: ss.classRecordID,
+                    };
+                  }
+                });
+                let teacher = await SubjectSection.findOne({
+                  where: {
+                    classRecordID,
+                  },
+                }).then(async (ss) => await utils.getTeacherName(ss.teacherID));
+                let status = await ClassRecordStatus.findOne({
+                  where: {
+                    classRecordID,
+                  },
+                }).then(async (crs) => {
+                  if (crs) {
+                    if (quarter == "Q1") {
+                      if (
+                        subjectType == "NON_SHS" ||
+                        subjectType == "1ST_SEM"
+                      ) {
+                        return crs.q1;
+                      }
+                    } else if (quarter == "Q2") {
+                      if (
+                        subjectType == "NON_SHS" ||
+                        subjectType == "1ST_SEM"
+                      ) {
+                        return crs.q2;
+                      }
+                    } else if (quarter == "Q3") {
+                      if (subjectType == "NON_SHS") {
+                        return crs.q3;
+                      } else if (subjectType == "2ND_SEM") {
+                        return crs.q1;
+                      }
+                    } else {
+                      if (subjectType == "NON_SHS") {
+                        return crs.q4;
+                      } else if (subjectType == "2ND_SEM") {
+                        return crs.q2;
+                      }
+                    }
+                  }
+                });
+                if (typeof status !== "undefined") {
+                  let {
+                    score,
+                    subjectName,
+                  } = await StudentSubjectGrades.findOne({
+                    where: {
+                      classRecordID,
+                      subsectstudID: v.subsectstudID,
+                    },
+                  }).then(async (ssg) => {
+                    if (ssg) {
+                      let score;
+                      let subjectID = await utils.getSubjectIDBySubsectstudID(
+                        ssg.subsectstudID
+                      );
+                      let subjectName = await utils.getSubjectCode(subjectID);
+                      if (status == "F" || status == "D") {
+                        if (quarter == "Q1") {
+                          if (
+                            subjectType == "NON_SHS" ||
+                            subjectType == "1ST_SEM"
+                          ) {
+                            score = ssg.q1FinalGrade;
+                          }
+                        } else if (quarter == "Q2") {
+                          if (
+                            subjectType == "NON_SHS" ||
+                            subjectType == "1ST_SEM"
+                          ) {
+                            score = ssg.q2FinalGrade;
+                          }
+                        } else if (quarter == "Q3") {
+                          if (subjectType == "NON_SHS") {
+                            score = ssg.q3FinalGrade;
+                          } else if (subjectType == "2ND_SEM") {
+                            score = ssg.q1FinalGrade;
+                          }
+                        } else {
+                          if (subjectType == "NON_SHS") {
+                            score = ssg.q4FinalGrade;
+                          } else if (subjectType == "2ND_SEM") {
+                            score = ssg.q2FinalGrade;
+                          }
+                        }
+                      }
+                      return {
+                        score,
+                        subjectName,
+                      };
+                    }
+                  });
+                  if (typeof score !== "undefined" && typeof score !== "null") {
+                    data2.push({
+                      teacher,
+                      classRecordID,
+                      status,
+                      imageUrl,
+                      studentID,
+                      sex,
+                      score,
+                      subjectName,
+                      name,
+                      studsectID,
+                    });
+                  }
+                }
+              }
+              return data2;
+            }
+          });
+          data3.push(grades);
+        }
+        const resData = utils.formatCondensedDeliberationGrade(data3);
+        res.status(200).json({
+          data: [
+            ...resData.data.filter((a) => a.sex == "M"),
+            ...resData.data.filter((a) => a.sex == "F"),
+          ],
+          columns: resData.columns,
         });
       }
     });
