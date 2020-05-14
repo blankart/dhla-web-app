@@ -1,10 +1,12 @@
 \contentsline {section}{Abstract}{2}{Doc-Start}
+\contentsline {section}{List of Figures}{v}{section*.1}
+\contentsline {section}{List of Tables}{vii}{section*.2}
 \contentsline {section}{\numberline {I.}Introduction}{1}{section.1}
 \contentsline {subsection}{\numberline {A.}Background of the Study}{1}{subsection.1.1}
 \contentsline {subsection}{\numberline {B.}Statement of the Problem}{2}{subsection.1.2}
 \contentsline {subsection}{\numberline {C.}Objectives of the Study}{3}{subsection.1.3}
 \contentsline {subsection}{\numberline {D.}Significance of the Project}{6}{subsection.1.4}
-\contentsline {subsection}{\numberline {E.}Scope and Limitations}{7}{subsection.1.5}
+\contentsline {subsection}{\numberline {E.}Scope and Limitations}{6}{subsection.1.5}
 \contentsline {subsection}{\numberline {F.}Assumptions}{7}{subsection.1.6}
 \contentsline {section}{\numberline {II.}Review of Related Literature}{8}{section.2}
 \contentsline {section}{\numberline {III.}Theoretical Framework}{12}{section.3}
@@ -30,25 +32,46 @@
 \contentsline {subsection}{\numberline {C.}Activity Diagrams}{21}{subsection.4.3}
 \contentsline {subsection}{\numberline {D.}Database Design}{24}{subsection.4.4}
 \contentsline {subsubsection}{\numberline {1.}Entity Relationship Diagram (ERD)}{24}{subsubsection.4.4.1}
-\contentsline {subsection}{\numberline {E.}Data Dictionary}{32}{subsection.4.5}
-\contentsline {subsubsection}{\numberline {1.}User Account}{32}{subsubsection.4.5.1}
-\contentsline {subsubsection}{\numberline {2.}Student}{35}{subsubsection.4.5.2}
-\contentsline {subsubsection}{\numberline {3.}Parent/Guardian}{36}{subsubsection.4.5.3}
-\contentsline {subsubsection}{\numberline {4.}Cashier}{37}{subsubsection.4.5.4}
-\contentsline {subsubsection}{\numberline {5.}Teacher}{38}{subsubsection.4.5.5}
-\contentsline {subsubsection}{\numberline {6.}Nonacademic}{38}{subsubsection.4.5.6}
-\contentsline {subsubsection}{\numberline {7.}Section}{39}{subsubsection.4.5.7}
-\contentsline {subsubsection}{\numberline {8.}Subject}{39}{subsubsection.4.5.8}
-\contentsline {subsubsection}{\numberline {9.}Grade Level}{40}{subsubsection.4.5.9}
-\contentsline {subsubsection}{\numberline {10.}Category}{41}{subsubsection.4.5.10}
-\contentsline {subsubsection}{\numberline {11.}Subcategory}{42}{subsubsection.4.5.11}
-\contentsline {subsubsection}{\numberline {12.}Class record}{42}{subsubsection.4.5.12}
-\contentsline {subsubsection}{\numberline {13.}Grade}{43}{subsubsection.4.5.13}
-\contentsline {subsubsection}{\numberline {14.}Attendance Log}{45}{subsubsection.4.5.14}
-\contentsline {subsubsection}{\numberline {15.}Advisory Table}{46}{subsubsection.4.5.15}
-\contentsline {subsubsection}{\numberline {16.}Class}{47}{subsubsection.4.5.16}
-\contentsline {subsubsection}{\numberline {17.}Submission Deadline}{48}{subsubsection.4.5.17}
-\contentsline {subsubsection}{\numberline {18.}Subcomponent Weight}{48}{subsubsection.4.5.18}
-\contentsline {subsection}{\numberline {F.}System Architecture}{50}{subsection.4.6}
-\contentsline {subsection}{\numberline {G.}Technical Architecture}{50}{subsection.4.7}
-\contentsline {section}{\numberline {V.}Bibliography}{643}{section.5}
+\contentsline {subsection}{\numberline {E.}Data Dictionary}{39}{subsection.4.5}
+\contentsline {subsubsection}{\numberline {1.}Account Notice}{39}{subsubsection.4.5.1}
+\contentsline {subsubsection}{\numberline {2.}Activity Log}{39}{subsubsection.4.5.2}
+\contentsline {subsubsection}{\numberline {3.}Class Record}{41}{subsubsection.4.5.3}
+\contentsline {subsubsection}{\numberline {4.}Class Record Status}{41}{subsubsection.4.5.4}
+\contentsline {subsubsection}{\numberline {5.}Component}{43}{subsubsection.4.5.5}
+\contentsline {subsubsection}{\numberline {6.}Grade}{43}{subsubsection.4.5.6}
+\contentsline {subsubsection}{\numberline {7.}Log Details}{45}{subsubsection.4.5.7}
+\contentsline {subsubsection}{\numberline {8.}Nonacademic}{46}{subsubsection.4.5.8}
+\contentsline {subsubsection}{\numberline {9.}Parent Guardian}{46}{subsubsection.4.5.9}
+\contentsline {subsubsection}{\numberline {10.}School Year}{47}{subsubsection.4.5.10}
+\contentsline {subsubsection}{\numberline {11.}Section}{48}{subsubsection.4.5.11}
+\contentsline {subsubsection}{\numberline {12.}Student}{48}{subsubsection.4.5.12}
+\contentsline {subsubsection}{\numberline {13.}Student Final Grade}{50}{subsubsection.4.5.13}
+\contentsline {subsubsection}{\numberline {14.}Student Grades}{51}{subsubsection.4.5.14}
+\contentsline {subsubsection}{\numberline {15.}Student Section}{52}{subsubsection.4.5.15}
+\contentsline {subsubsection}{\numberline {16.}Student Subject Grades}{52}{subsubsection.4.5.16}
+\contentsline {subsubsection}{\numberline {17.}Student Weighted Score}{54}{subsubsection.4.5.17}
+\contentsline {subsubsection}{\numberline {18.}Subcomponent}{55}{subsubsection.4.5.18}
+\contentsline {subsubsection}{\numberline {19.}Subject}{56}{subsubsection.4.5.19}
+\contentsline {subsubsection}{\numberline {20.}Subject Section}{57}{subsubsection.4.5.20}
+\contentsline {subsubsection}{\numberline {21.}Subject Section Student}{58}{subsubsection.4.5.21}
+\contentsline {subsubsection}{\numberline {22.}Submission Deadline}{59}{subsubsection.4.5.22}
+\contentsline {subsubsection}{\numberline {23.}Teacher}{59}{subsubsection.4.5.23}
+\contentsline {subsubsection}{\numberline {24.}Teacher Section}{60}{subsubsection.4.5.24}
+\contentsline {subsubsection}{\numberline {25.}User Account}{60}{subsubsection.4.5.25}
+\contentsline {subsection}{\numberline {F.}System Architecture}{64}{subsection.4.6}
+\contentsline {subsection}{\numberline {G.}Technical Architecture}{64}{subsection.4.7}
+\contentsline {section}{\numberline {V.}Results}{65}{section.5}
+\contentsline {subsection}{\numberline {A.}General}{65}{subsection.5.1}
+\contentsline {subsection}{\numberline {B.}System Administrator}{67}{subsection.5.2}
+\contentsline {subsection}{\numberline {C.}Director}{68}{subsection.5.3}
+\contentsline {subsection}{\numberline {D.}Cashier}{74}{subsection.5.4}
+\contentsline {subsection}{\numberline {E.}Registrar}{74}{subsection.5.5}
+\contentsline {subsection}{\numberline {F.}Teacher}{79}{subsection.5.6}
+\contentsline {subsection}{\numberline {G.}Student}{85}{subsection.5.7}
+\contentsline {subsection}{\numberline {H.}Parent}{86}{subsection.5.8}
+\contentsline {section}{\numberline {VI.}Discussions}{88}{section.6}
+\contentsline {section}{\numberline {VII.}Conclusions}{89}{section.7}
+\contentsline {section}{\numberline {VIII.}Recommendations}{91}{section.8}
+\contentsline {section}{\numberline {IX.}Bibliography}{92}{section.9}
+\contentsline {section}{\numberline {X.}Appendix}{94}{section.10}
+\contentsline {section}{\numberline {XI.}Acknowledgement}{406}{section.11}

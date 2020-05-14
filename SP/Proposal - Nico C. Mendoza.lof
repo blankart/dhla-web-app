@@ -1,0 +1,59 @@
+\contentsline {figure}{\numberline {1}{\ignorespaces Context Diagram, DHLA Grade Management System}}{17}{figure.1}
+\contentsline {figure}{\numberline {2}{\ignorespaces Top Level Data Flow Diagram, DHLA Grade Management System}}{18}{figure.2}
+\contentsline {figure}{\numberline {3}{\ignorespaces Level 1 Data Flow Diagram, DHLA Grade Management System}}{19}{figure.3}
+\contentsline {figure}{\numberline {4}{\ignorespaces Level 2 Data Flow Diagram for Process 1.0, DHLA Grade Management System}}{20}{figure.4}
+\contentsline {figure}{\numberline {5}{\ignorespaces Level 2 Data Flow Diagram for Process 3.0, DHLA Grade Management System}}{20}{figure.5}
+\contentsline {figure}{\numberline {6}{\ignorespaces Level 2 Data Flow Diagram for Process 5.0, DHLA Grade Management System}}{21}{figure.6}
+\contentsline {figure}{\numberline {7}{\ignorespaces Use Case Diagram, DHLA Grade Management System}}{23}{figure.7}
+\contentsline {figure}{\numberline {8}{\ignorespaces Entity Relationship Diagram (ERD) (user account)}}{26}{figure.8}
+\contentsline {figure}{\numberline {9}{\ignorespaces Entity Relationship Diagram (ERD) (account notice)}}{27}{figure.9}
+\contentsline {figure}{\numberline {10}{\ignorespaces Entity Relationship Diagram (ERD) (school year)}}{28}{figure.10}
+\contentsline {figure}{\numberline {11}{\ignorespaces Entity Relationship Diagram (ERD) (section)}}{29}{figure.11}
+\contentsline {figure}{\numberline {12}{\ignorespaces Entity Relationship Diagram (ERD) (teacher section)}}{29}{figure.12}
+\contentsline {figure}{\numberline {13}{\ignorespaces Entity Relationship Diagram (ERD) (student section)}}{30}{figure.13}
+\contentsline {figure}{\numberline {14}{\ignorespaces Entity Relationship Diagram (ERD) (subject section)}}{31}{figure.14}
+\contentsline {figure}{\numberline {15}{\ignorespaces Entity Relationship Diagram (ERD) (class record)}}{32}{figure.15}
+\contentsline {figure}{\numberline {16}{\ignorespaces Entity Relationship Diagram (ERD) (class record status)}}{33}{figure.16}
+\contentsline {figure}{\numberline {17}{\ignorespaces Entity Relationship Diagram (ERD) (grade)}}{34}{figure.17}
+\contentsline {figure}{\numberline {18}{\ignorespaces Entity Relationship Diagram (ERD) (student subject grades)}}{35}{figure.18}
+\contentsline {figure}{\numberline {19}{\ignorespaces Entity Relationship Diagram (ERD) (student weighted score)}}{35}{figure.19}
+\contentsline {figure}{\numberline {20}{\ignorespaces Entity Relationship Diagram (ERD) (student grades)}}{36}{figure.20}
+\contentsline {figure}{\numberline {21}{\ignorespaces Entity Relationship Diagram (ERD) (student final grade)}}{36}{figure.21}
+\contentsline {figure}{\numberline {22}{\ignorespaces Entity Relationship Diagram (ERD) (activity log)}}{37}{figure.22}
+\contentsline {figure}{\numberline {23}{\ignorespaces Entity Relationship Diagram (ERD) (component)}}{37}{figure.23}
+\contentsline {figure}{\numberline {24}{\ignorespaces Entity Relationship Diagram (ERD) (subcomponent)}}{38}{figure.24}
+\contentsline {figure}{\numberline {25}{\ignorespaces Login Interface}}{65}{figure.25}
+\contentsline {figure}{\numberline {26}{\ignorespaces View/Edit Profile Interface}}{66}{figure.26}
+\contentsline {figure}{\numberline {27}{\ignorespaces Change Password Interface}}{66}{figure.27}
+\contentsline {figure}{\numberline {28}{\ignorespaces Create Account and Account List}}{67}{figure.28}
+\contentsline {figure}{\numberline {29}{\ignorespaces Account Deletion}}{68}{figure.29}
+\contentsline {figure}{\numberline {30}{\ignorespaces Assign Parent to Student}}{68}{figure.30}
+\contentsline {figure}{\numberline {31}{\ignorespaces View Student Record - Student View}}{69}{figure.31}
+\contentsline {figure}{\numberline {32}{\ignorespaces Teacher-Centric Record View}}{70}{figure.32}
+\contentsline {figure}{\numberline {33}{\ignorespaces Student-Centric Record View}}{71}{figure.33}
+\contentsline {figure}{\numberline {34}{\ignorespaces Section-Centric Record View}}{72}{figure.34}
+\contentsline {figure}{\numberline {35}{\ignorespaces Generate Report Card}}{73}{figure.35}
+\contentsline {figure}{\numberline {36}{\ignorespaces View Honor Students and Passed/Failed Students}}{73}{figure.36}
+\contentsline {figure}{\numberline {37}{\ignorespaces Cashier Dashboard}}{74}{figure.37}
+\contentsline {figure}{\numberline {38}{\ignorespaces Restrict Account}}{74}{figure.38}
+\contentsline {figure}{\numberline {39}{\ignorespaces Create School Year Component}}{75}{figure.39}
+\contentsline {figure}{\numberline {40}{\ignorespaces Create School Year Modal}}{75}{figure.40}
+\contentsline {figure}{\numberline {41}{\ignorespaces Sections List}}{76}{figure.41}
+\contentsline {figure}{\numberline {42}{\ignorespaces Enrolled Students List}}{76}{figure.42}
+\contentsline {figure}{\numberline {43}{\ignorespaces Assign Advisers}}{77}{figure.43}
+\contentsline {figure}{\numberline {44}{\ignorespaces Add New Subject Load}}{77}{figure.44}
+\contentsline {figure}{\numberline {45}{\ignorespaces Deliberation Process}}{78}{figure.45}
+\contentsline {figure}{\numberline {46}{\ignorespaces Class Record Log}}{78}{figure.46}
+\contentsline {figure}{\numberline {47}{\ignorespaces Group Deliberation Process}}{79}{figure.47}
+\contentsline {figure}{\numberline {48}{\ignorespaces Teacher Subject Load}}{80}{figure.48}
+\contentsline {figure}{\numberline {49}{\ignorespaces Teacher Manage Grades}}{81}{figure.49}
+\contentsline {figure}{\numberline {50}{\ignorespaces Teacher Edit Subcomponents}}{81}{figure.50}
+\contentsline {figure}{\numberline {51}{\ignorespaces Teacher Component}}{82}{figure.51}
+\contentsline {figure}{\numberline {52}{\ignorespaces Teacher Subcomponent}}{82}{figure.52}
+\contentsline {figure}{\numberline {53}{\ignorespaces Add New Record}}{83}{figure.53}
+\contentsline {figure}{\numberline {54}{\ignorespaces Summary Report Per Quarter}}{83}{figure.54}
+\contentsline {figure}{\numberline {55}{\ignorespaces School Year Summary Report}}{84}{figure.55}
+\contentsline {figure}{\numberline {56}{\ignorespaces Change Transmutation}}{84}{figure.56}
+\contentsline {figure}{\numberline {57}{\ignorespaces Adviser Student Records}}{85}{figure.57}
+\contentsline {figure}{\numberline {58}{\ignorespaces Student Records View}}{86}{figure.58}
+\contentsline {figure}{\numberline {59}{\ignorespaces Parent Student Records View}}{87}{figure.59}

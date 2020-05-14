@@ -7705,6 +7705,7 @@ router.post(
                   },
                 }).then(async (sss) => {
                   if (sss) {
+                    let foundFailed = false;
                     let passed2 = 0;
                     for (const [index3, value3] of sss.entries()) {
                       passed2 = await StudentSubjectGrades.findAll({
@@ -7713,7 +7714,7 @@ router.post(
                         },
                       }).then(async (ssg) => {
                         if (ssg) {
-                          let passed4 = 0;
+                          let passed4 = 1;
                           for (const [index4, value4] of ssg.entries()) {
                             let subjectType = await utils.getSubjectTypeByClassRecordID(
                               value4.classRecordID
@@ -7775,6 +7776,7 @@ router.post(
                                     teacher,
                                   });
                                   passed4 = -1;
+                                  return passed4;
                                 } else {
                                   passed4 = 1;
                                 }
@@ -7845,6 +7847,7 @@ router.post(
                                       teacher,
                                     });
                                     passed4 = -1;
+                                    return passed4;
                                   } else {
                                     passed4 = 1;
                                   }
@@ -7923,6 +7926,7 @@ router.post(
                                       teacher,
                                     });
                                     passed4 = -1;
+                                    return passed4;
                                   } else {
                                     passed4 = 1;
                                   }
@@ -7933,7 +7937,15 @@ router.post(
                           return passed4;
                         }
                       });
+                      if (passed2 == -1) {
+                        foundFailed = true;
+                      }
+
+                      if (foundFailed) {
+                        passed2 = -1;
+                      }
                     }
+
                     return passed2;
                   }
                 });
@@ -7941,6 +7953,8 @@ router.post(
                   numOfPassed = numOfPassed + 1;
                 } else if (passed == -1) {
                   numOfFailed = numOfFailed + 1;
+                } else {
+                  // console.log(passed);
                 }
               }
               return {
@@ -8046,4 +8060,5 @@ router.post(
     });
   }
 );
+
 module.exports = router;

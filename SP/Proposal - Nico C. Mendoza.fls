@@ -21,6 +21,8 @@ INPUT C:/Program Files/MiKTeX 2.9/tex/latex/geometry/geometry.cfg
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/geometry/geometry.cfg
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/url/url.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/url/url.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/float/float.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/float/float.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/setspace/setspace.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/setspace/setspace.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/listings/listings.sty
@@ -55,6 +57,12 @@ INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tocbibind/tocbibind.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tocbibind/tocbibind.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tocloft/tocloft.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tocloft/tocloft.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/alphalph.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/alphalph.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/infwarerr.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/infwarerr.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/intcalc.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/intcalc.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tools/longtable.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tools/longtable.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/hyperref/hyperref.sty
@@ -117,6 +125,12 @@ INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.
 INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmmi10.tfm
 INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmsy10.tfm
 OUTPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.toc
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.lof
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.lof
+OUTPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.lof
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.lot
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.lot
+OUTPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.lot
 INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmbx12.tfm
 INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmti10.tfm
 INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Context-Diagram.png
@@ -154,61 +168,269 @@ INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Activity-Diagram-1.png
 INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Activity-Diagram-1.png
 INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Activity-Diagram-1.png
 INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Activity-Diagram-1.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/User.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/User.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/User.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/User.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/User.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class-Record.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class-Record.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class-Record.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class-Record.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class-Record.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Grade.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Attendance-Log.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Attendance-Log.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Attendance-Log.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Attendance-Log.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Attendance-Log.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Advisory-Table.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Advisory-Table.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Advisory-Table.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Advisory-Table.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Advisory-Table.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Component-Weight.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Component-Weight.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Component-Weight.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Component-Weight.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Component-Weight.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subcomponent-Weight.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subcomponent-Weight.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subcomponent-Weight.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subcomponent-Weight.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Subcomponent-Weight.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Submission-Deadline.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Submission-Deadline.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Submission-Deadline.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Submission-Deadline.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Submission-Deadline.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class-Student-List.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class-Student-List.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class-Student-List.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class-Student-List.png
-INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Class-Student-List.png
-INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmr9.tfm
-INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmtt9.tfm
-INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmsy9.tfm
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDUA.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDUA.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDUA.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDUA.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDUA.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDAN.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDAN.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDAN.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDAN.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDAN.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSY.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSY.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSY.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSY.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSY.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDTS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDTS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDTS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDTS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDTS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSTUDSECT.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSTUDSECT.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSTUDSECT.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSTUDSECT.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSTUDSECT.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDCR.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDCR.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDCR.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDCR.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDCR.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDCRS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDCRS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDCRS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDCRS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDCRS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDG.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDG.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDG.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDG.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDG.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSSG.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSSG.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSSG.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSSG.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSSG.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSWS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSWS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSWS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSWS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSWS.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSG.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSG.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSG.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSG.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSG.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSFG.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSFG.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSFG.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSFG.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSFG.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDAL.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDAL.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDAL.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDAL.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDAL.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDC.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDC.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDC.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDC.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDC.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSC.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSC.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSC.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSC.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ERDSC.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/LoginScreen.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/LoginScreen.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/LoginScreen.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/LoginScreen.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/LoginScreen.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ViewProfile.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ViewProfile.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ViewProfile.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ViewProfile.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ViewProfile.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ChangePassword.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ChangePassword.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ChangePassword.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ChangePassword.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ChangePassword.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AdminCreateAccount.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AdminCreateAccount.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AdminCreateAccount.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AdminCreateAccount.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AdminCreateAccount.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AccountDeletion.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AccountDeletion.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AccountDeletion.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AccountDeletion.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AccountDeletion.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AssignParent.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AssignParent.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AssignParent.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AssignParent.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AssignParent.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ViewStudentRecord.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ViewStudentRecord.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ViewStudentRecord.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ViewStudentRecord.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ViewStudentRecord.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/TeacherCentric.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/TeacherCentric.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/TeacherCentric.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/TeacherCentric.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/TeacherCentric.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/StudentCentric.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/StudentCentric.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/StudentCentric.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/StudentCentric.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/StudentCentric.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/SectionCentric.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/SectionCentric.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/SectionCentric.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/SectionCentric.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/SectionCentric.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/PrintReportCard.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/PrintReportCard.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/PrintReportCard.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/PrintReportCard.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/PrintReportCard.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ViewPassedFailed.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ViewPassedFailed.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ViewPassedFailed.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ViewPassedFailed.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ViewPassedFailed.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/CashierDashboard.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/CashierDashboard.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/CashierDashboard.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/CashierDashboard.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/CashierDashboard.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/RestrictAccount.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/RestrictAccount.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/RestrictAccount.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/RestrictAccount.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/RestrictAccount.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/NoActiveSchoolYear.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/NoActiveSchoolYear.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/NoActiveSchoolYear.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/NoActiveSchoolYear.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/NoActiveSchoolYear.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/CreateANewSchoolYear.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/CreateANewSchoolYear.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/CreateANewSchoolYear.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/CreateANewSchoolYear.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/CreateANewSchoolYear.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/SectionList.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/SectionList.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/SectionList.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/SectionList.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/SectionList.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ManageStudents.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ManageStudents.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ManageStudents.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ManageStudents.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ManageStudents.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AssignAdvisers.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AssignAdvisers.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AssignAdvisers.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AssignAdvisers.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AssignAdvisers.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AddNewSubjectLoad.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AddNewSubjectLoad.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AddNewSubjectLoad.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AddNewSubjectLoad.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AddNewSubjectLoad.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/IndividualDeliberation.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/IndividualDeliberation.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/IndividualDeliberation.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/IndividualDeliberation.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/IndividualDeliberation.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ClassRecordLog.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ClassRecordLog.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ClassRecordLog.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ClassRecordLog.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ClassRecordLog.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/GroupDeliberation.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/GroupDeliberation.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/GroupDeliberation.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/GroupDeliberation.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/GroupDeliberation.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/TeacherSubjectLoad.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/TeacherSubjectLoad.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/TeacherSubjectLoad.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/TeacherSubjectLoad.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/TeacherSubjectLoad.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ManageGrades.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ManageGrades.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ManageGrades.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ManageGrades.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ManageGrades.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ModifySubcomponents.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ModifySubcomponents.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ModifySubcomponents.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ModifySubcomponents.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ModifySubcomponents.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/TeacherComponent.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/TeacherComponent.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/TeacherComponent.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/TeacherComponent.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/TeacherComponent.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/TeacherSubcomponent.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/TeacherSubcomponent.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/TeacherSubcomponent.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/TeacherSubcomponent.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/TeacherSubcomponent.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AddNewRecord.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AddNewRecord.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AddNewRecord.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AddNewRecord.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AddNewRecord.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/SummaryReportPerQ.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/SummaryReportPerQ.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/SummaryReportPerQ.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/SummaryReportPerQ.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/SummaryReportPerQ.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/SummaryReport.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/SummaryReport.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/SummaryReport.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/SummaryReport.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/SummaryReport.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ChangeTransmutation.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ChangeTransmutation.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ChangeTransmutation.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ChangeTransmutation.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ChangeTransmutation.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AdviserStudentRecords.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AdviserStudentRecords.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AdviserStudentRecords.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AdviserStudentRecords.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/AdviserStudentRecords.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/StudentRecord.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/StudentRecord.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/StudentRecord.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/StudentRecord.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/StudentRecord.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ParentStudentRecord.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ParentStudentRecord.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ParentStudentRecord.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ParentStudentRecord.png
+INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/ParentStudentRecord.png
 INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.bbl
 INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.bbl
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/cm/cmtt8.tfm
 INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.aux
 INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
 INPUT c:/Users/NicoMendoza/Documents/dwla-web-app/SP/Proposal - Nico C. Mendoza.out
@@ -222,11 +444,9 @@ INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb
 INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb
 INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb
 INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb
-INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr9.pfb
-INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr9.pfb
-INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy9.pfb
-INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy9.pfb
+INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb
+INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb
 INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb
 INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb
-INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt9.pfb
-INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt9.pfb
+INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt8.pfb
+INPUT C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt8.pfb

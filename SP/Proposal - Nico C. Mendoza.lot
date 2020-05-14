@@ -1,0 +1,25 @@
+\contentsline {table}{\numberline {1}{Data dictionary for \textbf {account notice} table}}{39}{table.1}
+\contentsline {table}{\numberline {2}{Data dictionary for \textbf {activity log} table}}{40}{table.2}
+\contentsline {table}{\numberline {3}{Data dictionary for \textbf {class record} table}}{41}{table.3}
+\contentsline {table}{\numberline {4}{Data dictionary for \textbf {class record status} table}}{43}{table.4}
+\contentsline {table}{\numberline {5}{Data dictionary for \textbf {component} table}}{43}{table.5}
+\contentsline {table}{\numberline {6}{Data dictionary for \textbf {grade} table}}{45}{table.6}
+\contentsline {table}{\numberline {7}{Data dictionary for \textbf {log details} table}}{46}{table.7}
+\contentsline {table}{\numberline {8}{Data dictionary for \textbf {nonacademic} table}}{46}{table.8}
+\contentsline {table}{\numberline {9}{Data dictionary for \textbf {parent guardian} table}}{47}{table.9}
+\contentsline {table}{\numberline {10}{Data dictionary for \textbf {school year} table}}{48}{table.10}
+\contentsline {table}{\numberline {11}{Data dictionary for \textbf {section} table}}{48}{table.11}
+\contentsline {table}{\numberline {12}{Data dictionary for \textbf {student} table}}{50}{table.12}
+\contentsline {table}{\numberline {13}{Data dictionary for \textbf {student final grade} table}}{51}{table.13}
+\contentsline {table}{\numberline {14}{Data dictionary for \textbf {student grade} table}}{52}{table.14}
+\contentsline {table}{\numberline {15}{Data dictionary for \textbf {student section} table}}{52}{table.15}
+\contentsline {table}{\numberline {16}{Data dictionary for \textbf {student subject grades} table}}{53}{table.16}
+\contentsline {table}{\numberline {17}{Data dictionary for \textbf {student weighted score} table}}{55}{table.17}
+\contentsline {table}{\numberline {18}{Data dictionary for \textbf {subcomponent} table}}{56}{table.18}
+\contentsline {table}{\numberline {19}{Data dictionary for \textbf {subject} table}}{57}{table.19}
+\contentsline {table}{\numberline {20}{Data dictionary for \textbf {subject section} table}}{58}{table.20}
+\contentsline {table}{\numberline {21}{Data dictionary for \textbf {subject section student} table}}{58}{table.21}
+\contentsline {table}{\numberline {22}{Data dictionary for \textbf {submission deadline} table}}{59}{table.22}
+\contentsline {table}{\numberline {23}{Data dictionary for \textbf {teacher} table}}{60}{table.23}
+\contentsline {table}{\numberline {24}{Data dictionary for \textbf {teacher section} table}}{60}{table.24}
+\contentsline {table}{\numberline {25}{Data dictionary for \textbf {user account} table}}{63}{table.25}
