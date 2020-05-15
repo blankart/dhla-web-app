@@ -158,4 +158,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AdminCreateAccount);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(AdminCreateAccount);
