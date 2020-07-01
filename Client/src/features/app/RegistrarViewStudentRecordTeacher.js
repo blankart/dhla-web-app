@@ -134,6 +134,7 @@ export class RegistrarViewStudentRecordTeacher extends Component {
             page: this.state.page,
             pageSize: this.state.pageSize,
             quarter: this.props.quarter,
+            schoolYearID: this.props.schoolYearID,
           })
           .then(res3 => {
             this.setState({
