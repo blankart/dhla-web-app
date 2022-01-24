@@ -69,9 +69,9 @@
   },
   "scripts": {
     "dev": "node scripts/dev.js",
-    "build": "node scripts/build.js",
+    "build": "cross-env CI=false && node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
-    "start": "serve -s build"
+    "start": "cross-env CI=false && serve -s build"
   },
   "rekit": {
     "devPort": 6075,
@@ -116,5 +116,8 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-  "description": "Client created by Rekit."
+  "description": "Client created by Rekit.",
+  "devDependencies": {
+    "cross-env": "^7.0.3"
+  }
 }
