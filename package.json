@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "start": "turbo run server#start",
     "start:web": "turbo run Client#start",
     "start:server": "turbo run server#start",
     "dev": "turbo run dev --parallel",
